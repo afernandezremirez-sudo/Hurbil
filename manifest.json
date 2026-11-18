@@ -9,7 +9,7 @@
   "icons": [
     {
       "src": "/Hurbil/logo.png",
-      "sizes": "512x512",
+      "sizes": "any",
       "type": "image/png",
       "purpose": "any"
     }
