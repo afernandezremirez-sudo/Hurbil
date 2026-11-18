@@ -291,6 +291,7 @@ case'acc':{const p=db.plans.find(x=>x.id==+v),n=el.dataset.n,q=p.prop;if(q.st!='
   }
   case'out':sb.auth.signOut();sbUid=null;db.u.on=0;break;
   case'adm':{const k=el.dataset.k;r[k]=el.value;if(k=='w'&&r.w&&r.st=='pending')r.st='assigned';if(k=='st'&&r.st=='done'&&!r.doneAt)r.doneAt=Date.now();if(r.st!='pending'&&!r.pin){let n;do n=String(1000+Math.floor(Math.random()*9000));while(db.reqs.some(x=>x.pin==n));r.pin=n}sb.from('requests').update({data:r}).eq('id',r.id).then(()=>{});break}
+    case'rst':db=seed();break}save();render()}
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(e.target.classList.contains('ov')){md=null;render();return}if(el&&!['SELECT','INPUT'].includes(el.tagName)){if(el.dataset.a=='go')e.preventDefault();act(el)}});
 document.addEventListener('change',e=>{if((e.target.tagName=='SELECT'||e.target.type=='date')&&e.target.dataset.a)act(e.target)});
 document.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;const k=f.split('.');let o=X[k[0]];for(const p of k.slice(1,-1))o=o[p]??={};o[k[k.length-1]]=e.target.value;save();if(k[0]=='w'){const n=$('#nx');if(n)n.disabled=!ok()}});
