@@ -8,8 +8,8 @@
   "theme_color": "#2D5373",
   "icons": [
     {
-      "src": "/Hurbil/logo.png",
-      "sizes": "any",
+      "src": "https://afernandezremirez-sudo.github.io/Hurbil/logo.png",
+      "sizes": "1054x1024",
       "type": "image/png",
       "purpose": "any"
     }
