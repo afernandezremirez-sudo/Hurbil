@@ -77,26 +77,32 @@ const save=()=>{
   try{localStorage.setItem('hurbil2',JSON.stringify(db))}catch(e){}
   if(sbUid&&db.u.on){
     sb.from('profiles').upsert({
-      id:sbUid,
+id:sbUid,
       username:db.u.user,
       name:db.u.name,
       contact:db.u.contact,
       fam:db.u.fam,
-      addr:db.u.addr
+      addr:db.u.addr,
+      avatar:db.u.avatar||''
     }).then(()=>{});
   }
 };
+
+let folRows=[],dmList=[],dmUser=null;
+const avImg=(u,sz=44)=>u?.avatar?`<img src="${u.avatar}" style="width:${sz}px;height:${sz}px;border-radius:50%;object-fit:cover;border:2px solid var(--p);flex-shrink:0">`:`<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:var(--sb);color:var(--p);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:${Math.round(sz*.42)}px;flex-shrink:0">${esc((u?.name||'?')[0].toUpperCase())}</div>`;
 
 async function syncCloud(){
   const {data:{session}}=await sb.auth.getSession();
   if(session?.user){
     sbUid=session.user.id;
     const {data:p}=await sb.from('profiles').select('*').eq('id',sbUid).single();
-    if(p)db.u={name:p.name||'',user:p.username||'',contact:p.contact||session.user.email,pass:'',addr:p.addr||'',fam:p.fam||'',on:1};
-    const {data:fls}=await sb.from('follows').select('following_id').eq('follower_id',sbUid);
-    if(fls)db.fol=fls.map(x=>x.following_id);
+    if(p)db.u={name:p.name||'',user:p.username||'',contact:p.contact||session.user.email,pass:'',addr:p.addr||'',fam:p.fam||'',avatar:p.avatar||'',on:1};
+    const {data:fls}=await sb.from('follows').select('*').or(`follower_id.eq.${sbUid},following_id.eq.${sbUid}`);
+    if(fls){folRows=fls;db.fol=fls.filter(x=>x.follower_id==sbUid&&x.status=='accepted').map(x=>x.following_id)}
+    const {data:dms}=await sb.from('direct_messages').select('*').or(`sender_id.eq.${sbUid},receiver_id.eq.${sbUid}`).order('id',{ascending:true});
+    if(dms)dmList=dms;
   }
-  const {data:allU}=await sb.from('profiles').select('id,name,username,addr');
+  const {data:allU}=await sb.from('profiles').select('id,name,username,addr,avatar');
   if(allU)usersList=allU;
   const {data:rList}=await sb.from('requests').select('*').order('id',{ascending:false});
   if(rList&&rList.length)db.reqs=rList.map(r=>({...r.data,id:r.id}));
@@ -194,15 +200,20 @@ ${q.st=='draft'?[me,o].map(n=>`<button class="btn ${q.acc.includes(n)?'g':'s'}" 
 function plan(p){const c=p.m.length,d=c>=3?20:c==2?15:0,me=p.m.includes(fn()),lock=p.prop&&p.prop.st!='draft',full=(c>=p.max||!!p.prop)&&!me,tt=p.t[L()],wh=p.when[L()];
 return`<article class="card"><div class="row"><h3 class="grow">${tt}</h3>${S(`${tt}. ${wh}. ${c} ${_('de','/')} ${p.max} ${_('plazas','leku')}`)}</div><p>📅 ${wh} · ${p.h} h</p><p>👥 ${c}/${p.max} · ${_('quedan','geratzen dira')} ${p.max-c}</p><p><span class="bd">${d?`−${d} %`:_('Descuento desde 2 personas','Deskontua 2 pertsonatik')}</span> ${fmt(pr(p.h,c).tot)}/${_('persona','pertsona')}</p><p class="mut">${_('Participan','Parte-hartzaileak')}: ${p.m.map(esc).join(', ')}</p>${p.prop?`<p><span class="bd">${PS[p.prop.st][L()]}</span></p>`:''}
 <div class="row"><button class="btn ${me?'g':'s'}" data-a="join" data-v="${p.id}" ${full||(me&&lock)?'disabled':''}>${me?_('Salir del plan','Planetik atera'):full?_('Completo','Beteta'):_('Unirme al plan','Planera batu')}</button><button class="btn g" data-a="pchat" data-v="${p.id}">💬 ${_('Chat de grupo','Talde-txata')}</button></div>${oc==p.id?msgs(p.msgs,fn())+(p.prop?propc(p):'')+sendBox('p'+p.id):''}</article>`}
-function comm(){let h=back()+head(_('Comunidad y planes','Komunitatea eta planak'))+`<div class="tabs" role="tablist">${[['neigh',_('Vecinos del barrio · Seguir a gente','Auzokideak · Jarraitu jendea')],['plans',_('Planes conjuntos','Plan bateratuak')]].map(t=>`<button class="btn ${ct==t[0]?'':'g'}" role="tab" aria-selected="${ct==t[0]}" data-a="tab" data-v="${t[0]}">${t[1]}</button>`).join('')}</div>`;
-if(ct=='neigh')h+=`<div class="grid">${N.map(n=>{const f=db.fol.includes(n.n),t=`${n.n}, ${n.b}. ${_('Intereses en común','Interes komunak')}: ${n.i.map(i=>i[L()]).join(', ')}`;return`<article class="card"><div class="row"><h3 class="grow">👤 ${n.n}</h3>${S(t)}</div><p>📍 ${n.b}</p><p>${_('Intereses en común','Interes komunak')}: ${n.i.map(i=>`<span class="bd">${i[L()]}</span>`).join(' ')}</p><button class="btn ${f?'g':'s'}" aria-pressed="${f}" data-a="fol" data-v="${n.n}">${f?'✓ '+_('Siguiendo','Jarraitzen'):'+ '+_('Seguir','Jarraitu')}</button></article>`}).join('')}</div>`;
+function comm(){let h=back()+head(_('Comunidad y planes','Komunitatea eta planak'))+`<div class="tabs" role="tablist">${[['neigh',_('Personas · Red social','Pertsonak · Sare soziala')],['plans',_('Planes conjuntos','Plan bateratuak')]].map(t=>`<button class="btn ${ct==t[0]?'':'g'}" role="tab" aria-selected="${ct==t[0]}" data-a="tab" data-v="${t[0]}">${t[1]}</button>`).join('')}</div>`;
+if(ct=='neigh'){
+  const inc=folRows.filter(x=>x.following_id==sbUid&&x.status=='pending');
+  if(inc.length)h+=`<div class="card" style="border:2px solid var(--p)"><h3>🔔 ${_('Solicitudes de seguimiento','Jarraipen eskaerak')} (${inc.length})</h3>${inc.map(req=>{const u=usersList.find(x=>x.id==req.follower_id)||{name:'Usuario',username:''};return`<div class="row" style="justify-content:space-between;margin:.6rem 0"><div class="row">${avImg(u,40)}<div><b>${esc(u.name)}</b><br><span class="mut">${esc(u.username)}</span></div></div><div class="row"><button class="btn s" data-a="facc" data-v="${u.id}">✓ ${_('Aceptar','Onartu')}</button><button class="btn g" data-a="frej" data-v="${u.id}">✕</button></div></div>`}).join('')}</div>`;
+  const others=usersList.filter(u=>u.id!=sbUid);
+  h+=`<div class="grid">${others.length?others.map(u=>{const out=folRows.find(x=>x.follower_id==sbUid&&x.following_id==u.id),inAcc=folRows.find(x=>x.follower_id==u.id&&x.following_id==sbUid&&x.status=='accepted'),canChat=(out&&out.status=='accepted')||inAcc;let bTxt=_('+ Solicitar seguir','+ Jarraitzea eskatu'),bCls='s';if(out?.status=='pending'){bTxt=_('⏳ Pendiente','⏳ Zain');bCls='g'}else if(out?.status=='accepted'){bTxt=_('✓ Siguiendo','✓ Jarraitzen');bCls='g'}return`<article class="card"><div class="row">${avImg(u,50)}<div class="grow"><h3>${esc(u.name)}</h3><p class="mut">${esc(u.username)} · 📍 ${esc(u.addr||'Bilbao')}</p></div></div><div class="row" style="margin-top:.8rem"><button class="btn ${bCls}" data-a="fol" data-v="${u.id}">${bTxt}</button>${canChat?`<button class="btn" data-a="dm" data-v="${u.id}">💬 ${_('Chat privado','Txat pribatua')}</button>`:''}</div></article>`}).join(''):`<div class="card"><p>${_('Aún no hay otras personas registradas. ¡Crea otra cuenta o invita a un amigo!','Oraindik ez dago beste pertsonarik erregistratuta.')}</p></div>`}</div>`;
+}
 else{const ps=fl?db.plans.filter(p=>p.m.some(m=>db.fol.some(f=>f.startsWith(m)))):db.plans;h+=`<button class="opt ${fl?'on':''}" aria-pressed="${fl}" data-a="flt">${fl?'✓ ':''}${_('Solo planes de gente que sigo','Jarraitzen dudan jendearen planak bakarrik')}</button>`+(ps.length?ps.map(plan).join(''):`<div class="card"><p>${_('Ningún plan de la gente que sigues. Sigue a más vecinos.','Jarraitzen duzun jendearen planik ez. Jarraitu auzokide gehiago.')}</p></div>`)}
 return h}
 
-function prof(){const u=db.u,f=(k,l,ty)=>`<label for="f${k}">${l}</label><div class="row"><input class="grow" id="f${k}" type="${k=='pass'&&!sp?'password':ty||'text'}" data-f="db.u.${k}" value="${esc(u[k])}">${k=='pass'?`<button class="ib" data-a="pw">${sp?_('Ocultar','Ezkutatu'):_('Mostrar','Erakutsi')}</button>`:''}${S(l)}</div>`;
+function prof(){const u=db.u,f=(k,l,ty)=>`<label for="f${k}">${l}</label><div class="row"><input class="grow" id="f${k}" type="${k=='pass'&&!sp?'password':ty||'text'}" data-f="db.u.${k}" value="${esc(u[k]||'')}">${k=='pass'?`<button class="ib" data-a="pw">${sp?_('Ocultar','Ezkutatu'):_('Mostrar','Erakutsi')}</button>`:''}</div>${S(l)}`;
 const flds=f('name',_('Nombre completo','Izen osoa'))+f('user',_('Nombre de usuario (ej. @aimar_bilbao)','Erabiltzaile-izena (adib. @aimar_bilbao)'))+f('contact',_('Correo electrónico o teléfono','Posta elektronikoa edo telefonoa'))+f('pass',_('Contraseña','Pasahitza'))+f('addr',_('Barrio o dirección en Bilbao','Auzoa edo helbidea Bilbon'))+f('fam',_('Teléfono del familiar de confianza (WhatsApp)','Konfiantzazko senidearen telefonoa (WhatsApp)'),'tel');
 let h=back()+head(_('Mi perfil / Cuenta','Nire profila / Kontua'));
-if(u.on)return h+pextra()+`<div class="card">${flds}<div class="row" style="margin-top:1rem"><button class="btn s" data-a="prof">${_('Guardar datos','Datuak gorde')}</button><button class="btn g" data-a="out">${_('Cerrar sesión','Saioa itxi')}</button></div></div>`;
+if(u.on){const avBox=`<div class="row" style="margin-bottom:1rem">${avImg(u,68)}<div class="grow"><b>${esc(u.name)}</b><p class="mut">${esc(u.user)}</p><label class="btn g" style="display:inline-flex;margin-top:.4rem;cursor:pointer">📷 ${_('Cambiar foto de perfil','Profileko argazkia aldatu')}<input type="file" accept="image/*" style="display:none" onchange="upAv(this)"></label></div></div>`;return h+pextra()+`<div class="card">${avBox}${flds}<div class="row" style="margin-top:1rem"><button class="btn s" data-a="prof">${_('Guardar datos','Datuak gorde')}</button><button class="btn g" data-a="out">${_('Cerrar sesión','Saioa itxi')}</button></div></div>`;}
 return h+`<div class="tabs">${[['create',_('Crear cuenta','Kontua sortu')],['login',_('Iniciar sesión','Saioa hasi')]].map(t=>`<button class="btn ${pm==t[0]?'':'g'}" data-a="mode" data-v="${t[0]}">${t[1]}</button>`).join('')}</div><div class="card">${pm=='create'?flds+`<button class="btn s" style="margin-top:1rem" data-a="auth" data-v="c">${_('Crear cuenta','Kontua sortu')}</button>`:`<label for="lu">${_('Usuario o correo/teléfono','Erabiltzailea edo posta/telefonoa')}</label><input id="lu" data-f="lg.u"><label for="lp">${_('Contraseña','Pasahitza')}</label><input id="lp" type="password" data-f="lg.p"><button class="btn s" style="margin-top:1rem" data-a="auth" data-v="l">${_('Iniciar sesión','Saioa hasi')}</button>`}</div>`}
 
 let admOk=false,admTab='reqs',admErr=false;
@@ -220,7 +231,8 @@ const accCards=`<div class="card"><h3>👤 ${_('Cliente activo','Bezero aktiboa'
 function modal(){if(!md)return'';let b='';
 if(md=='sos'){const m=encodeURIComponent(`🆘 URGENTE: ${db.u.name} necesita ayuda. Dirección: ${db.u.addr||'Bilbao'}. Hurbil 644 270 017`);
 b=`<div class="row"><h2 class="grow" style="color:var(--r)">🆘 ${_('Emergencia','Larrialdia')}</h2>${S(_('Ayuda inmediata. Pulsa llamar al 644 270 017.','Berehalako laguntza. Sakatu 644 270 017 zenbakira deitzeko.'))}</div><p><b>${_('Si es muy grave, llama también al 112.','Oso larria bada, deitu 112ra ere.')}</b></p><div class="row" style="flex-direction:column;align-items:stretch"><a class="btn" href="tel:644270017">📞 ${_('Llamar a Hurbil','Hurbilera deitu')} · 644 270 017</a><a class="btn s" target="_blank" rel="noopener" href="https://wa.me/${phone(db.u.fam)||''}?text=${m}">💬 ${_('Avisar a mi familiar por WhatsApp','Abisatu nire senideari WhatsApp bidez')}</a><a class="btn g" target="_blank" rel="noopener" href="https://wa.me/34644270017?text=${m}">🚨 ${_('Enviar alerta urgente con mi dirección','Bidali larrialdi-alerta nire helbidearekin')}</a></div><p class="mut">📍 ${esc(db.u.addr||'Bilbao')}</p>`}
-else b=`<div class="row"><h2 class="grow">💬 ${_('Chat de ayuda','Laguntza-txata')}</h2>${S(_('Chat de ayuda con el equipo de Hurbil','Hurbilen taldearekin laguntza-txata'))}</div><div class="tabs">${[['team',_('Equipo Hurbil','Hurbil taldea')],['plans',_('Planes y acompañantes','Planak eta laguntzaileak')]].map(t=>`<button class="btn ${mt==t[0]?'':'g'}" data-a="tm" data-v="${t[0]}">${t[1]}</button>`).join('')}</div>`+(mt=='team'?msgs(db.team,'')+sendBox('team'):db.plans.map(p=>`<div class="row" style="margin:.4rem 0"><button class="opt" data-a="gop" data-v="${p.id}">💬 ${p.t[L()]}</button>${S(p.t[L()])}</div>`).join(''));
+else if(md=='dm'&&dmUser){const peer=usersList.find(x=>x.id==dmUser)||{name:'Chat'};const chatMsgs=dmList.filter(m=>(m.sender_id==sbUid&&m.receiver_id==dmUser)||(m.sender_id==dmUser&&m.receiver_id==sbUid)).map(m=>({n:m.sender_id==sbUid?'':peer.name,f:m.sender_id==sbUid?'u':'',t:m.text}));b=`<div class="row">${avImg(peer,38)}<h2 class="grow">${esc(peer.name)}</h2></div>`+msgs(chatMsgs,'')+sendBox('dm:'+dmUser)}
+else b=`<div class="row"><h2 class="grow">💬 ${_('Chat de ayuda y amigos','Laguntza eta lagunen txata')}</h2></div><div class="tabs">${[['team',_('Equipo Hurbil','Hurbil taldea')],['friends',_('Mis amigos','Nire lagunak')],['plans',_('Planes','Planak')]].map(t=>`<button class="btn ${mt==t[0]?'':'g'}" data-a="tm" data-v="${t[0]}">${t[1]}</button>`).join('')}</div>`+(mt=='team'?msgs(db.team,'')+sendBox('team'):mt=='friends'?(usersList.filter(u=>u.id!=sbUid&&(folRows.some(x=>x.follower_id==sbUid&&x.following_id==u.id&&x.status=='accepted')||folRows.some(x=>x.follower_id==u.id&&x.following_id==sbUid&&x.status=='accepted'))).map(u=>`<div class="row" style="margin:.5rem 0;justify-content:space-between"><div class="row">${avImg(u,36)}<b>${esc(u.name)}</b></div><button class="btn s" data-a="dm" data-v="${u.id}">💬 ${_('Abrir chat','Txata ireki')}</button></div>`).join('')||`<p class="mut">${_('Acepta o envía solicitudes en Comunidad para chatear aquí.','Onartu edo bidali eskaerak Komunitatean hemen txateatzeko.')}</p>`):db.plans.map(p=>`<div class="row" style="margin:.4rem 0"><button class="opt" data-a="gop" data-v="${p.id}">💬 ${p.t[L()]}</button></div>`).join(''));
 return`<div class="ov"><div class="mo" role="dialog" aria-modal="true">${b}<button class="btn g" style="margin-top:1rem" data-a="close">✕ ${_('Cerrar','Itxi')}</button></div></div>`}
 
 const saved=()=>db.reqs.reduce((s,r)=>s+(r.base-r.tot),0)+db.plans.filter(p=>p.prop&&p.prop.st=='accepted'&&p.m.includes(fn())).reduce((s,p)=>s+13*p.h*.15,0);
@@ -241,7 +253,7 @@ function render(){const h=route,pg={help,reqs,comm,prof,admin,team,work}[h]||hom
 document.documentElement.lang=db.lang;document.body.className=(db.hc?'hc ':'')+(db.easy?'easy':'');document.documentElement.style.fontSize=(16+db.fs*2+(db.easy?4:0))+'px';
 $('#hd').innerHTML=hdr();$('#app').innerHTML=pg()+(h?'':'')+`<footer class="adv" style="margin-top:2rem;text-align:center"><small>Hurbil · Bilbao · 644 270 017 · <a href="#admin" data-a="go" data-v="admin" style="opacity:.6">admin</a> · <a href="#work" data-a="go" data-v="work" style="opacity:.6">trabajadores</a></small></footer>`;$('#md').innerHTML=modal();
 document.querySelectorAll('.msgs').forEach(e=>e.scrollTop=e.scrollHeight);if(fo){const i=document.querySelector('.send input');i&&i.focus();fo=false}}
-
+window.upAv=inp=>{const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=140;c.height=140;c.getContext('2d').drawImage(im,0,0,140,140);db.u.avatar=c.toDataURL('image/jpeg',.75);save();render();toast(_('Foto actualizada','Argazkia eguneratuta'))};im.src=e.target.result};r.readAsDataURL(f)};
 function act(el){const a=el.dataset.a,v=el.dataset.v,id=+el.dataset.id,r=db.reqs.find(x=>x.id==id);
 switch(a){
 case'say':say(el.dataset.t);return;
@@ -264,15 +276,19 @@ case'acc':{const p=db.plans.find(x=>x.id==+v),n=el.dataset.n,q=p.prop;if(q.st!='
   open(`https://wa.me/${p}?text=${encodeURIComponent(`Hola, te aviso de mi cita con Hurbil: ${svc(r)}. ${r.ses.map(sl).join('; ')}, en ${r.addr}. Estado: ${ST[r.st][0]}. Hurbil: 644 270 017`)}`,'_blank','noopener');return}
   case'star':tr[id]={...tr[id],s:+v};break;
   case'rate':{const x=tr[id];if(!x?.s){toast(_('Elige de 1 a 5 estrellas.','Aukeratu 1 eta 5 izar artean.'));return}if(dl(r)<=0){toast(_('El plazo de 24 horas ha terminado.','24 orduko epea amaitu da.'));break}r.rate={s:x.s,c:x.c||''};break}
-  case'fol':{const isF=db.fol.includes(v);db.fol=isF?db.fol.filter(x=>x!=v):[...db.fol,v];if(sbUid){if(isF)sb.from('follows').delete().match({follower_id:sbUid,following_id:v}).then(()=>{});else sb.from('follows').insert({follower_id:sbUid,following_id:v}).then(()=>{})}break}
-  case'tab':ct=v;break;case'flt':fl=!fl;break;
-  case'join':{const p=db.plans.find(x=>x.id==+v),n=fn();if(p.m.includes(n)){p.m=p.m.filter(x=>x!=n);p.prop=null}else{p.m.push(n);if(p.m.length==2){p.prop={st:'draft',acc:[]};p.msgs.push({n:p.m[0],t:_('¡Genial, ya somos dos! Vamos a por este plan.','Bikaina, bi gara! Egin dezagun plan hau.')},{n:'Hurbil',t:_('🤝 Propuesta de plan conjunto creada para 2 personas. Aceptadla los dos y la enviamos a Hurbil.','🤝 2 pertsonentzako plan bateratuaren proposamena sortu da. Biok onartu eta Hurbili bidaliko diogu.')});oc=p.id}}sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>{});break}
-  case'pchat':oc=oc==+v?null:+v;break;
-  case'gop':md=null;ct='plans';oc=+v;go('comm');break;
-  case'send':{const t=el.parentElement.querySelector('input').value.trim();if(!t)return;fo=true;
-  if(v=='team'){db.team.push({f:'u',t});setTimeout(()=>{db.team.push({f:'h',t:'Gracias por escribirnos. Te responderemos enseguida o te llamamos al número que nos has dado.'});save();render()},900)}
-  else{const p=db.plans.find(x=>x.id==+v.slice(1));p.msgs.push({n:fn(),t});sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>{})}break}
-  case'pw':sp=!sp;break;case'mode':pm=v;break;case'prof':toast(_('Datos guardados.','Datuak gordeta.'));break;
+case'fol':{if(!sbUid){toast(_('Inicia sesión primero.','Hasi saioa lehenik.'));break}const ex=folRows.find(x=>x.follower_id==sbUid&&x.following_id==v);if(ex){sb.from('follows').delete().eq('follower_id',sbUid).eq('following_id',v).then(()=>syncCloud())}else{sb.from('follows').insert({follower_id:sbUid,following_id:v,status:'pending'}).then(()=>syncCloud());toast(_('Solicitud enviada','Eskaera bidalita'))}break}
+    case'facc':{sb.from('follows').update({status:'accepted'}).eq('follower_id',v).eq('following_id',sbUid).then(()=>syncCloud());toast(_('Solicitud aceptada','Eskaera onartuta'));break}
+    case'frej':{sb.from('follows').delete().eq('follower_id',v).eq('following_id',sbUid).then(()=>syncCloud());toast(_('Solicitud rechazada','Eskaera baztertuta'));break}
+    case'dm':{dmUser=v;md='dm';syncCloud();break}
+    case'tab':ct=v;break;case'flt':fl=!fl;break;
+    case'join':{const p=db.plans.find(x=>x.id==+v),n=fn();if(p.m.includes(n)){p.m=p.m.filter(x=>x!=n);p.prop=null}else{p.m.push(n);if(p.m.length==2){p.prop={st:'draft',acc:[]};p.msgs.push({n:p.m[0],t:_('¡Genial, ya somos dos! Vamos a por este plan.','Bikaina, bi gara! Egin dezagun plan hau.')},{n:'Hurbil',t:_('🤝 Propuesta de plan conjunto creada para 2 personas. Aceptadla los dos y la enviamos a Hurbil.','🤝 2 pertsonentzako plan bateratuaren proposamena sortu da. Biok onartu eta Hurbili bidaliko diogu.')});oc=p.id}}sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>{});break}
+    case'pchat':oc=oc==+v?null:+v;break;
+    case'gop':md=null;ct='plans';oc=+v;go('comm');break;
+    case'send':{const t=el.parentElement.querySelector('input').value.trim();if(!t)return;fo=true;
+      if(v=='team'){db.team.push({f:'u',t});setTimeout(()=>{db.team.push({f:'h',t:'Gracias por escribirnos. Te responderemos enseguida o te llamamos al número que nos has dado.'});save();render()},900)}
+      else if(v.startsWith('dm:')){const to=v.slice(3);dmList.push({sender_id:sbUid,receiver_id:to,text:t});sb.from('direct_messages').insert({sender_id:sbUid,receiver_id:to,text:t}).then(()=>syncCloud())}
+      else{const p=db.plans.find(x=>x.id==+v.slice(1));p.msgs.push({n:fn(),t});sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>{})}break}
+    case'pw':sp=!sp;break;case'mode':pm=v;break;case'prof':toast(_('Datos guardados.','Datuak gordeta.'));break;
   case'auth':{
     if(v=='c'){
       if(!db.u.user||!db.u.pass||!db.u.name||!db.u.contact){toast(_('Rellena nombre, usuario, correo y contraseña.','Bete izena, erabiltzailea, posta eta pasahitza.'));return}
