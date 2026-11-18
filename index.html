@@ -6,6 +6,7 @@
   <link rel="icon" type="image/png" href="/Hurbil/logo.png">
 <meta name="theme-color" content="#2D5373">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#F6F7F5;--c:#fff;--bd:#E2E8F0;--p:#2D5373;--ph:#244560;--s:#447458;--sb:#EBF1F6;--sbd:#D6E2EC;--t:#1E293B;--pt:#fff;--st:#fff;--r:#C0463F;--m:#64748B}
 body.hc{--bg:#000;--c:#000;--bd:#FFE600;--p:#FFE600;--ph:#fff;--s:#FFE600;--sb:#1a1a00;--sbd:#FFE600;--t:#FFE600;--pt:#000;--st:#000;--r:#FFE600;--m:#FFE600}
@@ -65,8 +66,44 @@ occ:{[d0(1)+'|9']:4,[d0(1)+'|10']:4,[d0(2)+'|17']:4,[d0(2)+'|18']:4},
 fol:[],plans:[{id:1,t:['Paseo por Doña Casilda','Doña Casilda inguruko ibilaldia'],when:['Mañana · 11:00','Bihar · 11:00'],h:2,max:3,m:['Maite'],prop:null,msgs:[{n:'Maite',t:'¡Hola! Yo llevo un termo de café, ¿os apuntáis?'}]},
 {id:2,t:['Café en Indautxu','Kafea Indautxun'],when:['Jueves · 17:00','Osteguna · 17:00'],h:1,max:3,m:['Arantxa'],prop:null,msgs:[{n:'Arantxa',t:'Buenas tardes, ¿quién se anima a tomar un café?'}]}],
 team:[{f:'h',t:'¡Hola, Aimar! Somos el equipo de Hurbil. ¿En qué te podemos ayudar?'}]}}
+const SB_URL='https://oijhfovricxgpnczwpfv.supabase.co';
+const SB_KEY='sb_publishable_I1I6eY2egVrjwMzbDqrs0Q_2EK05T2C';
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+let sbUid=null,usersList=[];
+
 let db;try{db=JSON.parse(localStorage.getItem('hurbil2'))}catch(e){}db=db||seed();
-const save=()=>{try{localStorage.setItem('hurbil2',JSON.stringify(db))}catch(e){}};
+
+const save=()=>{
+  try{localStorage.setItem('hurbil2',JSON.stringify(db))}catch(e){}
+  if(sbUid&&db.u.on){
+    sb.from('profiles').upsert({
+      id:sbUid,
+      username:db.u.user,
+      name:db.u.name,
+      contact:db.u.contact,
+      fam:db.u.fam,
+      addr:db.u.addr
+    }).then(()=>{});
+  }
+};
+
+async function syncCloud(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(session?.user){
+    sbUid=session.user.id;
+    const {data:p}=await sb.from('profiles').select('*').eq('id',sbUid).single();
+    if(p)db.u={name:p.name||'',user:p.username||'',contact:p.contact||session.user.email,pass:'',addr:p.addr||'',fam:p.fam||'',on:1};
+    const {data:fls}=await sb.from('follows').select('following_id').eq('follower_id',sbUid);
+    if(fls)db.fol=fls.map(x=>x.following_id);
+  }
+  const {data:allU}=await sb.from('profiles').select('id,name,username,addr');
+  if(allU)usersList=allU;
+  const {data:rList}=await sb.from('requests').select('*').order('id',{ascending:false});
+  if(rList&&rList.length)db.reqs=rList.map(r=>({...r.data,id:r.id}));
+  const {data:pList}=await sb.from('plans').select('*');
+  if(pList&&pList.length)db.plans=pList.map(p=>({...p.data,id:isNaN(+p.id)?p.id:+p.id}));
+  save();render();
+}
 const _=(a,b)=>db.lang=='eu'?b:a,L=()=>db.lang=='eu'?1:0,fn=()=>db.u.name.split(' ')[0]||'Aimar';
 const fmt=n=>n.toFixed(2).replace('.',',')+' €';
 const W=['Aimar Fernandez','Ander Herrera','Eder Fernandez','Eidan Irastorza'];
@@ -219,33 +256,45 @@ case'cx':Object.assign(w,W0());go('reqs');break;
 case'addto':Object.assign(w,W0(),{addTo:id,s:3});go('help');break;
 case'svs':{const R0=db.reqs.find(x=>x.id==w.addTo);R0.ses.push(...w.ses);R0.ses.sort((a,b)=>(a.d+a.t).localeCompare(b.d+b.t));Object.assign(w,W0());toast(_('Citas guardadas.','Hitzorduak gordeta.'));go('reqs');break}
 case'wlog':if(wl.p===WP[wl.n])wk=wl.n;else{toast(_('PIN incorrecto.','PIN okerra.'));return}break;case'wout':wk=null;wl.p='';break;
-case'acc':{const p=db.plans.find(x=>x.id==+v),n=el.dataset.n,q=p.prop;if(q.st!='draft'||q.acc.includes(n))break;q.acc.push(n);p.msgs.push({n,t:_('✅ He aceptado el plan.','✅ Plana onartu dut.')});if(q.acc.length==2){q.st='sent';p.msgs.push({n:'Hurbil',t:_('📨 Los dos habéis aceptado. Hemos enviado la petición a Hurbil; os avisaremos aquí.','📨 Biok onartu duzue. Eskaera Hurbili bidali diogu; hemen abisatuko dizuegu.')})}break}
-case'jp':{const p=db.plans.find(x=>x.id==+v),k=el.dataset.k;p.prop.st=k;p.msgs.push({n:'Hurbil',t:k=='accepted'?_('✅ Hurbil ha aceptado vuestro plan conjunto.','✅ Hurbilek zuen plan bateratua onartu du.'):_('❌ Hurbil no puede aceptar este plan. Os propondremos otra fecha.','❌ Hurbilek ezin du plan hau onartu. Beste data bat proposatuko dizuegu.')});break}
-case'hr':w.h=+v;if(sesH(w.ses)>w.h)w.ses=[];break;case'ppl':w.ppl=+v;break;case'nx':w.s++;break;case'pv':w.s--;break;
-case'ok':{const p=pr(w.h,w.ppl),s0=w.ses[0];db.reqs.unshift({id:Date.now(),c:w.cat,o:w.opt,t:w.txt,ses:[...w.ses],hTot:w.h,bono:w.h>=5?1:0,date:s0.d,time:s0.t,h:s0.h,addr:w.addr,cli:db.u.name,ppl:w.ppl,base:p.b,tot:p.tot,st:'pending',w:''});if(!db.u.addr)db.u.addr=w.addr;Object.assign(w,W0());toast(_('¡Solicitud confirmada! Te asignaremos un acompañante.','Eskaera baieztatu da! Laguntzaile bat esleituko dizugu.'));go('reqs');break}
-case'wa':{const p=phone(db.u.fam);if(!p){toast(_('Añade el teléfono de tu familiar en el perfil.','Gehitu zure senidearen telefonoa profilean.'));go('prof');render();return}
-open(`https://wa.me/${p}?text=${encodeURIComponent(`Hola, te aviso de mi cita con Hurbil: ${svc(r)}. ${r.ses.map(sl).join('; ')}, en ${r.addr}. Estado: ${ST[r.st][0]}. Hurbil: 644 270 017`)}`,'_blank','noopener');return}
-case'star':tr[id]={...tr[id],s:+v};break;
-case'rate':{const x=tr[id];if(!x?.s){toast(_('Elige de 1 a 5 estrellas.','Aukeratu 1 eta 5 izar artean.'));return}if(dl(r)<=0){toast(_('El plazo de 24 horas ha terminado.','24 orduko epea amaitu da.'));break}r.rate={s:x.s,c:x.c||''};break}
-case'fol':db.fol=db.fol.includes(v)?db.fol.filter(x=>x!=v):[...db.fol,v];break;
-case'tab':ct=v;break;case'flt':fl=!fl;break;
-case'join':{const p=db.plans.find(x=>x.id==+v),n=fn();if(p.m.includes(n)){p.m=p.m.filter(x=>x!=n);p.prop=null}else{p.m.push(n);if(p.m.length==2){p.prop={st:'draft',acc:[]};p.msgs.push({n:p.m[0],t:_('¡Genial, ya somos dos! Vamos a por este plan.','Bikaina, bi gara! Egin dezagun plan hau.')},{n:'Hurbil',t:_('🤝 Propuesta de plan conjunto creada para 2 personas. Aceptadla los dos y la enviamos a Hurbil.','🤝 2 pertsonentzako plan bateratuaren proposamena sortu da. Biok onartu eta Hurbili bidaliko diogu.')});oc=p.id}}break}
-case'pchat':oc=oc==+v?null:+v;break;
-case'gop':md=null;ct='plans';oc=+v;go('comm');break;
-case'send':{const t=el.parentElement.querySelector('input').value.trim();if(!t)return;fo=true;
-if(v=='team'){db.team.push({f:'u',t});setTimeout(()=>{db.team.push({f:'h',t:'Gracias por escribirnos. Te responderemos enseguida o te llamamos al número que nos has dado.'});save();render()},900)}
-else db.plans.find(x=>x.id==+v.slice(1)).msgs.push({n:fn(),t});break}
-case'pw':sp=!sp;break;case'mode':pm=v;break;case'prof':toast(_('Datos guardados.','Datuak gordeta.'));break;
-case'auth':if(v=='c'){if(!db.u.user||!db.u.pass||!db.u.name){toast(_('Rellena nombre, usuario y contraseña.','Bete izena, erabiltzailea eta pasahitza.'));return}db.u.on=1}
-else{if((lg.u==db.u.user||lg.u==db.u.contact)&&lg.p==db.u.pass)db.u.on=1;else{toast(_('Usuario o contraseña incorrectos.','Erabiltzaile edo pasahitz okerra.'));return}}break;
-case'out':db.u.on=0;break;
-case'adm':{const k=el.dataset.k;r[k]=el.value;if(k=='w'&&r.w&&r.st=='pending')r.st='assigned';if(k=='st'&&r.st=='done'&&!r.doneAt)r.doneAt=Date.now();if(r.st!='pending'&&!r.pin){let n;do n=String(1000+Math.floor(Math.random()*9000));while(db.reqs.some(x=>x.pin==n));r.pin=n}break}
-case'rst':db=seed();break}
-save();render()}
+case'acc':{const p=db.plans.find(x=>x.id==+v),n=el.dataset.n,q=p.prop;if(q.st!='draft'||q.acc.includes(n))break;q.acc.push(n);p.msgs.push({n,t:_('✅ He aceptado el plan.','✅ Plana onartu dut.')});if(q.acc.length==2){q.st='sent';p.msgs.push({n:'Hurbil',t:_('📩 Los dos habéis aceptado. Hemos enviado la petición a Hurbil; os avisaremos aquí.','📩 Biok onartu duzue. Eskaera Hurbili bidali diogu; hemen abisatuko dizuegu.')})}sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>{});break}
+  case'jp':{const p=db.plans.find(x=>x.id==+v),k=el.dataset.k;p.prop.st=k;p.msgs.push({n:'Hurbil',t:k=='accepted'?_('✅ Hurbil ha aceptado vuestro plan conjunto.','✅ Hurbilek zuen plan bateratua onartu du.'):_('❌ Hurbil no puede aceptar este plan. Os propondremos otra fecha.','❌ Hurbilek ezin du plan hau onartu. Beste data bat proposatuko dizuegu.')});sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>{});break}
+  case'hr':w.h+=+v;if(sesH(w.ses)>w.h)w.ses=[];break;case'ppl':w.ppl=+v;break;case'nx':w.s++;break;case'pv':w.s--;break;
+  case'ok':{const p=pr(w.h,w.ppl),s0=w.ses[0];db.reqs.unshift({id:Date.now(),c:w.cat,o:w.opt,t:w.txt,ses:[...w.ses],hTot:w.h,bono:w.h>=5?1:0,date:s0.d,time:s0.t,h:s0.h,addr:w.addr,cli:db.u.name,ppl:w.ppl,base:p.b,tot:p.tot,st:'pending',w:''});if(!db.u.addr)db.u.addr=w.addr;if(sbUid)sb.from('requests').insert({user_id:sbUid,data:db.reqs[0]}).then(()=>syncCloud());Object.assign(w,W0());toast(_('¡Solicitud confirmada! Te asignaremos un acompañante.','Eskaera baieztatuta! Laguntzaile bat esleituko dizugu.'));go('reqs');break}
+  case'wa':{const p=phone(db.u.fam);if(!p){toast(_('Añade el teléfono de tu familiar en el perfil.','Gehitu zure senidearen telefonoa profilean.'));go('prof');render();return}
+  open(`https://wa.me/${p}?text=${encodeURIComponent(`Hola, te aviso de mi cita con Hurbil: ${svc(r)}. ${r.ses.map(sl).join('; ')}, en ${r.addr}. Estado: ${ST[r.st][0]}. Hurbil: 644 270 017`)}`,'_blank','noopener');return}
+  case'star':tr[id]={...tr[id],s:+v};break;
+  case'rate':{const x=tr[id];if(!x?.s){toast(_('Elige de 1 a 5 estrellas.','Aukeratu 1 eta 5 izar artean.'));return}if(dl(r)<=0){toast(_('El plazo de 24 horas ha terminado.','24 orduko epea amaitu da.'));break}r.rate={s:x.s,c:x.c||''};break}
+  case'fol':{const isF=db.fol.includes(v);db.fol=isF?db.fol.filter(x=>x!=v):[...db.fol,v];if(sbUid){if(isF)sb.from('follows').delete().match({follower_id:sbUid,following_id:v}).then(()=>{});else sb.from('follows').insert({follower_id:sbUid,following_id:v}).then(()=>{})}break}
+  case'tab':ct=v;break;case'flt':fl=!fl;break;
+  case'join':{const p=db.plans.find(x=>x.id==+v),n=fn();if(p.m.includes(n)){p.m=p.m.filter(x=>x!=n);p.prop=null}else{p.m.push(n);if(p.m.length==2){p.prop={st:'draft',acc:[]};p.msgs.push({n:p.m[0],t:_('¡Genial, ya somos dos! Vamos a por este plan.','Bikaina, bi gara! Egin dezagun plan hau.')},{n:'Hurbil',t:_('🤝 Propuesta de plan conjunto creada para 2 personas. Aceptadla los dos y la enviamos a Hurbil.','🤝 2 pertsonentzako plan bateratuaren proposamena sortu da. Biok onartu eta Hurbili bidaliko diogu.')});oc=p.id}}sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>{});break}
+  case'pchat':oc=oc==+v?null:+v;break;
+  case'gop':md=null;ct='plans';oc=+v;go('comm');break;
+  case'send':{const t=el.parentElement.querySelector('input').value.trim();if(!t)return;fo=true;
+  if(v=='team'){db.team.push({f:'u',t});setTimeout(()=>{db.team.push({f:'h',t:'Gracias por escribirnos. Te responderemos enseguida o te llamamos al número que nos has dado.'});save();render()},900)}
+  else{const p=db.plans.find(x=>x.id==+v.slice(1));p.msgs.push({n:fn(),t});sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>{})}break}
+  case'pw':sp=!sp;break;case'mode':pm=v;break;case'prof':toast(_('Datos guardados.','Datuak gordeta.'));break;
+  case'auth':{
+    if(v=='c'){
+      if(!db.u.user||!db.u.pass||!db.u.name||!db.u.contact){toast(_('Rellena nombre, usuario, correo y contraseña.','Bete izena, erabiltzailea, posta eta pasahitza.'));return}
+      const email=db.u.contact.includes('@')?db.u.contact.trim():db.u.user.replace('@','')+'@hurbil.eus';
+      sb.auth.signUp({email,password:db.u.pass}).then(async({data,error})=>{
+        if(error){toast(error.message);return}
+        sbUid=data.user.id;db.u.on=1;save();await syncCloud();toast(_('¡Cuenta creada!','Kontua sortuta!'));
+      });return;
+    }else{
+      const email=lg.u.includes('@')?lg.u.trim():lg.u.replace('@','')+'@hurbil.eus';
+      sb.auth.signInWithPassword({email,password:lg.p}).then(async({data,error})=>{
+        if(error){toast(_('Correo o contraseña incorrectos.','Posta edo pasahitz okerra.'));return}
+        sbUid=data.user.id;db.u.on=1;await syncCloud();toast(_('¡Bienvenido de nuevo!','Ongi etorri berriro!'));
+      });return;
+    }
+  }
+  case'out':sb.auth.signOut();sbUid=null;db.u.on=0;break;
+  case'adm':{const k=el.dataset.k;r[k]=el.value;if(k=='w'&&r.w&&r.st=='pending')r.st='assigned';if(k=='st'&&r.st=='done'&&!r.doneAt)r.doneAt=Date.now();if(r.st!='pending'&&!r.pin){let n;do n=String(1000+Math.floor(Math.random()*9000));while(db.reqs.some(x=>x.pin==n));r.pin=n}sb.from('requests').update({data:r}).eq('id',r.id).then(()=>{});break}
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(e.target.classList.contains('ov')){md=null;render();return}if(el&&!['SELECT','INPUT'].includes(el.tagName)){if(el.dataset.a=='go')e.preventDefault();act(el)}});
 document.addEventListener('change',e=>{if((e.target.tagName=='SELECT'||e.target.type=='date')&&e.target.dataset.a)act(e.target)});
 document.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;const k=f.split('.');let o=X[k[0]];for(const p of k.slice(1,-1))o=o[p]??={};o[k[k.length-1]]=e.target.value;save();if(k[0]=='w'){const n=$('#nx');if(n)n.disabled=!ok()}});
 document.addEventListener('keydown',e=>{if(e.key=='Escape'&&md){md=null;render()}if(e.key=='Enter'&&e.target.closest('.send')&&e.target.tagName=='INPUT')e.target.parentElement.querySelector('button').click()});
-addEventListener('hashchange',()=>{route=location.hash.slice(1)||'home';scrollTo(0,0);render()});render();
+addEventListener('hashchange',()=>{route=location.hash.slice(1)||'home';scrollTo(0,0);render()});render();syncCloud();
 if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('/Hurbil/sw.js',{scope:'/Hurbil/'}).catch(()=>{})})}
 </script></body></html>
