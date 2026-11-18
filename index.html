@@ -239,5 +239,31 @@ document.addEventListener('change',e=>{if((e.target.tagName=='SELECT'||e.target.
 document.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;const k=f.split('.');let o=X[k[0]];for(const p of k.slice(1,-1))o=o[p]??={};o[k[k.length-1]]=e.target.value;save();if(k[0]=='w'){const n=$('#nx');if(n)n.disabled=!ok()}});
 document.addEventListener('keydown',e=>{if(e.key=='Escape'&&md){md=null;render()}if(e.key=='Enter'&&e.target.closest('.send')&&e.target.tagName=='INPUT')e.target.parentElement.querySelector('button').click()});
 addEventListener('hashchange',()=>{route=location.hash.slice(1)||'home';scrollTo(0,0);render()});render();
-if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('/Hurbill-app/sw.js',{scope:'/Hurbill-app/'}).catch(()=>{})})}
+(async function(){
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.src = '/Hurbil/logo.png';
+  await img.decode();
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 512;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0,0,512,512);
+  ctx.drawImage(img, 0, 0, 512, 512);
+  const dataUrl = c.toDataURL('image/png');
+  const m = {
+    name: "Hurbil · Siempre cerca de ti",
+    short_name: "Hurbil",
+    start_url: "/Hurbil/",
+    scope: "/Hurbil/",
+    display: "standalone",
+    background_color: "#F6F7F5",
+    theme_color: "#2D5373",
+    icons: [{ src: dataUrl, sizes: "512x512", type: "image/png", purpose: "any" }]
+  };
+  const blob = new Blob([JSON.stringify(m)], {type: 'application/manifest+json'});
+  const link = document.querySelector('link[rel="manifest"]');
+  if (link) link.href = URL.createObjectURL(blob);
+})();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('/Hurbil/sw.js',{scope:'/Hurbil/'});}
 </script></body></html>
