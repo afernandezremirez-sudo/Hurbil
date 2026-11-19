@@ -11,7 +11,7 @@
 :root{--bg:#F6F7F5;--c:#fff;--bd:#E2E8F0;--p:#2D5373;--ph:#244560;--s:#447458;--sb:#EBF1F6;--sbd:#D6E2EC;--t:#1E293B;--pt:#fff;--st:#fff;--r:#C0463F;--m:#64748B}
 body.hc{--bg:#000;--c:#000;--bd:#FFE600;--p:#FFE600;--ph:#fff;--s:#FFE600;--sb:#1a1a00;--sbd:#FFE600;--t:#FFE600;--pt:#000;--st:#000;--r:#FFE600;--m:#FFE600}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:1rem/1.55 Nunito,system-ui,sans-serif}
-a{color:var(--p);font-weight:700}h1,h2,h3{font-weight:800;color:var(--t);line-height:1.2;margin:.2em 0}h1{font-size:1.85rem}h2{font-size:1.45rem}h3{font-size:1.15rem}
+a{color:var(--p);font-weight:700}h1,h2,h3{font-weight:800;color:var(--t);line-height:1.2;margin:.2em 0}h1{font-size:1.9rem}h2{font-size:1.5rem}h3{font-size:1.2rem}
 header{background:var(--c);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
 .hw{max-width:760px;margin:auto;padding:.6rem 1rem;display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;justify-content:space-between}
 .lg{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--t)}.lg b{display:block;font-size:1.05rem;line-height:1.2}.lg span{min-width:0;flex:1}.lg small{color:var(--m);font-weight:700}
@@ -21,29 +21,16 @@ header{background:var(--c);border-bottom:1px solid var(--bd);position:sticky;top
 .ib,.sw,.pill{border:1px solid var(--sbd);background:var(--sb);border-radius:2rem;padding:.3rem .85rem;font-weight:800;min-height:42px;color:var(--t);text-decoration:none;display:inline-flex;white-space:nowrap;align-items:center;position:relative}
 .rd{flex:none;border-radius:50%;width:42px;min-width:42px;height:42px;padding:0;justify-content:center;background:var(--c);font-size:1.3rem;line-height:1}.sw{font-size:.85rem}
 button{font:inherit;cursor:pointer;color:inherit}
-main{max-width:640px;margin:auto;padding:1rem 1rem 8.5rem}
-.card{background:var(--c);border:1px solid var(--bd);border-radius:18px;padding:1.15rem;margin:.85rem 0;box-shadow:0 2px 8px #1e293b0d}
+main{max-width:640px;margin:auto;padding:1rem 1rem 7rem}
+.card{background:var(--c);border:1px solid var(--bd);border-radius:16px;padding:1.1rem;margin:.8rem 0;box-shadow:0 1px 4px #1e293b0f}
 .row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}.row>.grow{flex:1}
-.btn{background:var(--p);color:var(--pt);border:1px solid var(--p);border-radius:16px;padding:.8rem 1.3rem;font-weight:800;font-size:1.05rem;min-height:52px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;position:relative}
+.btn{background:var(--p);color:var(--pt);border:1px solid var(--p);border-radius:16px;padding:.8rem 1.3rem;font-weight:800;font-size:1.05rem;min-height:52px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;position:relative}
 .btn:hover{background:var(--ph)}.btn.g{background:var(--sb);color:var(--t);border-color:var(--sbd)}.btn.s{background:var(--s);border-color:var(--s);color:var(--st)}.btn:disabled{opacity:.45;cursor:not-allowed}
 .spk{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#DCE8F2;color:#1E293B;font-size:1.15rem}
 body.hc .spk{background:#1a1a00;border:2px solid #FFE600}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.75rem}
-
-/* Tablón de Casa */
-.vital{background:linear-gradient(135deg,#2D5373 0%,#23425c 100%);color:#fff;border:0;border-radius:22px;padding:1.25rem;margin:.8rem 0;box-shadow:0 8px 24px rgba(45,83,115,.22)}
-body.hc .vital{background:#000;border:3px solid #FFE600;color:#FFE600}
-.vital .mut{color:#dbeafe}
-.pin-hero{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:16px;padding:.7rem 1rem;margin:.75rem 0;display:flex;align-items:center;justify-content:space-between;gap:.6rem}
-.pin-num{font-size:2rem;font-weight:800;letter-spacing:.22em;line-height:1.1}
-.board-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:.8rem 0}
-.board-tile{background:var(--c);border:1px solid var(--bd);border-radius:18px;padding:1rem;text-decoration:none;color:var(--t);display:flex;flex-direction:column;justify-content:space-between;min-height:132px;box-shadow:0 2px 6px #1e293b0a;position:relative;transition:transform .12s}
-.board-tile:hover{transform:translateY(-2px);border-color:var(--p)}
-.board-ic{font-size:2rem;line-height:1;margin-bottom:.4rem}
-.dock{position:fixed;left:0;right:0;bottom:0;background:var(--c);border-top:1px solid var(--bd);padding:.55rem .85rem;z-index:7;box-shadow:0 -4px 16px rgba(15,23,42,.08)}
-.dock-in{max-width:640px;margin:auto;display:grid;grid-template-columns:1.25fr 1fr .9fr;gap:.5rem}
-.dock .btn{min-height:54px;padding:.6rem .7rem;font-size:.98rem;border-radius:14px;width:100%}
-
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:.7rem}
+.mw{position:relative;margin:.7rem 0}.mb{display:flex;align-items:center;justify-content:center;width:100%;min-height:66px;border-radius:16px;padding:.9rem 3.6rem;font-size:1.25rem;font-weight:800;text-decoration:none;text-align:center}
+.mb.pri{background:var(--s);color:var(--st)}.mb.soft{background:var(--sb);color:var(--t);border:1px solid var(--sbd)}.mw .spk{position:absolute;right:.7rem;top:50%;transform:translateY(-50%)}
 .opt{display:flex;gap:.8rem;align-items:center;text-align:left;flex:1;border:1px solid var(--sbd);background:var(--c);border-radius:16px;padding:.9rem 1.1rem;font-weight:700;min-height:64px}
 .opt.on{border:2px solid var(--s);background:#EFF5F1}.opt .ic{font-size:1.85rem;line-height:1;flex:none}
 .subpills{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 .9rem .2rem}
@@ -54,12 +41,12 @@ body.hc .vital{background:#000;border:3px solid #FFE600;color:#FFE600}
 .confirm-box{background:#FEF2F2;border:2px solid var(--r);border-radius:14px;padding:.85rem;margin-top:.7rem}
 body.hc .confirm-box{background:#1a1a00}
 .bd,.tag{display:inline-block;background:var(--sb);color:var(--t);border:1px solid var(--sbd);border-radius:2rem;padding:.15rem .75rem;font-weight:800;font-size:.85rem}.mut{color:var(--m)}
-.badge{background:#ef4444;color:#fff;font-size:.72rem;font-weight:800;min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;margin-left:.25rem}
+.badge{background:#ef4444;color:#fff;font-size:.72rem;font-weight:800;min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;margin-left:.3rem}
 .bar{display:flex;height:10px;background:var(--bd);border-radius:9px;overflow:hidden}.bar i.f{background:var(--p)}.bar i{display:block;height:100%;background:var(--s)}
 input,textarea,select{font:inherit;width:100%;padding:.75rem .9rem;border:1px solid var(--sbd);border-radius:14px;background:var(--c);color:var(--t);min-height:50px}
 input:focus,textarea:focus,button:focus-visible,a:focus-visible,select:focus{outline:3px solid var(--p);outline-offset:2px}
 label{font-weight:800;display:block;margin:.75rem 0 .3rem}
-.fab{position:fixed;right:1rem;bottom:5.2rem;display:flex;flex-direction:column;gap:.5rem;z-index:6}
+.fab{position:fixed;right:1rem;bottom:1rem;display:flex;flex-direction:column;gap:.5rem;z-index:6}
 .fab button{border:0;border-radius:2rem;padding:.65rem 1.1rem;font-weight:800;font-size:.95rem;box-shadow:0 4px 12px #1e293b33;display:inline-flex;align-items:center;justify-content:center}
 .sos{background:var(--r);color:#fff}body.hc .sos{color:#000}.cb{background:var(--p);color:var(--pt)}
 .ov{position:fixed;inset:0;background:#1e293b99;z-index:9;display:flex;align-items:center;justify-content:center;padding:1rem}
@@ -68,7 +55,7 @@ label{font-weight:800;display:block;margin:.75rem 0 .3rem}
 .m{display:flex;gap:.4rem;align-items:center;margin:.3rem 0}.m div{background:var(--sb);color:var(--t);border-radius:14px;padding:.4rem .8rem;flex:1}.m.me div{background:var(--p);color:var(--pt)}body.hc .m div{border:1px solid #FFE600}
 .send{display:flex;gap:.5rem}.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
 .star{font-size:2.2rem;background:none;border:0;color:var(--p);padding:0 .1rem}
-#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:9.5rem;background:var(--t);color:var(--bg);padding:.8rem 1.2rem;border-radius:1rem;z-index:12;font-weight:800;max-width:90%;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:5.5rem;background:var(--t);color:var(--bg);padding:.8rem 1.2rem;border-radius:1rem;z-index:12;font-weight:800;max-width:90%;box-shadow:0 8px 24px rgba(0,0,0,.2)}
 .ig-ring{padding:2px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:inline-flex;flex-shrink:0}
 .ig-ring>*{border:2px solid #fff !important}
 .ig-feed{max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;padding:.6rem .3rem;background:#fff}
@@ -79,13 +66,13 @@ label{font-weight:800;display:block;margin:.75rem 0 .3rem}
 .ig-bar input{border:none;background:transparent;flex:1;padding:.35rem 0;outline:none;font-size:.96rem;min-height:38px}
 .ig-send{background:none;border:0;color:#0095f6;font-weight:800;font-size:.96rem;padding:.4rem .75rem;min-height:38px}
 .ig-send:hover{color:#1877f2}
-body.easy .btn,body.easy .opt{font-size:1.25rem;padding:1.05rem 1.35rem}
+body.easy .btn,body.easy .opt{font-size:1.3rem;padding:1.1rem 1.4rem}
 body.easy .adv{display:none}
-@media(max-width:520px){.ct{flex-wrap:wrap;margin-left:0}.board-grid{grid-template-columns:1fr}h1{font-size:1.55rem}.dock .btn{font-size:.9rem;padding:.5rem .45rem}}
+@media(max-width:520px){.ct{flex-wrap:wrap;margin-left:0}.mb{padding:.9rem 3.2rem;font-size:1.1rem}h1{font-size:1.6rem}}
 @media(prefers-reduced-motion:no-preference){.bar i{transition:width .3s}}
 </style></head><body>
 <header id="hd"></header><main id="app"></main>
-<div id="fab"></div><div id="dock"></div>
+<div id="fab"></div>
 <div id="md"></div><div id="toast" role="status" hidden></div>
 <script>
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -224,7 +211,7 @@ const svc=r=>{const c=C[r.c]||C[0],o=r.o=='o'||!c[2].length?r.t:c[2][r.o]?.[L()]
 const phone=p=>{p=String(p||'').replace(/\D/g,'');return p.length==9?'34'+p:p};
 const dl=r=>Math.max(0,Math.ceil((r.doneAt+864e5-Date.now())/36e5));
 const arch=r=>ended(r)&&!(r.st=='done'&&!r.rate&&dl(r)>0);
-const back=()=>`<a class="btn g" href="#" data-a="go" data-v="home">← ${_('Volver al tablón','Itzuli taulara')}</a>`;
+const back=()=>`<a class="btn g" href="#" data-a="go" data-v="home">← ${_('Volver al inicio','Itzuli hasierara')}</a>`;
 const head=(t,x)=>`<div class="row"><h2 class="grow">${t}</h2>${S(x||t)}</div>`;
 function hdr(){const bn=(v,t,l)=>`<button data-a="fs" data-v="${v}" aria-label="${l}">${t}</button>`;
 const notifOn=('Notification' in window&&Notification.permission==='granted')&&db.notif!==0;
@@ -233,67 +220,14 @@ return`<div class="hw"><a href="#" class="lg" data-a="go" data-v="home" aria-lab
 <span class="seg">${bn(-1,'A-',_('Letra más pequeña','Letra txikiagoa'))}${bn(1,'A+',_('Letra más grande','Letra handiagoa'))}</span>
 <button class="ib rd" data-a="hc" aria-pressed="${!!db.hc}" aria-label="${_('Alto contraste','Kontraste altua')}"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 2a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button>
 <a class="pill" href="#prof" data-a="go" data-v="prof">👤 ${db.u.on?esc(fn()):_('Entrar','Sartu')}</a></div></div><div class="hz"><button class="sw" aria-checked="${notifOn}" data-a="notif">${notifOn?'🔔 '+_('Avisos activos','Abisuak aktibo'):'🔕 '+_('Activar avisos','Abisuak aktibatu')}</button><button class="sw" aria-checked="${!!db.easy}" data-a="easy">${_('Modo Fácil','Modu Erraza')}</button></div>`}
-
-function home(){
+function home(){const t=_('¿En qué podemos ayudarte hoy?','Zertan lagun dezakegu gaur?'),sub=_('Pide a una persona de confianza que vaya a casa. Tú eliges qué necesitas y cuándo.','Eskatu konfiantzazko pertsona bati etxera joateko. Zuk aukeratzen duzu zer behar duzun eta noiz.');
 const cc=pendingCommCount();
-const actReqs=db.reqs.filter(r=>!arch(r));
-const nextR=actReqs.find(r=>['assigned','accepted','ongoing'].includes(r.st))||actReqs[0];
-const greet=_('¡Hola','Kaixo')+', '+esc(fn())+'!';
-let vitalHtml='',summaryAudio=greet+'. ';
-
-if(nextR){
-const nxtSes=nextR.ses.find(x=>end(x.d,x.t,x.h)>=Date.now())||nextR.ses[0];
-const wInfo=WK.find(k=>k[0]===nextR.w);
-const stTxt=ST[nextR.st][L()];
-summaryAudio+=_('Tu próxima cita es','Zure hurrengo hitzordua')+': '+svc(nextR)+'. '+sl(nxtSes)+'. '+(nextR.w?_('Viene','Dator')+': '+nextR.w+'. ':'')+(nextR.pin?_('PIN de seguridad','Segurtasun PINa')+': '+nextR.pin.split('').join(' '):'');
-vitalHtml=`<section class="vital">
-<div class="row" style="justify-content:space-between;align-items:flex-start">
-<div><span style="font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;opacity:.85">📌 ${_('Tu próxima visita','Zure hurrengo bisita')}</span>
-<h2 style="color:#fff;margin:.2rem 0;font-size:1.35rem">${esc(svc(nextR))}</h2></div>
-<span class="bd" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)">${stTxt}</span>
-</div>
-<p style="margin:.45rem 0;font-size:1.08rem">📅 <b>${sl(nxtSes)}</b></p>
-${nextR.w?`<div class="row" style="margin:.6rem 0;background:rgba(255,255,255,.1);padding:.6rem .8rem;border-radius:14px">
-<span style="font-size:2rem;line-height:1">${wInfo?wInfo[1]:'👤'}</span>
-<div class="grow"><div style="font-weight:800;font-size:1.05rem">${esc(nextR.w)}</div><div style="font-size:.85rem;opacity:.9">${wInfo?wInfo[2][L()]:_('Acompañante Hurbil','Hurbil laguntzailea')}</div></div>
-</div>`:`<p class="mut" style="margin:.4rem 0">${_('Estamos asignando a tu persona de confianza en Bilbao.','Bilboko zure konfiantzazko pertsona esleitzen ari gara.')}</p>`}
-${nextR.pin?`<div class="pin-hero">
-<div><div style="font-size:.8rem;font-weight:800;opacity:.9">🔐 ${_('PIN DE SEGURIDAD','SEGURTASUN-PINA')}</div><small style="opacity:.85">${_('Pídelo antes de abrir la puerta','Eskatu atea ireki aurretik')}</small></div>
-<div class="pin-num">${nextR.pin}</div>
-</div>`:''}
-<div class="row" style="margin-top:.75rem;gap:.5rem">
-<a class="btn" style="flex:1;background:#fff;color:#1E293B;border-color:#fff;min-height:46px" href="#reqs" data-a="go" data-v="reqs">📋 ${_('Ver detalles','Xehetasunak ikusi')} (${actReqs.length})</a>
-<button class="btn" style="background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.35);min-height:46px" data-a="wa" data-id="${nextR.id}">📲 WhatsApp</button>
-</div>
-</section>`;
-}else{
-summaryAudio+=_('No tienes citas próximas. Pulsa Pedir ayuda cuando lo necesites.','Ez duzu hurrengo hitzordurik. Sakatu Laguntza eskatu behar duzunean.');
-vitalHtml=`<section class="vital">
-<span style="font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;opacity:.85">🏡 ${_('Tablón de casa','Etxeko taula')}</span>
-<h2 style="color:#fff;margin:.25rem 0;font-size:1.35rem">${_('No tienes citas próximas','Ez duzu hurrengo hitzordurik')}</h2>
-<p style="margin:.3rem 0 .9rem;opacity:.92">${_('Pide compañía, compras, paseos o ayuda con trámites en Bilbao. Siempre sabrás quién viene a casa.','Eskatu konpainia, erosketak, ibilaldiak edo izapideekin laguntza Bilbon. Beti jakingo duzu nor datorren etxera.')}</p>
-<a class="btn s" style="width:100%;font-size:1.15rem" href="#help" data-a="go" data-v="help">🤝 ${_('Pedir ayuda ahora','Eskatu laguntza orain')}</a>
-</section>`;
-}
-
-return`<div class="row" style="align-items:center;margin-bottom:.2rem">
-<div class="grow"><h1>${greet}</h1><p class="mut" style="margin:0">${_('Tu resumen de hoy en Hurbil','Zure gaurko laburpena Hurbilen')}</p></div>
-${S(summaryAudio)}
-</div>
-${vitalHtml}
-<div class="board-grid">
-<a class="board-tile" href="#comm" data-a="go" data-v="comm">
-<div class="row" style="justify-content:space-between;align-items:flex-start"><span class="board-ic">🏘️</span>${cc?`<span class="badge">${cc}</span>`:''}</div>
-<div><h3 style="margin:0 0 .2rem">${_('Vecinos y planes','Auzokideak eta planak')}</h3><small class="mut">${_('Comparte paseos y actividades en el barrio','Partekatu ibilaldiak eta jarduerak auzoan')}</small></div>
-</a>
-<a class="board-tile" href="#team" data-a="go" data-v="team">
-<div class="row" style="justify-content:space-between;align-items:flex-start"><span class="board-ic">👥</span><span style="font-size:1.15rem">🧑🏻🧔🏻👨🏻🧑🏽</span></div>
-<div><h3 style="margin:0 0 .2rem">${_('Nuestro equipo','Gure taldea')}</h3><small class="mut">${_('Conoce a quienes te acompañan en Bilbao','Ezagutu Bilbon laguntzen dizutenak')}</small></div>
-</a>
-</div>
-<div class="card"><div class="row"><div class="grow"><h3 style="margin:0 0 .2rem">🛡️ ${_('Siempre sabrás quién viene','Beti jakingo duzu nor datorren')}</h3><p class="mut" style="margin:0;font-size:.95rem">${_('Presentamos a la persona antes de la primera visita y verificamos su llegada con tu PIN personal.','Lehen bisitaren aurretik aurkezten dugu pertsona eta bere etorrera zure PIN pertsonalarekin egiaztatzen dugu.')}</p></div>${S(_('Siempre sabrás quién viene. Presentamos a la persona antes de la primera visita.','Beti jakingo duzu nor datorren. Lehen bisitaren aurretik aurkezten dugu pertsona.'))}</div></div>`;
-}
-
+const bt=(c,l,at,bdg=0)=>`<div class="mw"><a class="mb ${c}" ${at}>${l}${bdg?`<span class="badge">${bdg}</span>`:''}</a>${S(l.replace(/^\S+\s/,''))}</div>`,go=v=>`href="#${v}" data-a="go" data-v="${v}"`;
+const ct=_('Presentamos a la persona que irá a casa antes de la primera visita. Nuestra oficina de Bilbao también atiende en persona y por teléfono.','Etxera joango den pertsona lehen bisitaren aurretik aurkeztuko dizugu. Gure Bilboko bulegoak ere aurrez aurre eta telefonoz artatzen du.'),ht=_('Siempre sabrás quién viene','Beti jakingo duzu nor datorren'),tm='Aimar Fernandez, Ander Herrera, Eder Fernandez, Eidan Irastorza';
+return`<div class="row" style="align-items:flex-start"><div class="grow"><h1>${t}</h1><p class="mut" style="margin:.3rem 0 .8rem">${sub}</p></div>${S(t+'. '+sub)}</div>
+${bt('pri','🤝 '+_('Pedir ayuda','Laguntza eskatu'),go('help'))}${bt('soft','📋 '+_('Mis solicitudes','Nire eskaerak')+` (${db.reqs.filter(r=>!arch(r)).length})`,go('reqs'))}${bt('soft','🏘️ '+_('Comunidad y planes','Komunitatea eta planak'),go('comm'),cc)}
+${bt('soft','👥 '+_('Conoce a nuestro equipo','Ezagutu gure taldea'),go('team'))}${bt('soft','📞 '+_('Llamar','Deitu')+': 644 270 017','href="tel:644270017"')}
+<div class="card"><div class="row"><h2 class="grow" style="font-size:1.3rem">${ht}</h2>${S(ht.slice(2)+'. '+ct)}</div><p style="font-size:1.1rem">${ct}</p><p class="mut adv" style="font-size:.85rem;margin:.6rem 0 0">${_('Equipo fundador','Sortzaileen taldea')}: ${tm}</p></div>`}
 function ok(){const x=w.s;return x==1?(w.cat!=null&&(C[w.cat][2].length?(w.opt!=null&&(w.opt!='o'||w.txt.trim())):w.txt.trim())):x==2?!!w.plan:x==3?(!!w.rName.trim()&&!!w.rAddr.trim()&&!!w.rPhone.trim()):x==4?(w.plan=='normal'?(!!w.sd&&!!w.st&&(+w.sh>=1)):w.ses.length>0):!!w.pay}
 function help(){let h='';const est=estCalc();
 if(w.s==1){
@@ -469,9 +403,8 @@ return h+`<div class="row"><b class="grow">👤 ${esc(wk)}</b><button class="btn
 function render(){const h=route,pg={help,reqs,comm,prof,admin,team,work}[h]||home;
 document.documentElement.lang=db.lang;document.body.className=(db.hc?'hc ':'')+(db.easy?'easy':'');document.documentElement.style.fontSize=(16+db.fs*2+(db.easy?4:0))+'px';
 $('#hd').innerHTML=hdr();$('#app').innerHTML=pg()+`<footer class="adv" style="margin-top:2rem;text-align:center"><small>Hurbil · Bilbao · 644 270 017 · <a href="#admin" data-a="go" data-v="admin" style="opacity:.6">admin</a> · <a href="#work" data-a="go" data-v="work" style="opacity:.6">trabajadores</a></small></footer>`;
-const uDm=unreadDmCount(),actCount=db.reqs.filter(r=>!arch(r)).length;
+const uDm=unreadDmCount();
 $('#fab').innerHTML=`<div class="fab"><button class="cb" data-a="md" data-v="chat">💬 Chats${uDm?`<span class="badge">${uDm}</span>`:''}</button><button class="sos" data-a="md" data-v="sos" aria-label="SOS Emergencia">🆘 SOS</button></div>`;
-$('#dock').innerHTML=`<nav class="dock" aria-label="${_('Accesos principales','Sarbide nagusiak')}"><div class="dock-in"><a class="btn s" href="#help" data-a="go" data-v="help">🤝 ${_('Pedir ayuda','Laguntza')}</a><a class="btn g" href="#reqs" data-a="go" data-v="reqs">📋 ${_('Mis citas','Hitzorduak')} (${actCount})</a><a class="btn" href="tel:644270017">📞 ${_('Llamar','Deitu')}</a></div></nav>`;
 $('#md').innerHTML=modal();
 document.querySelectorAll('.msgs,.ig-feed').forEach(e=>e.scrollTop=e.scrollHeight);if(fo){const i=document.querySelector('.send input,.ig-bar input');i&&i.focus();fo=false}}
 window.upAv=inp=>{const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=140;c.height=140;c.getContext('2d').drawImage(im,0,0,140,140);db.u.avatar=c.toDataURL('image/jpeg',.75);save();render();toast(_('Foto actualizada','Argazkia eguneratuta'))};im.src=e.target.result};r.readAsDataURL(f)};
