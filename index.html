@@ -31,14 +31,19 @@ body.hc .spk{background:#1a1a00;border:2px solid #FFE600}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:.7rem}
 .mw{position:relative;margin:.7rem 0}.mb{display:flex;align-items:center;justify-content:center;width:100%;min-height:66px;border-radius:16px;padding:.9rem 3.6rem;font-size:1.25rem;font-weight:800;text-decoration:none;text-align:center}
 .mb.pri{background:var(--s);color:var(--st)}.mb.soft{background:var(--sb);color:var(--t);border:1px solid var(--sbd)}.mw .spk{position:absolute;right:.7rem;top:50%;transform:translateY(-50%)}
-.opt{display:flex;gap:.6rem;align-items:center;text-align:left;flex:1;border:1px solid var(--sbd);background:var(--c);border-radius:16px;padding:.8rem 1rem;font-weight:700;min-height:56px}
-.opt.on{border:2px solid var(--p);background:var(--sb)}.opt .ic{font-size:1.6rem}
+.opt{display:flex;gap:.8rem;align-items:center;text-align:left;flex:1;border:1px solid var(--sbd);background:var(--c);border-radius:16px;padding:.9rem 1.1rem;font-weight:700;min-height:64px}
+.opt.on{border:2px solid var(--s);background:#EFF5F1}.opt .ic{font-size:1.85rem;line-height:1;flex:none}
+.subpills{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 .9rem .2rem}
+.sp-pill{border:1px solid var(--bd);background:var(--c);border-radius:999px;padding:.45rem 1rem;font-weight:700;font-size:.95rem;min-height:42px;display:inline-flex;align-items:center;gap:.35rem}
+.sp-pill.on{border:2px solid var(--s);background:#EFF5F1;color:var(--s);font-weight:800}
+.est-box{background:var(--sb);border-radius:16px;padding:1rem 1.2rem;margin:1rem 0}
+.est-val{font-size:1.75rem;font-weight:800;color:var(--s);line-height:1.15;margin-top:.15rem}
 .bd,.tag{display:inline-block;background:var(--sb);color:var(--t);border:1px solid var(--sbd);border-radius:2rem;padding:.15rem .75rem;font-weight:800;font-size:.85rem}.mut{color:var(--m)}
 .badge{background:#ef4444;color:#fff;font-size:.72rem;font-weight:800;min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;margin-left:.3rem}
-.bar{display:flex;height:12px;background:var(--bd);border-radius:9px;overflow:hidden}.bar i.f{background:var(--p)}.hrs{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:.5rem}.opt:disabled{opacity:.5;cursor:not-allowed;background:var(--bd)}.opt small{font-weight:700}.hrs .opt{flex-direction:column;align-items:flex-start;gap:0;justify-content:center}.bar i{display:block;height:100%;background:var(--s)}
-input,textarea,select{font:inherit;width:100%;padding:.7rem;border:1px solid var(--sbd);border-radius:12px;background:var(--c);color:var(--t);min-height:48px}
+.bar{display:flex;height:10px;background:var(--bd);border-radius:9px;overflow:hidden}.bar i.f{background:var(--p)}.bar i{display:block;height:100%;background:var(--s)}
+input,textarea,select{font:inherit;width:100%;padding:.75rem .9rem;border:1px solid var(--sbd);border-radius:14px;background:var(--c);color:var(--t);min-height:50px}
 input:focus,textarea:focus,button:focus-visible,a:focus-visible,select:focus{outline:3px solid var(--p);outline-offset:2px}
-label{font-weight:800;display:block;margin:.5rem 0 .2rem}
+label{font-weight:800;display:block;margin:.75rem 0 .3rem}
 .fab{position:fixed;right:1rem;bottom:1rem;display:flex;flex-direction:column;gap:.5rem;z-index:6}
 .fab button{border:0;border-radius:2rem;padding:.65rem 1.1rem;font-weight:800;font-size:.95rem;box-shadow:0 4px 12px #1e293b33;display:inline-flex;align-items:center;justify-content:center}
 .sos{background:var(--r);color:#fff}body.hc .sos{color:#000}.cb{background:var(--p);color:var(--pt)}
@@ -165,22 +170,30 @@ const _=(a,b)=>db.lang=='eu'?b:a,L=()=>db.lang=='eu'?1:0,fn=()=>db.u.name.split(
 const fmt=n=>n.toFixed(2).replace('.',',')+' €';
 const W=['Aimar Fernandez','Ander Herrera','Eder Fernandez','Eidan Irastorza'];
 const ST={pending:['Pendiente de asignar','Esleitzeko zain'],accepted:['Aceptada','Onartua'],rejected:['Rechazada','Baztertua'],assigned:['Acompañante asignado','Laguntzailea esleituta'],ongoing:['En curso','Abian'],done:['Completada','Osatuta']};
-const C=[['🚶',['Paseo y compañía en el barrio','Auzoko ibilaldia eta konpainia'],[['Paseo tranquilo por el barrio','Auzoan ibilaldi lasaia'],['Acompañamiento a parques o zonas verdes (Doña Casilda, Abandoibarra...)','Parkeetara edo eremu berdeetara laguntza (Doña Casilda, Abandoibarra...)'],['Compañía para tomar un café o charlar','Kafea hartzeko edo berriketan aritzeko konpainia']]],
-['🛍️',['Recados, farmacia o compra','Egitekoak, farmazia edo erosketak'],[['Compra en supermercado o tienda de barrio','Erosketak supermerkatuan edo auzoko dendan'],['Ir a la farmacia a recoger medicación','Farmaziara joan sendagaiak jasotzera'],['Recoger o enviar paquetes/correos','Paketeak edo posta jaso/bidali'],['Acompañamiento a hacer compras','Erosketak egiteko laguntza']]],
-['📱',['Ayuda con el móvil, citas o trámites','Mugikorrarekin, hitzorduekin edo izapideekin laguntza'],[['Configurar o entender el móvil/WhatsApp','Mugikorra/WhatsApp konfiguratu edo ulertu'],['Pedir cita médica o en Osakidetza','Hitzordua eskatu mediku-zerbitzuan edo Osakidetzan'],['Ayuda con trámites bancarios o papeles','Banku-izapideetan edo paperetan laguntza'],['Videollamada con familiares','Bideo-deia senideekin']]],
-['🏥',['Acompañamiento al centro de salud u hospital','Osasun-zentrora edo ospitalera laguntza'],[['Ir y volver del centro de salud','Osasun-zentrora joan-etorria'],['Acompañamiento a consulta en hospital (Basurto, Cruces, etc.)','Ospitaleko kontsultara laguntza (Basurto, Gurutzeta, etab.)'],['Recogida de recetas o resultados','Errezetak edo emaitzak jasotzea']]],
-['🏠',['Compañía y charla en casa','Konpainia eta berriketa etxean'],[['Lectura o juegos de mesa','Irakurketa edo mahai-jokoak'],['Charla y compañía en casa','Berriketa eta konpainia etxean'],['Álbumes de fotos y recuerdos','Argazki-albumak eta oroitzapenak']]],
-['🧹',['Pequeñas tareas del hogar y orden ligero','Etxeko lan txikiak eta ordena arina'],[['Ordenar habitaciones o armarios','Gelak edo armairuak ordenatu'],['Preparar comida sencilla','Janari sinplea prestatu'],['Regar plantas y cuidado básico del hogar','Landareak ureztatu eta etxeko oinarrizko zaintza']]],
-['✨',['Otro servicio','Beste zerbitzu bat'],[]]];
+const C=[
+['☕',['Compañía','Konpainia'],[['Charlar','Berriketan aritu'],['Jugar a las cartas','Kartetan jolastu'],['Leer juntos','Elkarrekin irakurri'],['Ver una película','Pelikula bat ikusi']],['charlar, jugar a las cartas, leer juntos','berriketan aritu, kartetan jolastu, elkarrekin irakurri']],
+['🏠',['Tareas del hogar','Etxeko lanak'],[['Limpieza ligera','Garbiketa arina'],['Doblar o recoger ropa','Arropa tolestu edo jaso'],['Preparar comida sencilla','Janari sinplea prestatu'],['Regar las plantas','Landareak ureztatu']],['limpieza ligera, ropa, comida sencilla','garbiketa arina, arropa, janari sinplea']],
+['🛒',['Compras y recados','Erosketak eta egitekoak'],[['Compra en supermercado','Erosketak supermerkatuan'],['Ir a la farmacia','Farmaziara joan'],['Recoger paquetes o correos','Paketeak edo posta jaso'],['Gestiones en el barrio','Auzoko kudeaketak']],['supermercado, farmacia, gestiones','supermerkatua, farmazia, kudeaketak']],
+['🚶',['Paseo y acompañamiento','Ibilaldia eta laguntza'],[['Paseo por el barrio o parque','Auzoan edo parkean ibilaldia'],['Acompañamiento a cita médica','Mediku-hitzordura laguntza'],['Tomar un café fuera','Kanpoan kafe bat hartu'],['Ir al centro de salud u hospital','Osasun-zentrora edo ospitalera joan']],['salir a pasear o ir a una cita médica','paseatzera atera edo mediku-hitzordu batera joan']],
+['📱',['Ayuda con el móvil y trámites','Mugikorrarekin eta izapideekin laguntza'],[['Configurar móvil o WhatsApp','Mugikorra edo WhatsApp konfiguratu'],['Pedir cita médica / Osakidetza','Mediku-hitzordua / Osakidetza eskatu'],['Trámites o papeles sencillos','Izapide edo paper sinpleak'],['Videollamada con familiares','Bideo-deia senideekin']],['móvil, citas médicas, videollamadas','mugikorra, mediku-hitzorduak, bideo-deiak']],
+['✨',['Otro servicio','Beste zerbitzu bat'],[],['cuéntanos qué necesitas','kontatu zer behar duzun']]
+];
+const PAY=[
+['bizum','📱 Bizum','📱 Bizum'],
+['card','💳 Tarjeta de débito/crédito','💳 Zordunketa/kreditu txartela'],
+['transfer','🏦 Transferencia bancaria','🏦 Banku-transferentzia'],
+['prepay','💰 Prepago','💰 Aurreordainketa']
+];
 const LOGO=`<img src="/Hurbil/logo.png" alt="Logo Hurbil" style="width:44px;height:44px;border-radius:10px;object-fit:contain;flex:none">`;
-const W0=()=>({s:1,cat:null,opt:null,txt:'',h:0,addr:db.u.addr||'',ppl:1,ses:[],sd:'',sst:null,sh:1,addTo:0,share:false});
+const W0=()=>({s:1,cat:null,opt:null,txt:'',plan:'normal',who:'me',rName:db.u.name||'',rAddr:db.u.addr||'',rPhone:db.u.contact||'',rDo:'',rNotes:'',share:false,sd:d0(1),st:'11:00',sh:1,pay:''});
 const w=W0(),tr={},lg={u:'',p:''},wl={n:W[0],p:''},X={get db(){return db},w,tr,lg,wl};
 let wk=null,route=location.hash.slice(1)||'home',md=null,mt='team',ct='neigh',fl=false,oc=null,sp=false,pm='create',fo=false;
 const S=t=>`<button class="spk" data-a="say" data-t="${esc(t)}" aria-label="${_('Escuchar','Entzun')}">🔊</button>`;
 const say=t=>{if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=db.lang=='eu'?'eu-ES':'es-ES';u.rate=.9;speechSynthesis.speak(u)};
 const go=r=>{route=r;try{history.replaceState(null,'','#'+(r=='home'?'':r))}catch(e){}scrollTo(0,0)};
 const toast=m=>{const e=$('#toast');e.textContent=m;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,4000)};
-const fd=d=>new Date(d+'T12:00').toLocaleDateString(db.lang=='eu'?'eu':'es-ES',{weekday:'long',day:'numeric',month:'long'});
+const fd=d=>d?new Date(d+'T12:00').toLocaleDateString(db.lang=='eu'?'eu':'es-ES',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
+const estCalc=()=>{const h=Math.max(1,+w.sh||1);if(w.plan=='bono')return{tot:60+Math.max(0,h-5)*12.5,sub:h<=5?`Bono 5 h (5 h a 12 €/h)`:`60 € base (5 h) + ${h-5} h × 12,50 €/h`};if(w.plan=='month')return{tot:132+Math.max(0,h-12)*11,sub:h<=12?`Plan Mensual (12 h a 11 €/h)`:`132 € base (12 h) + ${h-12} h × 11 €/h`};return{tot:h*13,sub:`${h} h × 13 €/h`}};
 const rate=h=>h>=12?11:h>=5?12:13;
 const pr=(h,p)=>{const b=13*h,r=rate(h)*h,g=p==3?.2:p==2?.15:0;return{b,bn:b-r,g,gx:r*g,tot:r*(1-g)}};
 const T=n=>String(n).padStart(2,'0')+':00',sesH=a=>a.reduce((s,x)=>s+x.h,0),rng=x=>x.t+'-'+T(+x.t.slice(0,2)+x.h),sl=x=>fd(x.d)+' '+rng(x);
@@ -188,11 +201,10 @@ const end=(d,t,h)=>new Date(d+'T'+t).getTime()+h*36e5,ended=r=>Math.max(...r.ses
 const PS={draft:['Esperando que ambos acepten','Biak onartzeko zain'],sent:['Enviado a Hurbil · pendiente','Hurbili bidalita · zain'],accepted:['Aceptado por Hurbil','Hurbilek onartu du'],rejected:['Rechazado por Hurbil','Hurbilek baztertu du']};
 const WP={'Aimar Fernandez':'8787','Ander Herrera':'0820','Eder Fernandez':'2008','Eidan Irastorza':'6334'};
 const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
-const svc=r=>{const c=C[r.c],o=r.o=='o'||!c[2].length?r.t:c[2][r.o]?.[L()];return c[1][L()]+(o?': '+o:'')};
+const svc=r=>{const c=C[r.c]||C[0],o=r.o=='o'||!c[2].length?r.t:c[2][r.o]?.[L()];return c[1][L()]+(o?': '+o:'')};
 const phone=p=>{p=String(p||'').replace(/\D/g,'');return p.length==9?'34'+p:p};
 const dl=r=>Math.max(0,Math.ceil((r.doneAt+864e5-Date.now())/36e5));
 const arch=r=>ended(r)&&!(r.st=='done'&&!r.rate&&dl(r)>0);
-const busy=(d,hr)=>db.reqs.flatMap(r=>r.ses).concat(w.ses).some(x=>x.d==d&&hr>=+x.t.slice(0,2)&&hr<+x.t.slice(0,2)+x.h)||(db.occ[d+'|'+hr]||0)>=4;
 const back=()=>`<a class="btn g" href="#" data-a="go" data-v="home">← ${_('Volver al inicio','Itzuli hasierara')}</a>`;
 const head=(t,x)=>`<div class="row"><h2 class="grow">${t}</h2>${S(x||t)}</div>`;
 function hdr(){const bn=(v,t,l)=>`<button data-a="fs" data-v="${v}" aria-label="${l}">${t}</button>`;
@@ -210,33 +222,72 @@ return`<div class="row" style="align-items:flex-start"><div class="grow"><h1>${t
 ${bt('pri','🤝 '+_('Pedir ayuda','Laguntza eskatu'),go('help'))}${bt('soft','📋 '+_('Mis solicitudes','Nire eskaerak')+` (${db.reqs.filter(r=>!arch(r)).length})`,go('reqs'))}${bt('soft','🏘️ '+_('Comunidad y planes','Komunitatea eta planak'),go('comm'),cc)}
 ${bt('soft','👥 '+_('Conoce a nuestro equipo','Ezagutu gure taldea'),go('team'))}${bt('soft','📞 '+_('Llamar','Deitu')+': 644 270 017','href="tel:644270017"')}
 <div class="card"><div class="row"><h2 class="grow" style="font-size:1.3rem">${ht}</h2>${S(ht.slice(2)+'. '+ct)}</div><p style="font-size:1.1rem">${ct}</p><p class="mut adv" style="font-size:.85rem;margin:.6rem 0 0">${_('Equipo fundador','Sortzaileen taldea')}: ${tm}</p></div>`}
-function ok(){const x=w.s;return x==1?(w.cat!=null&&(C[w.cat][2].length?(w.opt!=null&&(w.opt!='o'||w.txt.trim())):w.txt.trim())):x==2?!!w.h:x==3?w.ses.length>0:x==4?!!w.addr.trim():true}
-function help(){let h='';const p=pr(w.h||0,w.ppl),R0=w.addTo?db.reqs.find(x=>x.id==w.addTo):null,tot=R0?R0.hTot:w.h,used=(R0?sesH(R0.ses):0)+sesH(w.ses),left=tot-used;
-if(w.s==1){h=head(_('¿Qué necesitas?','Zer behar duzu?'))+'<div class="grid">'+C.map((c,i)=>`<div class="row"><button class="opt ${w.cat==i?'on':''}" data-a="cat" data-v="${i}" aria-pressed="${w.cat==i}"><span class="ic">${c[0]}</span>${c[1][L()]}</button>${S(c[1][L()])}</div>`).join('')+'</div>';
-if(w.cat!=null){const c=C[w.cat];h+=`<div class="card"><div class="row"><h3 class="grow">${c[1][L()]}</h3>${S(c[1][L()])}</div>`;
-if(c[2].length)h+=c[2].map((o,i)=>`<div class="row" style="margin:.4rem 0"><button class="opt ${w.opt===i?'on':''}" data-a="opt" data-v="${i}" aria-pressed="${w.opt===i}">${o[L()]}</button>${S(o[L()])}</div>`).join('')+`<div class="row"><button class="opt ${w.opt=='o'?'on':''}" data-a="opt" data-v="o">${_('Otro (especificar)','Beste bat (zehaztu)')}</button>${S(_('Otro, especificar','Beste bat, zehaztu'))}</div>`;
-if(!c[2].length||w.opt=='o')h+=`<div class="row"><textarea class="grow" rows="3" data-f="w.txt" placeholder="${_('Cuéntanos qué necesitas','Kontatu zer behar duzun')}" aria-label="${_('Describe el servicio','Deskribatu zerbitzua')}">${esc(w.txt)}</textarea>${S(_('Cuéntanos qué necesitas','Kontatu zer behar duzun'))}</div>`;h+='</div>'}}
-if(w.s==2){const lb=n=>n>=12?`⭐ ${_('Plan mensual','Hileko plana')} 12 h · 132 €`:n>=5?`🎟️ ${_('Bono','Bonoa')} ${n} h · 60 €`:`${n} h · ${13*n} €`,tx=w.h?`${w.h} h × ${rate(w.h)} €/h → ${fmt(pr(w.h,1).tot)}`:_('Elige cuántas horas necesitas','Aukeratu zenbat ordu behar dituzun');
-h=head(_('¿Cuántas horas necesitas?','Zenbat ordu behar dituzu?'))+'<div class="grid">'+[1,2,3,4,5,12].map(n=>`<div class="row"><button class="opt ${w.h==n?'on':''}" data-a="hr" data-v="${n}" aria-pressed="${w.h==n}">${lb(n)}</button>${S(lb(n).replace(/^\S+\s/,''))}</div>`).join('')+`</div><div class="card"><div class="row"><b class="grow">${tx}</b>${S(tx)}</div></div>`}
-if(w.s==3){const blk=(d,hr)=>busy(d,hr)||(d==d0(0)&&hr<=new Date().getHours()),dOk=n=>w.sst!=null&&n<=left&&w.sst+n<=21&&![...Array(n).keys()].some(i=>blk(w.sd,w.sst+i)),ix=_('Has repartido','Banatu dituzu')+` ${used} h ${_('de','/')} ${tot} h · `+_('Te quedan','Geratzen zaizkizu')+` ${left} h `+_('disponibles para asignar ahora o más adelante','orain edo geroago esleitzeko eskuragarri');
-h=head(_('¿Cuándo y cómo repartir las horas?','Noiz eta nola banatu orduak?'),_('Cuándo y cómo repartir las horas','Noiz eta nola banatu orduak'))+`<div class="card"><div class="row"><b class="grow">${ix}</b>${S(ix)}</div><div class="bar" style="margin-top:.5rem"><i style="width:${tot?used/tot*100:0}%"></i></div></div>`;
-if(left>0){h+=`<div class="card"><h3>${_('Nueva cita','Hitzordu berria')}</h3><div class="row"><button class="opt ${w.sd==d0(0)?'on':''}" data-a="sdq" data-v="0">${_('Hoy','Gaur')}</button><button class="opt ${w.sd==d0(1)?'on':''}" data-a="sdq" data-v="1">${_('Mañana','Bihar')}</button></div><label for="sd">${_('Día','Eguna')}</label><input id="sd" type="date" min="${d0(0)}" value="${w.sd}" data-a="sd">`;
-if(w.sd)h+=`<label>${_('Hora de inicio','Hasiera-ordua')}</label><div class="hrs">${Array.from({length:11},(x,i)=>i+9).map(hr=>{const b=blk(w.sd,hr);return`<button class="opt ${w.sst===hr?'on':''}" data-a="sst" data-v="${hr}" ${b?'disabled':''}>${T(hr)}${b?`<small>${_('Completo','Beteta')}</small>`:''}</button>`}).join('')}</div>`;
-if(w.sst!=null)h+=`<label>${_('Duración (horas)','Iraupena (orduak)')}</label><div class="hrs">${[1,2,3,4].filter(n=>n<=left).map(n=>{const b=![...Array(n).keys()].every(i=>!blk(w.sd,w.sst+i))||w.sst+n>21;return`<button class="opt ${w.sh==n?'on':''}" data-a="shh" data-v="${n}" ${b?'disabled':''}>${n} h${b?`<small>${_('Completo','Beteta')}</small>`:''}</button>`}).join('')}</div>`;
-h+=`<button class="btn s" style="margin-top:.8rem" data-a="adds" ${dOk(w.sh)?'':'disabled'}>+ ${_('Añadir cita','Hitzordua gehitu')}</button></div>`}else h+='<div class="card"><b>'+_('Ya has repartido todas las horas.','Ordu guztiak banatu dituzu.')+'</b></div>';
-if(w.ses.length)h+=`<div class="card"><h3>📅 ${_('Citas añadidas','Gehitutako hitzorduak')}</h3>${w.ses.map((x,i)=>`<div class="row" style="margin:.4rem 0"><span class="grow">${sl(x)} (${x.h} h)</span>${S(sl(x))}<button class="btn g" data-a="dels" data-v="${i}" aria-label="${_('Eliminar cita','Hitzordua ezabatu')}">🗑️</button></div>`).join('')}</div>`}
-if(w.s==4){const c=_('Si sois 2 personas, 15 % de descuento. Si sois 3 personas, 20 % de descuento.','2 pertsona bazarete, % 15eko deskontua. 3 pertsona bazarete, % 20koa.');
-h=head(_('¿Dónde y con quién?','Non eta norekin?'))+`<div class="card"><label for="ad">${_('Dirección en Bilbao','Helbidea Bilbon')}</label><div class="row"><input class="grow" id="ad" data-f="w.addr" value="${esc(w.addr)}" placeholder="Calle, nº, barrio"><div>${S(_('Dirección en Bilbao','Helbidea Bilbon'))}</div></div></div>
-<div class="card"><div class="row"><p class="grow"><b>${c}</b></p>${S(c)}</div><div class="grid">${[1,2,3].map(n=>`<button class="opt ${w.ppl==n?'on':''}" data-a="ppl" data-v="${n}">${['👤 '+_('Solo yo','Ni bakarrik'),'👥 '+_('2 personas · -15 %','2 pertsona · -% 15'),'👨‍👩‍👧 '+_('3 personas · -20 %','3 pertsona · -% 20')][n-1]}</button>`).join('')}</div></div>`}
-if(w.s==5){const sm=`${svc({c:w.cat,o:w.opt,t:w.txt})}. ${w.ses.map(sl).join('. ')}. ${w.h} h. ${w.addr}. ${_('Total','Guztira')} ${fmt(p.tot)}`;
-h=head(_('Resumen y confirmación','Laburpena eta baieztapena'))+`<div class="card"><div class="row"><h3 class="grow">${_('Resumen','Laburpena')}</h3>${S(sm)}</div><p>${svc({c:w.cat,o:w.opt,t:w.txt})}</p>${w.ses.map(x=>`<p>📅 ${sl(x)} (${x.h} h)</p>`).join('')}<p>⏱️ ${w.h} h ${w.h>=5?`(${w.h>=12?_('Plan mensual','Hileko plana'):_('Bono','Bonoa')})`:''} ${used<w.h?`· ${_('quedan','geratzen dira')} ${w.h-used} h ${_('por asignar','esleitzeko')}`:''}</p><p>📍 ${esc(w.addr)}</p><p>${_('Tarifa estándar','Tarifa estandarra')}: ${fmt(p.b)}${p.bn?` − ${fmt(p.bn)} (${w.h>=12?_('Plan mensual','Hileko plana'):_('Bono','Bonoa')})`:''}${p.gx?` − ${fmt(p.gx)} (−${p.g*100} %)`:''}</p><p style="font-size:1.5rem"><b>${_('Total','Guztira')}: ${fmt(p.tot)}</b></p><label class="opt ${w.share?'on':''}" style="margin-top:.8rem;cursor:pointer"><input type="checkbox" style="width:22px;height:22px;min-height:auto;margin:0" ${w.share?'checked':''} data-a="shw"><span>${_('Publicar en Comunidad (solo visible para la gente a la que sigo, para que puedan unirse como plan conjunto)','Argitaratu Komunitatean (jarraitzen dudan jendeak bakarrik ikus dezan eta plan bateratu gisa bat egin dezan)')}</span></label></div>`}
-const nav=w.addTo&&w.s==3?`<button class="btn g" data-a="cx">${_('Cancelar','Utzi')}</button><button class="btn s" data-a="svs" ${w.ses.length?'':'disabled'}>${_('Guardar citas','Hitzorduak gorde')}</button>`:(w.s>1?`<button class="btn g" data-a="pv">← ${_('Anterior','Aurrekoa')}</button>`:'<span></span>')+(w.s<5?`<button class="btn" id="nx" data-a="nx" ${ok()?'':'disabled'}>${_('Siguiente','Hurrengoa')} →</button>`:`<button class="btn s" data-a="ok">✓ ${_('Confirmar solicitud','Eskaera baieztatu')}</button>`);
-return`<div class="row" style="justify-content:space-between">${back()}<b>${_('Paso','Urratsa')} ${w.s} ${_('de','/')} 5</b>${S(`${_('Paso','Urratsa')} ${w.s} ${_('de','/')} 5`)}</div><div class="bar" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="${w.s}" style="margin:.6rem 0"><i style="width:${w.s*20}%"></i></div>${h}<div class="row" style="justify-content:space-between;margin-top:1rem">${nav}</div>`}
-function rcard(r){const s=ST[r.st][L()],t=`${svc(r)}. ${r.ses.map(sl).join('. ')}. ${s}`,x=tr[r.id]||{},left=r.hTot-sesH(r.ses);let e='';
+function ok(){const x=w.s;return x==1?(w.cat!=null&&(C[w.cat][2].length?(w.opt!=null&&(w.opt!='o'||w.txt.trim())):w.txt.trim())):x==2?!!w.plan:x==3?(!!w.rName.trim()&&!!w.rAddr.trim()&&!!w.rPhone.trim()):x==4?(!!w.sd&&!!w.st&&(+w.sh>=1)):!!w.pay}
+function help(){let h='';const est=estCalc();
+if(w.s==1){
+h=head('🙋 '+_('¿Qué necesitas?','Zer behar duzu?'),_('¿Qué necesitas?','Zer behar duzu?'))+C.map((c,i)=>{
+const on=w.cat==i;
+let sub='';
+if(on){
+sub='<div class="subpills">'+c[2].map((o,j)=>`<button class="sp-pill ${w.opt===j?'on':''}" data-a="opt" data-v="${j}">${o[L()]}</button>`).join('')+(c[2].length?`<button class="sp-pill ${w.opt=='o'?'on':''}" data-a="opt" data-v="o">✏️ ${_('Otra actividad','Beste jarduera bat')}</button>`:'')+'</div>';
+if(!c[2].length||w.opt=='o')sub+=`<div style="margin:.4rem 0 .8rem"><textarea rows="2" data-f="w.txt" placeholder="${_('Cuéntanos qué necesitas','Kontatu zer behar duzun')}">${esc(w.txt)}</textarea></div>`;
+}
+return`<div style="margin:.55rem 0"><div class="row"><button class="opt ${on?'on':''}" data-a="cat" data-v="${i}" aria-pressed="${on}"><span class="ic">${c[0]}</span><div><div style="font-weight:800;font-size:1.05rem">${c[1][L()]}</div><small class="mut" style="font-weight:600">${c[3][L()]}</small></div></button>${S(c[1][L()]+'. '+c[3][L()])}</div>${sub}</div>`;
+}).join('');
+}
+if(w.s==2){
+const modes=[
+['normal','⏱️',_('Una sola vez (Normal)','Behin bakarrik (Normala)'),'13 € / '+_('hora','ordua')],
+['bono','🔁',_('Recurrente · Bono 5 horas','Errepikakorra · 5 orduko bonoa'),'60 € base (5 h a 12 €/h) + 12,50 € '+_('por hora extra','ordu gehigarriko')],
+['month','📅',_('Plan Mensual Hurbil','Hurbil Hileko Plana'),'132 € / '+_('mes','hileko')+' (12 h a 11 €/h)']
+];
+h=head('💶 '+_('Modalidad y tarifas','Modalitatea eta tarifak'),_('Modalidad y tarifas','Modalitatea eta tarifak'))+modes.map(m=>`<div style="margin:.55rem 0"><button class="opt ${w.plan==m[0]?'on':''}" style="width:100%" data-a="wplan" data-v="${m[0]}"><span class="ic">${m[1]}</span><div><div style="font-weight:800;font-size:1.05rem">${m[2]}</div><small class="mut" style="font-weight:600">${m[3]}</small></div></button></div>`).join('')
++`<div class="est-box"><small class="mut">${est.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado','Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(est.tot)}</div></div>`;
+}
+if(w.s==3){
+h=head('📍 '+_('¿Para quién y dónde?','Norentzat eta non?'),_('¿Para quién y dónde?','Norentzat eta non?'))
++`<div class="row" style="margin:.6rem 0"><button class="opt ${w.who=='me'?'on':''}" style="justify-content:center" data-a="wwho" data-v="me">${_('Para mí','Niretzat')}</button><button class="opt ${w.who=='fam'?'on':''}" style="justify-content:center" data-a="wwho" data-v="fam">${_('Para un familiar','Senide batentzat')}</button></div>`
++`<label for="rn">${_('Nombre','Izena')}</label><input id="rn" data-f="w.rName" value="${esc(w.rName)}">`
++`<label for="ra">🏠 ${_('Dirección','Helbidea')}</label><input id="ra" data-f="w.rAddr" value="${esc(w.rAddr)}" placeholder="Calle, nº, barrio">`
++`<label for="rp">📞 ${_('Teléfono','Telefonoa')}</label><input id="rp" data-f="w.rPhone" value="${esc(w.rPhone)}" placeholder="600 000 000">`
++`<label for="rdo">${_('¿Qué te gustaría hacer?','Zer gustatuko litzaizuke egitea?')}</label><input id="rdo" data-f="w.rDo" value="${esc(w.rDo)}" placeholder="${_('Ej. paseo tranquilo, compra semanal...','Adib. ibilaldi lasaia, asteko erosketa...')}">`
++`<label for="rno">📝 ${_('Notas (opcional)','Oharrak (aukerakoa)')}</label><textarea id="rno" rows="3" data-f="w.rNotes">${esc(w.rNotes)}</textarea>`
++`<label style="display:flex;gap:.7rem;align-items:flex-start;margin-top:1rem;cursor:pointer;font-weight:700"><input type="checkbox" style="width:22px;height:22px;min-height:auto;margin-top:.2rem;flex:none" ${w.share?'checked':''} data-a="shw"><span>${_('Compartir este plan con mis seguidores (solo se mostrará tu nombre, tipo de servicio, fecha/hora y barrio, nunca tu teléfono ni dirección exacta)','Partekatu plan hau nire jarraitzaileekin (zure izena, zerbitzu mota, data/ordua eta auzoa bakarrik erakutsiko dira, inoiz ez zure telefonoa edo helbide zehatza)')}</span></label>`;
+}
+if(w.s==4){
+h=head('📅 '+_('Fecha, horario y precio','Data, ordutegia eta prezioa'),_('Fecha, horario y precio','Data, ordutegia eta prezioa'))
++`<label for="sd">${_('Día','Eguna')}</label><input id="sd" type="date" min="${d0(0)}" data-f="w.sd" value="${esc(w.sd)}">`
++`<label for="st">🕒 ${_('Hora','Ordua')}</label><input id="st" type="time" data-f="w.st" value="${esc(w.st)}">`
++`<label for="sh">${_('Duración (horas)','Iraupena (orduak)')}</label><input id="sh" type="number" min="1" max="24" data-f="w.sh" value="${esc(w.sh)}">`
++`<div class="est-box"><small class="mut">${est.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado','Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(est.tot)}</div></div>`;
+}
+if(w.s==5){
+const c=C[w.cat]||C[0],subTxt=w.opt=='o'||!c[2].length?w.txt:c[2][w.opt]?.[L()];
+const planLbl=w.plan=='bono'?_('Recurrente · Bono 5 horas','Errepikakorra · 5 orduko bonoa'):w.plan=='month'?_('Plan Mensual Hurbil','Hurbil Hileko Plana'):_('Una sola vez','Behin bakarrik');
+const sm=`${c[1][L()]}. ${subTxt||''}. ${planLbl}, ${w.sh} horas. ${fd(w.sd)} a las ${w.st}. Total ${fmt(est.tot)}`;
+h=head('✅ '+_('Revisión y envío','Berrikuspena eta bidalketa'),_('Revisión y envío','Berrikuspena eta bidalketa'))
++`<div class="card"><div class="row" style="justify-content:flex-end">${S(sm)}</div>`
++`<p style="font-size:1.15rem;margin:.2rem 0"><b>${c[0]} ${c[1][L()]}</b></p>`
++(subTxt?`<p style="margin:.2rem 0">✔️ ${esc(subTxt)}</p>`:'')
++`<p class="mut" style="margin:.3rem 0">${planLbl} · ${w.sh} h</p>`
++`<p style="margin:.3rem 0">👷 ${_('Trabajador','Langilea')}: ${_('Asignación automática','Esleipen automatikoa')}</p>`
++`<p style="margin:.3rem 0">${w.who=='fam'?_('Para un familiar','Senide batentzat'):_('Para mí','Niretzat')}: ${esc(w.rName)} · ${esc(w.rPhone)}</p>`
++`<p style="margin:.3rem 0">📍 ${esc(w.rAddr)}</p>`
++(w.rDo?`<p style="margin:.2rem 0">${esc(w.rDo)}</p>`:'')
++(w.rNotes?`<p class="mut" style="margin:.2rem 0">📝 ${esc(w.rNotes)}</p>`:'')
++`<p style="margin:.4rem 0">📅 ${fd(w.sd)} · 🕒 ${esc(w.st)}</p>`
++`<p style="font-size:1.25rem;margin:.4rem 0"><b>💶 ${fmt(est.tot)}</b></p></div>`
++`<label for="pay">💳 ${_('Forma de pago','Ordaintzeko modua')}</label><select id="pay" data-a="wpay"><option value="">${_('Elige una...','Aukeratu bat...')}</option>${PAY.map(p=>`<option value="${p[0]}"${w.pay==p[0]?' selected':''}>${db.lang=='eu'?p[2]:p[1]}</option>`).join('')}</select>`
++(w.pay?`<div class="est-box"><p style="margin:0">💡 ${_('No se realiza ningún cobro ahora. Una vez Hurbil acepte tu solicitud, recibirás las instrucciones para abonar el importe por el método elegido.','Orain ez da kobratzen. Hurbilek zure eskaera onartzen duenean, aukeratutako metodoaren bidez zenbatekoa ordaintzeko jarraibideak jasoko dituzu.')}</p></div>`:'');
+}
+const nav=(w.s>1?`<button class="btn g" style="flex:1" data-a="pv">← ${_('Atrás','Atzera')}</button>`:'<span></span>')
++(w.s<5?`<button class="btn s" style="flex:1" id="nx" data-a="nx" ${ok()?'':'disabled'}>${_('Continuar','Jarraitu')} ➡️</button>`:`<button class="btn s" style="flex:1" id="nx" data-a="ok" ${ok()?'':'disabled'}>📨 ${_('Enviar solicitud','Eskaera bidali')}</button>`);
+return`<div class="row" style="justify-content:space-between">${back()}<span></span></div><p style="margin:.6rem 0 .3rem;font-weight:700">👣 ${_('Paso','Urratsa')} ${w.s} ${_('de','/')} 5</p><div class="bar" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="${w.s}" style="margin-bottom:.8rem"><i style="width:${w.s*20}%"></i></div>${h}<div class="row" style="gap:.8rem;margin-top:1.2rem">${nav}</div>`}
+function rcard(r){const s=ST[r.st][L()],t=`${svc(r)}. ${r.ses.map(sl).join('. ')}. ${s}`,x=tr[r.id]||{};let e='';
 if(r.st=='done'){if(r.rate)e=`<p><span class="star" style="cursor:default">${stars(r.rate.s)}</span> ${esc(r.rate.c)}</p>`;else if(dl(r)<=0)e=`<p class="mut">${_('El plazo de 24 horas para valorar ha terminado.','Baloratzeko 24 orduko epea amaitu da.')}</p>`;
 else e=`<div class="card" style="background:var(--sb)"><div class="row"><b class="grow">${_('Valora a','Baloratu')} ${esc(r.w)} · ${_('te quedan','geratzen zaizkizu')} ${dl(r)} h</b>${S(_('Valora el servicio con estrellas','Baloratu zerbitzua izarrekin'))}</div>${[1,2,3,4,5].map(n=>`<button class="star" data-a="star" data-id="${r.id}" data-v="${n}" aria-label="${n}">${n<=(x.s||0)?'★':'☆'}</button>`).join('')}<textarea rows="2" data-f="tr.${r.id}.c" placeholder="${_('Escribe un comentario','Idatzi iruzkin bat')}">${esc(x.c||'')}</textarea><button class="btn" style="margin-top:.5rem" data-a="rate" data-id="${r.id}">${_('Enviar valoración','Balorazioa bidali')}</button></div>`}
 const pin=r.pin?`<div class="card" style="background:var(--sb)"><div class="row"><b class="grow">🔐 ${_('Tu PIN de seguridad','Zure segurtasun-PINa')}: <span style="font-size:1.7rem;letter-spacing:.2em">${r.pin}</span></b>${S(_('Tu PIN de seguridad es','Zure segurtasun-PINa')+': '+r.pin.split('').join(' '))}</div><small>${_('El acompañante te dirá este código al llegar. Si no lo sabe, no abras la puerta.','Laguntzaileak kode hau esango dizu iristean. Ez badaki, ez ireki atea.')}</small></div>`:'';
-return`<article class="card"><div class="row"><h3 class="grow">${r.bono?'🎟️ ':''}${svc(r)}</h3>${S(t)}</div>${r.ses.map(q=>`<p>📅 ${sl(q)} (${q.h} h)</p>`).join('')}<p>⏱️ ${sesH(r.ses)}/${r.hTot} h · ${fmt(r.tot)}</p><p>📍 ${esc(r.addr)}</p><p><span class="bd">${s}</span>${r.w?' · '+esc(r.w):''}</p>${pin}${left>0?`<p class="mut">${_('Te quedan','Geratzen zaizkizu')} ${left} h ${_('por asignar','esleitzeko')}</p><button class="btn g" data-a="addto" data-id="${r.id}">+ ${_('Añadir cita','Hitzordua gehitu')}</button>`:''}<div><button class="btn s" style="margin-top:.5rem" data-a="wa" data-id="${r.id}">📲 ${_('Avisar a mi familiar por WhatsApp','Abisatu nire senideari WhatsApp bidez')}</button></div>${e}</article>`}
+return`<article class="card"><div class="row"><h3 class="grow">${r.bono?'🎟️ ':''}${svc(r)}</h3>${S(t)}</div>${r.ses.map(q=>`<p>📅 ${sl(q)} (${q.h} h)</p>`).join('')}<p>⏱️ ${sesH(r.ses)}/${r.hTot} h · ${fmt(r.tot)}</p><p>📍 ${esc(r.addr)}</p><p><span class="bd">${s}</span>${r.w?' · '+esc(r.w):''}</p>${pin}<div><button class="btn s" style="margin-top:.5rem" data-a="wa" data-id="${r.id}">📲 ${_('Avisar a mi familiar por WhatsApp','Abisatu nire senideari WhatsApp bidez')}</button></div>${e}</article>`}
 const jcard=p=>{const q=PS[p.prop.st][L()];return`<article class="card"><div class="row"><h3 class="grow">🤝 ${p.t[L()]||p.t.es}</h3>${S((p.t[L()]||p.t.es)+'. '+q)}</div><p>📅 ${p.when?p.when[L()]:esc(p.w)} · ${p.h} h · ${fmt(pr(p.h,2).tot)}/${_('persona','pertsona')}</p><p>👥 ${p.m.map(esc).join(' + ')}</p><p><span class="bd">${q}</span></p><button class="btn g" data-a="gop" data-v="${p.id}">💬 ${_('Abrir chat','Txata ireki')}</button></article>`};
 function reqs(){const vis=db.reqs.filter(r=>!arch(r)),ar=db.reqs.filter(arch),jp=db.plans.filter(p=>p.prop&&p.m.includes(fn()));
 return back()+head(_('Mis solicitudes','Nire eskaerak'))+(vis.length+jp.length?vis.map(rcard).join('')+jp.map(jcard).join(''):`<div class="card"><p>${_('Aún no tienes solicitudes.','Oraindik ez duzu eskaerarik.')}</p><a class="btn" href="#help" data-a="go" data-v="help">🤝 ${_('Pedir ayuda','Laguntza eskatu')}</a></div>`)+(ar.length?`<details class="card"><summary><b>${_('Archivo de citas finalizadas','Amaitutako hitzorduen artxiboa')} (${ar.length})</b></summary>${ar.map(r=>`<p class="mut">${svc(r)} · ${sl(r.ses[0])}</p>`).join('')}</details>`:'')}
@@ -335,27 +386,23 @@ function act(el){const a=el.dataset.a,v=el.dataset.v,id=+el.dataset.id,r=db.reqs
 switch(a){
 case'say':say(el.dataset.t);return;
 case'lang':db.lang=v;break;case'fs':db.fs=Math.max(-1,Math.min(6,db.fs+ +v));break;case'hc':db.hc^=1;break;case'easy':db.easy^=1;break;
-case'notif':{if('Notification' in window&&Notification.permission==='granted'){db.notif=db.notif===0?1:0;toast(db.notif?_('Avisos activados','Abisuak aktibatuta'):_('Avisos silenciados','Abisuak isilduta'));break}if(!('Notification' in window)){toast(_('Tu navegador no soporta notificaciones.','Zure nabigatzaileak ez ditu jakinarazpenak onartzen.'));break}Notification.requestPermission().then(p=>{if(p==='granted')notifyUser('Hurbil',_('Notificaciones activadas correctamente','Jakinarazpenak behar bezala aktibatu dira'));else toast(_('Permiso de notificaciones denegado en el navegador.','Jakinarazpen baimena ukatuta nabigatzailean.'));render()});break}
+case'notif':{if('Notification' in window&&Notification.permission==='granted'){db.notif=db.notif===0?1:0;toast(db.notif?_('Avisos activados','Abisuak aktibatuta'):_('Avisos silenciados','Abisuak isilduta'));break}if(!('Notification' in window)){toast(_('Tu navegador no soporta notificaciones.','Zure nabigatzaileak ez ditu jakinarazpenak onartzen.'));break}Notification.requestPermission().then(p=>{if(p==='granted'){db.notif=1;notifyUser('Hurbil',_('Notificaciones activadas correctamente','Jakinarazpenak behar bezala aktibatu dira'))}else toast(_('Permiso de notificaciones denegado en el navegador.','Jakinarazpen baimena ukatuta nabigatzailean.'));save();render()});break}
 case'md':md=v;if(v=='chat')mt='friends';break;case'close':md=null;break;case'go':go(v);break;case'tm':mt=v;break;
 case'cat':w.cat=+v;w.opt=null;w.txt='';break;case'opt':w.opt=v=='o'?'o':+v;if(v!='o')w.txt='';break;
-case'sdq':w.sd=d0(+v);w.sst=null;break;case'sd':w.sd=el.value;w.sst=null;break;
-case'sst':w.sst=+v;w.sh=1;break;case'shh':w.sh=+v;break;
-case'adds':w.ses.push({d:w.sd,t:T(w.sst),h:w.sh});w.ses.sort((a,b)=>(a.d+a.t).localeCompare(b.d+b.t));w.sst=null;w.sh=1;break;
-case'dels':w.ses.splice(+v,1);break;
-case'cx':Object.assign(w,W0());go('reqs');break;
-case'addto':Object.assign(w,W0(),{addTo:id,s:3});go('help');break;
-case'svs':{const R0=db.reqs.find(x=>x.id==w.addTo);R0.ses.push(...w.ses);R0.ses.sort((a,b)=>(a.d+a.t).localeCompare(b.d+b.t));Object.assign(w,W0());toast(_('Citas guardadas.','Hitzorduak gordeta.'));go('reqs');break}
+case'wplan':w.plan=v;break;
+case'wwho':w.who=v;if(v=='me'){w.rName=db.u.name||'';w.rAddr=db.u.addr||'';w.rPhone=db.u.contact||''}else{w.rName='';w.rPhone=''}break;
+case'wpay':w.pay=el.value;break;
 case'wlog':if(wl.p===WP[wl.n])wk=wl.n;else{toast(_('PIN incorrecto.','PIN okerra.'));return}break;case'wout':wk=null;wl.p='';break;
 case'shw':{w.share=!w.share;break}
 case'fol':{if(!sbUid){toast(_('Inicia sesión primero.','Hasi saioa lehenik.'));break}const ex=folRows.find(x=>x.follower_id==sbUid&&x.following_id==v);if(ex){folRows=folRows.filter(x=>!(x.follower_id==sbUid&&x.following_id==v));sb.from('follows').delete().eq('follower_id',sbUid).eq('following_id',v).then(()=>syncCloud());toast(_('Dejaste de seguir','Jarraitzeari utzi diozu'))}else{folRows.push({follower_id:sbUid,following_id:v,status:'pending'});sb.from('follows').insert({follower_id:sbUid,following_id:v,status:'pending'}).then(()=>syncCloud());toast(_('Solicitud de seguimiento enviada','Jarraipen eskaera bidalita'))}break}
 case'pint':{if(!sbUid){toast(_('Inicia sesión primero.','Hasi saioa lehenik.'));break}const p=db.plans.find(x=>String(x.id)==v);if(!p)break;p.int=p.int||[];if(p.int.includes(sbUid))p.int=p.int.filter(x=>x!=sbUid);else{p.int.push(sbUid);toast(_('¡Aviso enviado! Le llegará una notificación al creador del plan.','Abisua bidalita! Jakinarazpena iritsiko zaio planaren sortzaileari.'))}sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>syncCloud());break}
 case'pacc':{const[pid,uid]=v.split(':'),p=db.plans.find(x=>String(x.id)==pid);if(!p)break;const peer=usersList.find(x=>x.id==uid)||{name:'Vecino'};p.int=(p.int||[]).filter(x=>x!=uid);p.accU=uid;p.m=[p.ownerName||db.u.name,peer.name];p.prop={st:'draft',acc:[]};p.msgs=p.msgs||[];p.msgs.push({n:'Hurbil',t:_('🤝 Plan conjunto creado entre ','🤝 Plan bateratua sortuta: ')+p.m[0]+' & '+p.m[1]+_('. Ambos debéis pulsar Aceptar plan aquí abajo.','. Biok Behean Plana onartu sakatu behar duzue.')});sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>{sb.from('direct_messages').insert({sender_id:sbUid,receiver_id:uid,text:'🤝 '+_('He aceptado tu interés en el plan: ','Zure interesa onartu dut planean: ')+(p.t[L()]||p.t.es),plan_id:String(p.id)}).then(()=>syncCloud())});toast(_('¡Plan aceptado! Ya puedes pulsar Abrir chat con ','Plana onartuta! Orain sakatu dezakezu Ireki txata: ')+peer.name);break}
 case'prej':{const[pid,uid]=v.split(':'),p=db.plans.find(x=>String(x.id)==pid);if(!p)break;p.int=(p.int||[]).filter(x=>x!=uid);sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>syncCloud());toast(_('Solicitud rechazada','Eskaera baztertuta'));break}
-case'ok':{const p=pr(w.h,w.ppl),s0=w.ses[0];db.reqs.unshift({id:Date.now(),c:w.cat,o:w.opt,t:w.txt,ses:[...w.ses],hTot:w.h,bono:w.h>5?1:0,date:s0.d,time:s0.t,h:s0.h,addr:w.addr,cli:db.u.name,ppl:w.ppl,base:p.b,tot:p.tot,st:'pending',w:''});if(!db.u.addr)db.u.addr=w.addr;if(sbUid)sb.from('requests').insert({user_id:sbUid,data:db.reqs[0]}).then(()=>syncCloud());if(w.share&&sbUid){const pid=String(Date.now()+1),np={id:pid,ownerId:sbUid,ownerName:db.u.name,t:{es:svc(db.reqs[0]),eu:svc(db.reqs[0])},w:`${fd(s0.d)} · ${s0.t} · ${w.addr}`,h:w.h,m:[db.u.name],int:[],accU:null,prop:null,msgs:[]};db.plans.unshift(np);sb.from('plans').upsert({id:pid,data:np}).then(()=>syncCloud())}Object.assign(w,W0());toast(_('¡Solicitud confirmada! Te asignaremos un acompañante.','Eskaera baieztatuta! Laguntzaile bat esleituko dizugu.'));go('reqs');break}
+case'ok':{const est=estCalc(),hNum=Math.max(1,+w.sh||1),hTot=w.plan=='bono'?Math.max(5,hNum):w.plan=='month'?Math.max(12,hNum):hNum,extraTxt=[w.rDo,w.rNotes].filter(Boolean).join(' · '),fullTxt=[w.txt,extraTxt].filter(Boolean).join(' — ');db.reqs.unshift({id:Date.now(),c:w.cat,o:w.opt,t:fullTxt,ses:[{d:w.sd,t:w.st,h:hNum}],hTot,bono:w.plan!='normal'?1:0,date:w.sd,time:w.st,h:hNum,addr:w.rAddr,cli:w.rName||db.u.name,phone:w.rPhone,who:w.who,pay:w.pay,ppl:1,base:13*hNum,tot:est.tot,st:'pending',w:''});if(!db.u.addr)db.u.addr=w.rAddr;if(sbUid)sb.from('requests').insert({user_id:sbUid,data:db.reqs[0]}).then(()=>syncCloud());if(w.share&&sbUid){const pid=String(Date.now()+1),np={id:pid,ownerId:sbUid,ownerName:db.u.name,t:{es:svc(db.reqs[0]),eu:svc(db.reqs[0])},w:`${fd(w.sd)} · ${w.st} · ${w.rAddr}`,h:hNum,m:[db.u.name],int:[],accU:null,prop:null,msgs:[]};db.plans.unshift(np);sb.from('plans').upsert({id:pid,data:np}).then(()=>syncCloud())}Object.assign(w,W0());toast(_('¡Solicitud enviada! Te avisaremos cuando Hurbil la acepte.','Eskaera bidalita! Hurbilek onartzen duenean abisatuko dizugu.'));go('reqs');break}
 case'jp':{const p=db.plans.find(x=>String(x.id)==v),k=el.dataset.k;p.prop.st=k;p.msgs.push({n:'Hurbil',t:k=='accepted'?_('✅ Hurbil ha aceptado vuestro plan conjunto.','✅ Hurbilek zuen plan bateratua onartu du.'):_('❌ Hurbil no puede aceptar este plan. Os propondremos otra fecha.','❌ Hurbilek ezin du plan hau onartu. Beste data bat proposatuko dizuegu.')});sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>{});break}
 case'delplan':{db.plans=db.plans.filter(x=>String(x.id)!=v);sb.from('plans').delete().eq('id',String(v)).then(()=>syncCloud());toast(_('Plan eliminado','Plana ezabatuta'));break}
 case'delacc':{usersList=usersList.filter(x=>x.id!=v);sb.from('follows').delete().or(`follower_id.eq.${v},following_id.eq.${v}`).then(()=>{});sb.from('direct_messages').delete().or(`sender_id.eq.${v},receiver_id.eq.${v}`).then(()=>{});sb.from('profiles').delete().eq('id',v).then(()=>syncCloud());toast(_('Cuenta eliminada','Kontua ezabatuta'));break}
-case'hr':w.h+=+v;if(sesH(w.ses)>w.h)w.ses=[];break;case'ppl':w.ppl=+v;break;case'nx':w.s++;break;case'pv':w.s--;break;
+case'nx':w.s++;break;case'pv':w.s--;break;
 case'wa':{const p=phone(db.u.fam);if(!p){toast(_('Añade el teléfono de tu familiar en el perfil.','Gehitu zure senidearen telefonoa profilean.'));go('prof');render();return}open(`https://wa.me/${p}?text=${encodeURIComponent(`Hola, te aviso de mi cita con Hurbil: ${svc(r)}. ${r.ses.map(sl).join('; ')}, en ${r.addr}. Estado: ${ST[r.st][0]}. Hurbil: 644 270 017`)}`,'_blank','noopener');return}
 case'star':tr[id]={...tr[id],s:+v};break;
 case'rate':{const x=tr[id];if(!x?.s){toast(_('Elige de 1 a 5 estrellas.','Aukeratu 1 eta 5 izar artean.'));return}if(dl(r)<=0){toast(_('El plazo de 24 horas ha terminado.','24 orduko epea amaitu da.'));break}r.rate={s:x.s,c:x.c||''};break}
@@ -394,7 +441,7 @@ case'adm':{const k=el.dataset.k;r[k]=el.value;if(k=='w'&&r.w&&r.st=='pending')r.
 case'rst':db=seed();break}save();render()}
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(e.target.classList.contains('ov')){md=null;render();return}if(el&&!['SELECT','INPUT'].includes(el.tagName)){if(el.dataset.a=='go')e.preventDefault();act(el)}});
 document.addEventListener('change',e=>{if((e.target.tagName=='SELECT'||e.target.type=='date'||e.target.type=='checkbox')&&e.target.dataset.a)act(e.target)});
-document.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;const k=f.split('.');let o=X[k[0]];for(const p of k.slice(1,-1))o=o[p]??={};o[k[k.length-1]]=e.target.value;save();if(k[0]=='w'){const n=$('#nx');if(n)n.disabled=!ok()}});
+document.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;const k=f.split('.');let o=X[k[0]];for(const p of k.slice(1,-1))o=o[p]??={};o[k[k.length-1]]=e.target.value;save();if(k[0]=='w'){if(w.s==4){const eb=document.querySelector('.est-box');if(eb){const c=estCalc();eb.innerHTML=`<small class="mut">${c.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado','Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(c.tot)}</div>`}}const n=$('#nx');if(n)n.disabled=!ok()}});
 document.addEventListener('keydown',e=>{if(e.key=='Escape'&&md){md=null;render()}if(e.key=='Enter'&&e.target.closest('.send,.ig-bar')&&e.target.tagName=='INPUT')e.target.parentElement.querySelector('button').click()});
 addEventListener('hashchange',()=>{route=location.hash.slice(1)||'home';scrollTo(0,0);render()});render();syncCloud();setInterval(()=>{if(sbUid)syncCloud()},6000);
 if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('/Hurbil/sw.js',{scope:'/Hurbil/'}).catch(()=>{})})}
