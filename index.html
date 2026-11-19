@@ -71,7 +71,7 @@ body.easy .adv{display:none}
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const d0=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
 const ADDR='Calle Ercilla 15, Indautxu, Bilbao';
-function seed(){return{lang:'es',fs:1,hc:0,easy:0,
+function seed(){return{lang:'es',fs:1,hc:0,easy:0,notif:1,
 u:{name:'Aimar Fernandez',user:'@aimar_bilbao',contact:'aimar@hurbil.eus',pass:'hurbil123',addr:ADDR,fam:'600123456',on:1},
 reqs:[{id:1,c:0,o:1,t:'',ses:[{d:d0(1),t:'11:00',h:2}],hTot:5,bono:1,date:d0(1),time:'11:00',h:2,addr:ADDR,cli:'Aimar Fernandez',ppl:1,base:65,tot:60,st:'assigned',w:'Ander Herrera',pin:'4821'},
 {id:2,c:1,o:1,t:'',ses:[{d:d0(-2),t:'17:00',h:1}],hTot:1,bono:0,date:d0(-2),time:'17:00',h:1,addr:ADDR,cli:'Aimar Fernandez',ppl:1,base:13,tot:13,st:'done',w:'Eder Fernandez',pin:'7305',doneAt:Date.now()-72e5}],
@@ -100,7 +100,7 @@ avatar:db.u.avatar||''
 };
 let folRows=[],dmList=[],dmUser=null;
 const avImg=(u,sz=44)=>u?.avatar?`<img src="${u.avatar}" style="width:${sz}px;height:${sz}px;border-radius:50%;object-fit:cover;border:2px solid var(--p);flex-shrink:0">`:`<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:var(--sb);color:var(--p);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:${Math.round(sz*.42)}px;flex-shrink:0">${esc((u?.name||'?')[0].toUpperCase())}</div>`;
-function notifyUser(title,body){
+function notifyUser(title,body){if(db.notif===0)return;
 toast('🔔 '+title+(body?': '+body:''));
 try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=880;g.gain.value=0.05;o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+0.12)}catch(e){}
 if('Notification' in window&&Notification.permission==='granted'){
@@ -196,7 +196,7 @@ const busy=(d,hr)=>db.reqs.flatMap(r=>r.ses).concat(w.ses).some(x=>x.d==d&&hr>=+
 const back=()=>`<a class="btn g" href="#" data-a="go" data-v="home">← ${_('Volver al inicio','Itzuli hasierara')}</a>`;
 const head=(t,x)=>`<div class="row"><h2 class="grow">${t}</h2>${S(x||t)}</div>`;
 function hdr(){const bn=(v,t,l)=>`<button data-a="fs" data-v="${v}" aria-label="${l}">${t}</button>`;
-const notifOn='Notification' in window&&Notification.permission==='granted';
+const notifOn=('Notification' in window&&Notification.permission==='granted')&&db.notif!==0;
 return`<div class="hw"><a href="#" class="lg" data-a="go" data-v="home" aria-label="Hurbil">${LOGO}<span><b>Hurbil · Siempre cerca de ti</b><small>Bilbao</small></span></a>
 <div class="ct"><span class="seg" role="group" aria-label="Idioma / Hizkuntza"><button data-a="lang" data-v="es" aria-pressed="${db.lang=='es'}">ES</button><button data-a="lang" data-v="eu" aria-pressed="${db.lang=='eu'}">EU</button></span>
 <span class="seg">${bn(-1,'A-',_('Letra más pequeña','Letra txikiagoa'))}${bn(1,'A+',_('Letra más grande','Letra handiagoa'))}</span>
@@ -335,7 +335,7 @@ function act(el){const a=el.dataset.a,v=el.dataset.v,id=+el.dataset.id,r=db.reqs
 switch(a){
 case'say':say(el.dataset.t);return;
 case'lang':db.lang=v;break;case'fs':db.fs=Math.max(-1,Math.min(6,db.fs+ +v));break;case'hc':db.hc^=1;break;case'easy':db.easy^=1;break;
-case'notif':{if(!('Notification' in window)){toast(_('Tu navegador no soporta notificaciones.','Zure nabigatzaileak ez ditu jakinarazpenak onartzen.'));break}Notification.requestPermission().then(p=>{if(p==='granted')notifyUser('Hurbil',_('Notificaciones activadas correctamente','Jakinarazpenak behar bezala aktibatu dira'));else toast(_('Permiso de notificaciones denegado en el navegador.','Jakinarazpen baimena ukatuta nabigatzailean.'));render()});break}
+case'notif':{if('Notification' in window&&Notification.permission==='granted'){db.notif=db.notif===0?1:0;toast(db.notif?_('Avisos activados','Abisuak aktibatuta'):_('Avisos silenciados','Abisuak isilduta'));break}if(!('Notification' in window)){toast(_('Tu navegador no soporta notificaciones.','Zure nabigatzaileak ez ditu jakinarazpenak onartzen.'));break}Notification.requestPermission().then(p=>{if(p==='granted')notifyUser('Hurbil',_('Notificaciones activadas correctamente','Jakinarazpenak behar bezala aktibatu dira'));else toast(_('Permiso de notificaciones denegado en el navegador.','Jakinarazpen baimena ukatuta nabigatzailean.'));render()});break}
 case'md':md=v;if(v=='chat')mt='friends';break;case'close':md=null;break;case'go':go(v);break;case'tm':mt=v;break;
 case'cat':w.cat=+v;w.opt=null;w.txt='';break;case'opt':w.opt=v=='o'?'o':+v;if(v!='o')w.txt='';break;
 case'sdq':w.sd=d0(+v);w.sst=null;break;case'sd':w.sd=el.value;w.sst=null;break;
