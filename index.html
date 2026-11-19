@@ -11,7 +11,7 @@
 :root{--bg:#F6F7F5;--c:#fff;--bd:#E2E8F0;--p:#2D5373;--ph:#244560;--s:#447458;--sb:#EBF1F6;--sbd:#D6E2EC;--t:#1E293B;--pt:#fff;--st:#fff;--r:#C0463F;--m:#64748B}
 body.hc{--bg:#000;--c:#000;--bd:#FFE600;--p:#FFE600;--ph:#fff;--s:#FFE600;--sb:#1a1a00;--sbd:#FFE600;--t:#FFE600;--pt:#000;--st:#000;--r:#FFE600;--m:#FFE600}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:1rem/1.55 Nunito,system-ui,sans-serif}
-a{color:var(--p);font-weight:700}h1,h2,h3{font-weight:800;color:var(--t);line-height:1.2;margin:.2em 0}h1{font-size:1.75rem}h2{font-size:1.4rem}h3{font-size:1.12rem}
+a{color:var(--p);font-weight:700}h1,h2,h3{font-weight:800;color:var(--t);line-height:1.2;margin:.2em 0}h1{font-size:1.9rem}h2{font-size:1.5rem}h3{font-size:1.2rem}
 header{background:var(--c);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
 .hw{max-width:760px;margin:auto;padding:.6rem 1rem;display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;justify-content:space-between}
 .lg{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--t)}.lg b{display:block;font-size:1.05rem;line-height:1.2}.lg span{min-width:0;flex:1}.lg small{color:var(--m);font-weight:700}
@@ -21,29 +21,18 @@ header{background:var(--c);border-bottom:1px solid var(--bd);position:sticky;top
 .ib,.sw,.pill{border:1px solid var(--sbd);background:var(--sb);border-radius:2rem;padding:.3rem .85rem;font-weight:800;min-height:42px;color:var(--t);text-decoration:none;display:inline-flex;white-space:nowrap;align-items:center;position:relative}
 .rd{flex:none;border-radius:50%;width:42px;min-width:42px;height:42px;padding:0;justify-content:center;background:var(--c);font-size:1.3rem;line-height:1}.sw{font-size:.85rem}
 button{font:inherit;cursor:pointer;color:inherit}
-main{max-width:640px;margin:auto;padding:1rem 1rem 5.5rem}
-.card{background:var(--c);border:1px solid var(--bd);border-radius:18px;padding:1.15rem;margin:.85rem 0;box-shadow:0 2px 8px #1e293b0d}
+main{max-width:640px;margin:auto;padding:1rem 1rem 7rem}
+.card{background:var(--c);border:1px solid var(--bd);border-radius:16px;padding:1.1rem;margin:.8rem 0;box-shadow:0 1px 4px #1e293b0f}
+.live-story-hero{background:linear-gradient(135deg,#fdf2f8 0%,#eef2ff 100%);border:2px solid #f472b6;border-radius:18px;padding:1rem 1.1rem;margin:.4rem 0 .9rem;box-shadow:0 4px 14px rgba(219,39,119,.12)}
+body.hc .live-story-hero{background:#000;border:2px solid #FFE600}
 .row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}.row>.grow{flex:1}
-.btn{background:var(--p);color:var(--pt);border:1px solid var(--p);border-radius:16px;padding:.8rem 1.3rem;font-weight:800;font-size:1.05rem;min-height:52px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;position:relative}
+.btn{background:var(--p);color:var(--pt);border:1px solid var(--p);border-radius:16px;padding:.8rem 1.3rem;font-weight:800;font-size:1.05rem;min-height:52px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;position:relative}
 .btn:hover{background:var(--ph)}.btn.g{background:var(--sb);color:var(--t);border-color:var(--sbd)}.btn.s{background:var(--s);border-color:var(--s);color:var(--st)}.btn:disabled{opacity:.45;cursor:not-allowed}
 .spk{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#DCE8F2;color:#1E293B;font-size:1.15rem}
 body.hc .spk{background:#1a1a00;border:2px solid #FFE600}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.75rem}
-
-.hero{background:linear-gradient(145deg,#EBF1F6 0%,#EFF5F1 100%);border:1px solid var(--sbd);border-radius:22px;padding:1.3rem;margin:.5rem 0 1rem}
-body.hc .hero{background:#000;border:2px solid #FFE600}
-.hero-tag{display:inline-block;background:var(--c);color:var(--p);border:1px solid var(--sbd);border-radius:999px;padding:.2rem .75rem;font-size:.82rem;font-weight:800;margin-bottom:.45rem}
-.live-story-hero{background:linear-gradient(135deg,#fdf2f8 0%,#eef2ff 100%);border:2px solid #f472b6;border-radius:20px;padding:1.05rem 1.15rem;margin:.5rem 0 .9rem;box-shadow:0 4px 14px rgba(219,39,119,.12)}
-body.hc .live-story-hero{background:#000;border:2px solid #FFE600}
-.nav-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin:.85rem 0}
-.ncard{background:var(--c);border:1px solid var(--bd);border-radius:18px;padding:.95rem;text-decoration:none;color:var(--t);display:flex;flex-direction:column;justify-content:space-between;min-height:128px;box-shadow:0 2px 8px #1e293b0a;position:relative;transition:transform .12s,border-color .12s}
-.ncard:hover{transform:translateY(-2px);border-color:var(--p)}
-.ncard .nic{width:44px;height:44px;border-radius:14px;background:var(--sb);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:.5rem}
-.ncard h3{font-size:1.05rem;line-height:1.2}
-.ncard.full{grid-column:1 / -1;flex-direction:row;align-items:center;min-height:auto;gap:.9rem}
-.ncard.full .nic{margin-bottom:0;flex:none}
-.trust{background:var(--c);border:1px solid var(--bd);border-left:5px solid var(--s);border-radius:18px;padding:1.1rem 1.2rem;margin:.85rem 0;box-shadow:0 2px 8px #1e293b0a}
-
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:.7rem}
+.mw{position:relative;margin:.7rem 0}.mb{display:flex;align-items:center;justify-content:center;width:100%;min-height:66px;border-radius:16px;padding:.9rem 3.6rem;font-size:1.25rem;font-weight:800;text-decoration:none;text-align:center}
+.mb.pri{background:var(--s);color:var(--st)}.mb.soft{background:var(--sb);color:var(--t);border:1px solid var(--sbd)}.mw .spk{position:absolute;right:.7rem;top:50%;transform:translateY(-50%)}
 .opt{display:flex;gap:.8rem;align-items:center;text-align:left;flex:1;border:1px solid var(--sbd);background:var(--c);border-radius:16px;padding:.9rem 1.1rem;font-weight:700;min-height:64px}
 .opt.on{border:2px solid var(--s);background:#EFF5F1}.opt .ic{font-size:1.85rem;line-height:1;flex:none}
 .subpills{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 .9rem .2rem}
@@ -54,38 +43,38 @@ body.hc .live-story-hero{background:#000;border:2px solid #FFE600}
 .confirm-box{background:#FEF2F2;border:2px solid var(--r);border-radius:14px;padding:.85rem;margin-top:.7rem}
 body.hc .confirm-box{background:#1a1a00}
 .bd,.tag{display:inline-block;background:var(--sb);color:var(--t);border:1px solid var(--sbd);border-radius:2rem;padding:.15rem .75rem;font-weight:800;font-size:.85rem}.mut{color:var(--m)}
-.badge{background:#ef4444;color:#fff;font-size:.72rem;font-weight:800;min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;margin-left:.25rem}
+.badge{background:#ef4444;color:#fff;font-size:.72rem;font-weight:800;min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;margin-left:.3rem}
 .bar{display:flex;height:10px;background:var(--bd);border-radius:9px;overflow:hidden}.bar i.f{background:var(--p)}.bar i{display:block;height:100%;background:var(--s)}
 input,textarea,select{font:inherit;width:100%;padding:.75rem .9rem;border:1px solid var(--sbd);border-radius:14px;background:var(--c);color:var(--t);min-height:50px}
 input:focus,textarea:focus,button:focus-visible,a:focus-visible,select:focus{outline:3px solid var(--p);outline-offset:2px}
 label{font-weight:800;display:block;margin:.75rem 0 .3rem}
 .fab{position:fixed;right:1rem;bottom:1rem;display:flex;flex-direction:column;gap:.5rem;z-index:6}
-.fab button{border:0;border-radius:2rem;padding:.75rem 1.15rem;font-weight:800;font-size:.98rem;box-shadow:0 4px 12px #1e293b33;display:inline-flex;align-items:center;justify-content:center}
-.sos{background:var(--r);color:#fff}body.hc .sos{color:#000}
+.fab button{border:0;border-radius:2rem;padding:.65rem 1.1rem;font-weight:800;font-size:.95rem;box-shadow:0 4px 12px #1e293b33;display:inline-flex;align-items:center;justify-content:center}
+.sos{background:var(--r);color:#fff}body.hc .sos{color:#000}.cb{background:var(--p);color:var(--pt)}
 .ov{position:fixed;inset:0;background:#1e293b99;z-index:9;display:flex;align-items:center;justify-content:center;padding:1rem}
 .mo{background:var(--c);border:1px solid var(--bd);border-radius:22px;padding:1.1rem;max-width:480px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 20px 50px rgba(15,23,42,.25)}
-.msgs{max-height:340px;overflow:auto;border:1px solid var(--bd);border-radius:14px;padding:.6rem;margin:.5rem 0;background:var(--c)}
-.m{display:flex;gap:.4rem;align-items:center;margin:.35rem 0}.m div{background:var(--sb);color:var(--t);border-radius:14px;padding:.5rem .85rem;flex:1}.m.me div{background:var(--p);color:var(--pt)}body.hc .m div{border:1px solid #FFE600}
+.msgs{max-height:260px;overflow:auto;border:1px solid var(--bd);border-radius:12px;padding:.5rem;margin:.5rem 0}
+.m{display:flex;gap:.4rem;align-items:center;margin:.3rem 0}.m div{background:var(--sb);color:var(--t);border-radius:14px;padding:.4rem .8rem;flex:1}.m.me div{background:var(--p);color:var(--pt)}body.hc .m div{border:1px solid #FFE600}
 .send{display:flex;gap:.5rem}.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
 .star{font-size:2.2rem;background:none;border:0;color:var(--p);padding:0 .1rem}
-#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:5.2rem;background:var(--t);color:var(--bg);padding:.8rem 1.2rem;border-radius:1rem;z-index:12;font-weight:800;max-width:90%;box-shadow:0 8px 24px rgba(0,0,0,.2)}
-.ig-ring{padding:2.5px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:inline-flex;flex-shrink:0}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:5.5rem;background:var(--t);color:var(--bg);padding:.8rem 1.2rem;border-radius:1rem;z-index:12;font-weight:800;max-width:90%;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ig-ring{padding:2px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:inline-flex;flex-shrink:0}
 .ig-ring>*{border:2px solid #fff !important}
 .stories-bar{display:flex;gap:.85rem;overflow-x:auto;padding:.5rem .2rem .75rem;margin:.4rem 0;scrollbar-width:none}
 .stories-bar::-webkit-scrollbar{display:none}
 .st-item{display:flex;flex-direction:column;align-items:center;gap:.3rem;min-width:68px;cursor:pointer;text-align:center}
 .st-item span{font-size:.78rem;font-weight:800;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ig-feed{min-height:280px;max-height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;padding:.75rem;background:#fff;border-radius:16px;border:1px solid var(--bd)}
+.ig-feed{max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;padding:.6rem .3rem;background:#fff}
 .ig-me{align-self:flex-end;max-width:78%;background:linear-gradient(135deg,#3797f0,#5851db);color:#fff;padding:.65rem .95rem;border-radius:20px 20px 4px 20px;font-size:.96rem;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .ig-them{align-self:flex-start;display:flex;align-items:flex-end;gap:.5rem;max-width:82%}
 .ig-bubble{background:#efefef;color:#111827;padding:.65rem .95rem;border-radius:20px 20px 20px 4px;font-size:.96rem;line-height:1.35}
-.ig-bar{display:flex;align-items:center;gap:.5rem;margin-top:.75rem;background:#fff;padding:.35rem .5rem .35rem 1rem;border-radius:999px;border:1px solid #dbdbdb}
+.ig-bar{display:flex;align-items:center;gap:.5rem;margin-top:.75rem;background:#fff;padding:.3rem .4rem .3rem 1rem;border-radius:999px;border:1px solid #dbdbdb}
 .ig-bar input{border:none;background:transparent;flex:1;padding:.35rem 0;outline:none;font-size:.96rem;min-height:38px}
 .ig-send{background:none;border:0;color:#0095f6;font-weight:800;font-size:.96rem;padding:.4rem .75rem;min-height:38px}
 .ig-send:hover{color:#1877f2}
-body.easy .btn,body.easy .opt{font-size:1.25rem;padding:1.05rem 1.35rem}
+body.easy .btn,body.easy .opt{font-size:1.3rem;padding:1.1rem 1.4rem}
 body.easy .adv{display:none}
-@media(max-width:520px){.ct{flex-wrap:wrap;margin-left:0}h1{font-size:1.5rem}.ncard{padding:.8rem;min-height:118px}.ncard h3{font-size:.98rem}}
+@media(max-width:520px){.ct{flex-wrap:wrap;margin-left:0}.mb{padding:.9rem 3.2rem;font-size:1.1rem}h1{font-size:1.6rem}}
 @media(prefers-reduced-motion:no-preference){.bar i{transition:width .3s}}
 </style></head><body>
 <header id="hd"></header><main id="app"></main>
@@ -102,12 +91,12 @@ reqs:[{id:1,c:0,o:1,t:'',ses:[{d:d0(1),t:'11:00',h:2}],hTot:5,bono:1,date:d0(1),
 occ:{[d0(1)+'|9']:4,[d0(1)+'|10']:4,[d0(2)+'|17']:4,[d0(2)+'|18']:4},
 fol:[],plans:[{id:1,t:['Paseo por Doña Casilda','Doña Casilda inguruko ibilaldia'],when:['Mañana 11:00','Bihar 11:00'],h:2,max:3,m:['Maite'],prop:null,msgs:[{n:'Maite',t:'¡Hola! Yo llevo un termo de café, ¿os apuntáis?'}]},
 {id:2,t:['Café en Indautxu','Kafea Indautxun'],when:['Jueves 17:00','Osteguna 17:00'],h:1,max:3,m:['Arantxa'],prop:null,msgs:[{n:'Arantxa',t:'Buenas tardes, ¿quién se anima a tomar un café?'}]}],
-team:[{f:'h',t:'¡Hola! Somos el equipo de Hurbil en Bilbao. Escríbenos aquí lo que necesites y te responderemos en cuanto lo leamos.'}]}}
+team:[{f:'h',t:'¡Hola, Aimar! Somos el equipo de Hurbil. ¿En qué te podemos ayudar?'}]}}
 const SB_URL='https://oijhfovricxgpnczwpfv.supabase.co';
 const SB_KEY='sb_publishable_I1I6eY2egVrjwMzbDqrs0Q_2EK05T2C';
 const sb=window.supabase.createClient(SB_URL,SB_KEY);
 const TEAM_ID='hurbil_team';
-let sbUid=null,usersList=[],lastSeenDm=+(localStorage.getItem('hurbil_seen_dm')||0),firstSync=true,askDelPlan=null,askDelReq=null,draftChat='',editProf=false,storyReqId=null,storyModal=null,storyIdx=0,storyUploading=false;
+let sbUid=null,usersList=[],lastSeenDm=+(localStorage.getItem('hurbil_seen_dm')||0),firstSync=true,askDelPlan=null,askDelReq=null,draftChat='',editProf=false,storyReqId=null,storyIdx=0,storyUploading=false;
 let db;try{db=JSON.parse(localStorage.getItem('hurbil2'))}catch(e){}db=db||seed();
 db.delPlans=db.delPlans||[];db.delReqs=db.delReqs||[];db.stories=db.stories||[];
 const isUserTyping=()=>{const ae=document.activeElement;return ae&&['INPUT','TEXTAREA','SELECT'].includes(ae.tagName)};
@@ -162,14 +151,14 @@ if(!firstSync&&dms.length>dmList.length){
 const newest=dms[dms.length-1];
 if(newest&&newest.receiver_id==sbUid){
 const isTeam=newest.sender_id==TEAM_ID;
-const inThatChat=route=='chats'&&((isTeam&&mt=='team')||(!isTeam&&dmUser==newest.sender_id));
+const inThatChat=(isTeam&&md=='chat'&&mt=='team')||(!isTeam&&md=='dm'&&dmUser==newest.sender_id);
 if(!inThatChat){
 const sender=isTeam?{name:'Equipo Hurbil'}:usersList.find(x=>x.id==newest.sender_id);
 notifyUser(sender?.name||_('Nuevo mensaje','Mezu berria'),newest.text);
 }
 }
 }
-if(route=='chats'&&((dmUser)||(mt=='team'))&&dms.length){
+if(((md=='dm'&&dmUser)||(md=='chat'&&mt=='team'))&&dms.length){
 const maxId=Math.max(...dms.map(x=>x.id||0));
 if(maxId>lastSeenDm){lastSeenDm=maxId;localStorage.setItem('hurbil_seen_dm',String(lastSeenDm))}
 }
@@ -230,7 +219,7 @@ const PAY=[
 const LOGO=`<img src="/Hurbil/logo.png" alt="Logo Hurbil" style="width:44px;height:44px;border-radius:10px;object-fit:contain;flex:none">`;
 const W0=()=>({s:1,cat:null,opt:null,txt:'',plan:'normal',who:'me',rName:db.u.name||'',rAddr:db.u.addr||'',rPhone:db.u.contact||'',rDo:'',rNotes:'',share:false,sd:d0(1),st:'11:00',sh:1,ses:[],addTo:0,pay:''});
 const w=W0(),tr={},lg={u:'',p:''},wl={n:W[0],p:''},X={get db(){return db},w,tr,lg,wl};
-let wk=null,route=location.hash.slice(1)||'home',md=null,mt='friends',ct='neigh',fl=false,oc=null,sp=false,pm='create',fo=false;
+let wk=null,route=location.hash.slice(1)||'home',md=null,mt='team',ct='neigh',fl=false,oc=null,sp=false,pm='create',fo=false;
 const S=t=>`<button class="spk" data-a="say" data-t="${esc(t)}" aria-label="${_('Escuchar','Entzun')}">🔊</button>`;
 const say=t=>{if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=db.lang=='eu'?'eu-ES':'es-ES';u.rate=.9;speechSynthesis.speak(u)};
 const go=r=>{route=r;try{history.replaceState(null,'','#'+(r=='home'?'':r))}catch(e){}scrollTo(0,0)};
@@ -256,97 +245,19 @@ const notifOn=('Notification' in window&&Notification.permission==='granted')&&d
 return`<div class="hw"><a href="#" class="lg" data-a="go" data-v="home" aria-label="Hurbil">${LOGO}<span><b>Hurbil · Siempre cerca de ti</b><small>Bilbao</small></span></a>
 <div class="ct"><span class="seg" role="group" aria-label="Idioma / Hizkuntza"><button data-a="lang" data-v="es" aria-pressed="${db.lang=='es'}">ES</button><button data-a="lang" data-v="eu" aria-pressed="${db.lang=='eu'}">EU</button></span>
 <span class="seg">${bn(-1,'A-',_('Letra más pequeña','Letra txikiagoa'))}${bn(1,'A+',_('Letra más grande','Letra handiagoa'))}</span>
-<button class="ib rd" data-a="hc" aria-pressed="${!!db.hc}" aria-label="${_('Alto contraste','Kontraste altua')}"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 2a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button></div></div><div class="hz"><button class="sw" aria-checked="${notifOn}" data-a="notif">${notifOn?'🔔 '+_('Avisos activos','Abisuak aktibo'):'🔕 '+_('Activar avisos','Abisuak aktibatu')}</button><button class="sw" aria-checked="${!!db.easy}" data-a="easy">${_('Modo Fácil','Modu Erraza')}</button></div>`}
-
-function home(){
-const n=db.reqs.filter(r=>!arch(r)).length,cc=pendingCommCount(),uDm=unreadDmCount();
+<button class="ib rd" data-a="hc" aria-pressed="${!!db.hc}" aria-label="${_('Alto contraste','Kontraste altua')}"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 2a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button>
+<a class="pill" href="#prof" data-a="go" data-v="prof">👤 ${db.u.on?esc(fn()):_('Entrar','Sartu')}</a></div></div><div class="hz"><button class="sw" aria-checked="${notifOn}" data-a="notif">${notifOn?'🔔 '+_('Avisos activos','Abisuak aktibo'):'🔕 '+_('Activar avisos','Abisuak aktibatu')}</button><button class="sw" aria-checked="${!!db.easy}" data-a="easy">${_('Modo Fácil','Modu Erraza')}</button></div>`}
+function home(){const t=_('¿En qué podemos ayudarte hoy?','Zertan lagun dezakegu gaur?'),sub=_('Pide a una persona de confianza que vaya a casa. Tú eliges qué necesitas y cuándo.','Eskatu konfiantzazko pertsona bati etxera joateko. Zuk aukeratzen duzu zer behar duzun eta noiz.');
+const cc=pendingCommCount();
 const liveReq=db.reqs.find(canPostStory);
 const liveStories=liveReq?activeStories().filter(st=>String(st.reqId)===String(liveReq.id)):[];
-const liveBanner=liveReq?`<section class="live-story-hero">
-<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.35rem">
-<b>✨ ${_('Estás en horario de servicio','Zerbitzu-ordutegian zaude')}</b>
-${liveStories.length?`<button class="pill" data-a="viewstory" data-v="${liveStories[0].id}">👁️ ${_('Ver','Ikusi')} (${liveStories.length})</button>`:''}
-</div>
-<p style="margin:.15rem 0 .25rem;font-weight:700">${svc(liveReq)}${liveReq.w?' · '+esc(liveReq.w):''}</p>
-<p class="mut" style="font-size:.88rem;margin:0 0 .7rem">${_('Comparte una foto o vídeo (máx. 20 s) visible 24 h para tus seguidores.','Partekatu argazki edo bideo bat (geh. 20 s), 24 orduz ikusgai zure jarraitzaileentzat.')}</p>
-<button class="btn" style="width:100%;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);border:0;color:#fff" data-a="openstory" data-id="${liveReq.id}">📸 ${_('Subir historia del servicio','Zerbitzuaren historia igo')}</button>
-</section>`:'';
-const h1=_('Acompañamiento cercano y de confianza en Bilbao','Bilbon hurbileko eta konfiantzazko laguntza');
-const p1=_('Un servicio cálido y claro para mayores y familias: tú pides lo que necesitas y siempre sabes quién viene a casa.','Zerbitzu goxo eta argia adinekoentzat eta familientzat: behar duzuna eskatzen duzu eta beti dakizu nor datorren etxera.');
-return`${liveBanner}<section class="hero">
-<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.3rem">
-<span class="hero-tag">👋 ${db.u.on?_('Hola, ','Kaixo, ')+esc(fn()):_('Bienvenido a Hurbil','Ongi etorri Hurbilera')}</span>
-${S(h1+'. '+p1)}
-</div>
-<h1 style="margin:.15rem 0 .45rem">${h1}</h1>
-<p class="mut" style="margin:0 0 1rem">${p1}</p>
-<a class="btn s" style="width:100%;font-size:1.15rem;min-height:56px" href="#help" data-a="go" data-v="help">🤝 ${_('Pedir ayuda','Laguntza eskatu')}</a>
-</section>
-
-<div class="nav-cards">
-<a class="ncard" href="#reqs" data-a="go" data-v="reqs">
-<div class="row" style="justify-content:space-between;align-items:flex-start"><div class="nic">📋</div>${n?`<span class="bd">${n}</span>`:''}</div>
-<div><h3 style="margin:0 0 .2rem">${_('Mis solicitudes','Nire eskaerak')}</h3><small class="mut">${_('Citas activas, horarios y tu PIN','Hitzordu aktiboak, ordutegiak eta zure PINa')}</small></div>
-</a>
-<a class="ncard" href="#comm" data-a="go" data-v="comm">
-<div class="row" style="justify-content:space-between;align-items:flex-start"><div class="nic">🏘️</div>${cc?`<span class="badge">${cc}</span>`:''}</div>
-<div><h3 style="margin:0 0 .2rem">${_('Comunidad y planes','Komunitatea eta planak')}</h3><small class="mut">${_('Vecinos, paseos y planes en grupo','Auzokideak, ibilaldiak eta talde-planak')}</small></div>
-</a>
-<a class="ncard" href="#chats" data-a="go" data-v="chats">
-<div class="row" style="justify-content:space-between;align-items:flex-start"><div class="nic">💬</div>${uDm?`<span class="badge">${uDm}</span>`:''}</div>
-<div><h3 style="margin:0 0 .2rem">${_('Chats','Txatak')}</h3><small class="mut">${_('Mensajes con vecinos y equipo Hurbil','Mezuak auzokideekin eta Hurbil taldearekin')}</small></div>
-</a>
-<a class="ncard" href="#prof" data-a="go" data-v="prof">
-<div class="row" style="justify-content:space-between;align-items:flex-start"><div class="nic">👤</div></div>
-<div><h3 style="margin:0 0 .2rem">${db.u.on?_('Mi cuenta','Nire kontua'):_('Entrar / Crear cuenta','Sartu / Kontua sortu')}</h3><small class="mut">${_('Perfil, bono, ahorro y contacto familiar','Profila, bonoa, aurrezkia eta senidearen kontaktua')}</small></div>
-</a>
-<a class="ncard full" href="#team" data-a="go" data-v="team">
-<div class="nic">👥</div>
-<div class="grow"><h3 style="margin:0 0 .15rem">${_('Conoce al equipo','Ezagutu taldea')}</h3><small class="mut">${_('Aimar, Ander, Eder y Eidan · Tu equipo en Bilbao','Aimar, Ander, Eder eta Eidan · Zure taldea Bilbon')}</small></div>
-<span style="font-size:1.3rem;color:var(--m)">›</span>
-</a>
-</div>
-
-<a class="btn" style="width:100%;margin:.2rem 0 .85rem" href="tel:644270017">📞 ${_('Llamar a Hurbil · 644 270 017','Hurbilera deitu · 644 270 017')}</a>
-
-<div class="trust">
-<div class="row"><h2 class="grow" style="font-size:1.2rem">🛡️ ${_('Siempre sabrás quién viene','Beti jakingo duzu nor datorren')}</h2>${S(_('Siempre sabrás quién viene. Presentamos a la persona antes de la primera visita.','Beti jakingo duzu nor datorren. Lehen bisitaren aurretik aurkezten dugu pertsona.'))}</div>
-<p style="margin:.4rem 0 0">${_('Presentamos a la persona antes de la primera visita y verificamos su llegada con un PIN de seguridad personal.','Lehen bisitaren aurretik aurkezten dugu pertsona eta bere etorrera segurtasun-PIN pertsonal batekin egiaztatzen dugu.')}</p>
-</div>`;
-}
-
-function chats(){
-if(dmUser){
-const peer=usersList.find(x=>x.id==dmUser)||{name:'Chat',username:''};
-const chatMsgs=dmList.filter(m=>(m.sender_id==sbUid&&m.receiver_id==dmUser)||(m.sender_id==dmUser&&m.receiver_id==sbUid));
-return back()+`<div class="card" style="padding:.9rem">
-<div style="display:flex;align-items:center;gap:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--bd);margin-bottom:.6rem">
-<button class="btn g" style="min-height:42px;padding:.3rem .8rem" onclick="dmUser=null;draftChat='';render()">←</button>
-<div class="ig-ring">${avImg(peer,44)}</div>
-<div class="grow" style="cursor:pointer" onclick="dmUser=null;ct='neigh';viewU='${peer.id}';go('comm');render()">
-<div style="font-weight:800;font-size:1.05rem;line-height:1.2">${esc(peer.name)}</div>
-<div style="font-size:.82rem;color:var(--m)">${esc(peer.username||'')} · <span style="color:#16a34a;font-weight:700">${_('Activo ahora','Aktibo orain')}</span></div>
-</div>
-</div>
-<div class="ig-feed">${chatMsgs.length?chatMsgs.map(m=>{const mine=m.sender_id==sbUid,tm=m.created_at?new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'',pl=m.plan_id?db.plans.find(x=>String(x.id)==String(m.plan_id)):null;let card='';if(pl&&pl.prop){const q=pl.prop,meN=db.u.name,okMe=q.acc.includes(meN);card=`<div style="margin-top:.55rem;background:#fff;color:#111827;border-radius:14px;padding:.75rem;border:1px solid #e5e7eb;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-weight:800;font-size:.93rem">🤝 ${esc(pl.t[L()]||pl.t.es)}</div><div style="font-size:.8rem;color:#6b7280;margin:.2rem 0">📅 ${esc(pl.w)} · ${pl.h} h</div><div style="font-size:.8rem;font-weight:700;color:#4f46e5;margin:.3rem 0">${PS[q.st][L()]} (${q.acc.length}/2)</div>${q.st=='draft'?(!okMe?`<button class="btn s" style="width:100%;margin-top:.35rem;min-height:auto;padding:.5rem;border-radius:10px;font-size:.9rem" data-a="acc" data-v="${pl.id}" data-n="${esc(meN)}">✓ ${_('Aceptar plan conjunto','Plan bateratua onartu')}</button>`:`<div style="font-size:.8rem;color:#16a34a;font-weight:700">✓ ${_('Has aceptado · esperando a ','Onartu duzu · zain: ')}${esc(peer.name)}</div>`):''}</div>`}return mine?`<div class="ig-me">${esc(m.text)}${card}${tm?`<div style="font-size:.65rem;opacity:.75;text-align:right;margin-top:.2rem">${tm}</div>`:''}</div>`:`<div class="ig-them">${avImg(peer,28)}<div class="ig-bubble">${esc(m.text)}${card}${tm?`<div style="font-size:.65rem;color:#9ca3af;margin-top:.2rem">${tm}</div>`:''}</div></div>`}).join(''):`<div style="text-align:center;margin:2.5rem 0"><div class="ig-ring" style="margin-bottom:.5rem">${avImg(peer,64)}</div><div style="font-weight:800">${esc(peer.name)}</div><div class="mut" style="font-size:.85rem">${esc(peer.username||'')} · Hurbil Bilbao</div><p class="mut" style="font-size:.85rem;margin-top:.6rem">${_('Envía un mensaje para empezar la conversación','Bidali mezu bat elkarrizketa hasteko')}</p></div>`}</div>
-<div class="ig-bar"><input aria-label="${_('Escribe un mensaje','Idatzi mezu bat')}" placeholder="${_('Envía un mensaje...','Bidali mezu bat...')}" value="${esc(draftChat)}" oninput="draftChat=this.value" onkeydown="if(event.key==='Enter')this.nextElementSibling.click()"><button class="ig-send" data-a="send" data-v="dm:${dmUser}">${_('Enviar','Bidali')}</button></div>
-</div>`;
-}
-const friendsList=usersList.filter(u=>u.id!=sbUid&&(folRows.some(x=>x.follower_id==sbUid&&x.following_id==u.id&&x.status=='accepted')||folRows.some(x=>x.follower_id==u.id&&x.following_id==sbUid&&x.status=='accepted')));
-let body='';
-if(mt=='friends'){
-body=`<div class="card" style="padding:.6rem .9rem">`+(friendsList.length?friendsList.map(u=>{const last=[...dmList].reverse().find(m=>(m.sender_id==sbUid&&m.receiver_id==u.id)||(m.sender_id==u.id&&m.receiver_id==sbUid));const unread=last&&last.receiver_id==sbUid&&(last.id||0)>lastSeenDm;return`<div data-a="dm" data-v="${u.id}" style="display:flex;align-items:center;gap:.85rem;padding:.75rem .4rem;border-bottom:1px solid var(--bd);cursor:pointer"><div class="${unread?'ig-ring':''}">${avImg(u,52)}</div><div class="grow" style="min-width:0"><div style="font-weight:${unread?'800':'700'};font-size:1rem">${esc(u.name)}</div><div style="font-size:.86rem;color:${unread?'var(--t)':'var(--m)'};font-weight:${unread?'700':'400'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last?esc(last.text):_('Toca para enviar un mensaje','Sakatu mezua bidaltzeko')}</div></div>${unread?'<span style="width:10px;height:10px;border-radius:50%;background:#0095f6;flex-shrink:0"></span>':'<span style="color:var(--m);font-size:1.3rem">›</span>'}</div>`}).join(''):`<p class="mut" style="padding:.6rem 0">${_('Acepta o envía solicitudes en Comunidad para chatear con tus vecinos aquí.','Onartu edo bidali eskaerak Komunitatean hemen zure auzokideekin txateatzeko.')}</p><a class="btn g" style="width:100%;margin-bottom:.4rem" href="#comm" data-a="go" data-v="comm">🏘️ ${_('Ir a Comunidad','Joan Komunitatera')}</a>`)+`</div>`;
-}else if(mt=='team'){
-const cloudTeam=sbUid?dmList.filter(m=>(m.sender_id==sbUid&&m.receiver_id==TEAM_ID)||(m.sender_id==TEAM_ID&&m.receiver_id==sbUid)):[];
-const welcome={f:'h',t:_('¡Hola! Somos el equipo de Hurbil en Bilbao. Escríbenos aquí lo que necesites y te responderemos personalmente desde administración.','Kaixo! Bilboko Hurbil taldea gara. Idatzi hemen behar duzuna eta administrazioatik zuzenean erantzungo dizugu.')};
-const list=sbUid?[welcome,...cloudTeam.map(m=>({f:m.sender_id==sbUid?'u':'h',t:m.text}))]:db.team;
-body=`<div class="card">${msgs(list,'')+sendBox('team')}</div>`;
-}else{
-body=db.plans.length?db.plans.map(p=>`<div class="row" style="margin:.5rem 0"><button class="opt" data-a="gop" data-v="${p.id}">🤝 ${p.t[L()]||p.t.es}</button></div>`).join(''):`<div class="card"><p class="mut">${_('No hay chats de planes activos.','Ez dago plan-txat aktiborik.')}</p></div>`;
-}
-return back()+head('💬 '+_('Mensajes y chats','Mezuak eta txatak'))+`<div class="tabs">${[['friends',_('Mensajes','Mezuak')],['team',_('Equipo Hurbil','Hurbil taldea')],['plans',_('Planes','Planak')]].map(t=>`<button class="btn ${mt==t[0]?'':'g'}" data-a="tm" data-v="${t[0]}">${t[1]}</button>`).join('')}</div>`+body;
-}
-
+const liveBanner=liveReq?`<div class="live-story-hero"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.3rem"><b>✨ ${_('Estás en horario de servicio','Zerbitzu-ordutegian zaude')}</b>${liveStories.length?`<button class="pill" data-a="viewstory" data-v="${liveStories[0].id}">👁️ ${_('Ver','Ikusi')} (${liveStories.length})</button>`:''}</div><p style="margin:.15rem 0 .2rem;font-weight:700">${svc(liveReq)}${liveReq.w?' · '+esc(liveReq.w):''}</p><p class="mut" style="font-size:.86rem;margin:0 0 .65rem">${_('Comparte una foto o vídeo (máx. 20 s) visible 24 h para tus seguidores.','Partekatu argazki edo bideo bat (geh. 20 s), 24 orduz ikusgai zure jarraitzaileentzat.')}</p><button class="btn" style="width:100%;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);border:0;color:#fff" data-a="openstory" data-id="${liveReq.id}">📸 ${_('Subir historia del servicio','Zerbitzuaren historia igo')}</button></div>`:'';
+const bt=(c,l,at,bdg=0)=>`<div class="mw"><a class="mb ${c}" ${at}>${l}${bdg?`<span class="badge">${bdg}</span>`:''}</a>${S(l.replace(/^\S+\s/,''))}</div>`,go=v=>`href="#${v}" data-a="go" data-v="${v}"`;
+const ct=_('Presentamos a la persona que irá a casa antes de la primera visita. Nuestra oficina de Bilbao también atiende en persona y por teléfono.','Etxera joango den pertsona lehen bisitaren aurretik aurkeztuko dizugu. Gure Bilboko bulegoak ere aurrez aurre eta telefonoz artatzen du.'),ht=_('🛡️ Siempre sabrás quién viene','🛡️ Beti jakingo duzu nor datorren'),tm='Aimar Fernandez, Ander Herrera, Eder Fernandez, Eidan Irastorza';
+return`${liveBanner}<div class="row" style="align-items:flex-start"><div class="grow"><h1>${t}</h1><p class="mut" style="margin:.3rem 0 .8rem">${sub}</p></div>${S(t+'. '+sub)}</div>
+${bt('pri','🤝 '+_('Pedir ayuda','Laguntza eskatu'),go('help'))}${bt('soft','📋 '+_('Mis solicitudes','Nire eskaerak')+` (${db.reqs.filter(r=>!arch(r)).length})`,go('reqs'))}${bt('soft','🏘️ '+_('Comunidad y planes','Komunitatea eta planak'),go('comm'),cc)}
+${bt('soft','👥 '+_('Conoce a nuestro equipo','Ezagutu gure taldea'),go('team'))}${bt('soft','📞 '+_('Llamar','Deitu')+': 644 270 017','href="tel:644270017"')}
+<div class="card"><div class="row"><h2 class="grow" style="font-size:1.3rem">${ht}</h2>${S(ht.slice(2)+'. '+ct)}</div><p style="font-size:1.1rem">${ct}</p><p class="mut adv" style="font-size:.85rem;margin:.6rem 0 0">${_('Equipo fundador','Sortzaileen taldea')}: ${tm}</p></div>`}
 function ok(){const x=w.s;return x==1?(w.cat!=null&&(C[w.cat][2].length?(w.opt!=null&&(w.opt!='o'||w.txt.trim())):w.txt.trim())):x==2?!!w.plan:x==3?(!!w.rName.trim()&&!!w.rAddr.trim()&&!!w.rPhone.trim()):x==4?(w.plan=='normal'?(!!w.sd&&!!w.st&&(+w.sh>=1)):w.ses.length>0):!!w.pay}
 function help(){let h='';const est=estCalc();
 if(w.s==1){
@@ -488,10 +399,8 @@ return h}
 function prof(){const u=db.u,f=(k,l,ty)=>`<label for="f_${k}">${l}</label><div class="row"><input class="grow" id="f_${k}" type="${k=='pass'&&!sp?'password':ty||'text'}" data-f="db.u.${k}" value="${esc(u[k]||'')}">${k=='pass'?`<button class="ib" data-a="pw">${sp?_('Ocultar','Ezkutatu'):_('Mostrar','Erakutsi')}</button>`:''}</div>${S(l)}`;
 const flds=f('name',_('Nombre completo','Izen osoa'))+f('user',_('Nombre de usuario (ej. @aimar_bilbao)','Erabiltzaile-izena (adib. @aimar_bilbao)'))+f('contact',_('Correo electrónico o teléfono','Posta elektronikoa edo telefonoa'))+f('pass',_('Contraseña','Pasahitza'))+f('addr',_('Barrio o dirección en Bilbao','Auzoa edo helbidea Bilbon'))+f('fam',_('Teléfono del familiar de confianza (WhatsApp)','Konfiantzazko senidearen telefonoa (WhatsApp)'),'tel');
 const editFlds=f('name',_('Nombre completo','Izen osoa'))+f('user',_('Nombre de usuario (ej. @aimar_bilbao)','Erabiltzaile-izena (adib. @aimar_bilbao)'))+f('contact',_('Correo electrónico o teléfono','Posta elektronikoa edo telefonoa'))+f('addr',_('Barrio o dirección en Bilbao','Auzoa edo helbidea Bilbon'))+f('fam',_('Teléfono del familiar de confianza (WhatsApp)','Konfiantzazko senidearen telefonoa (WhatsApp)'),'tel');
-let h=back()+head(_('Tu cuenta','Zure kontua'));
-if(u.on){
-return h+`<div class="card"><div class="row" style="align-items:flex-start;gap:1rem">${avImg(u,72)}<div class="grow"><h3 style="font-size:1.25rem;margin:0">${esc(u.name)}</h3><p class="mut" style="margin:.15rem 0 .25rem">${esc(u.user)}</p><p class="mut" style="font-size:.88rem;margin:0 0 .6rem">📍 ${esc(u.addr||'Bilbao')}${u.fam?' · 📞 '+esc(u.fam):''}</p><label class="btn g" style="display:inline-flex;margin:0;cursor:pointer">📷 ${_('Cambiar foto de perfil','Profileko argazkia aldatu')}<input type="file" accept="image/*" style="display:none" onchange="upAv(this)"></label></div><button class="ib rd" data-a="edprof" aria-pressed="${editProf}" aria-label="${_('Editar datos de mi cuenta','Nire kontuko datuak editatu')}" title="${_('Editar datos de mi cuenta','Nire kontuko datuak editatu')}">⚙️</button></div>${editProf?`<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)"><h3 style="margin:0 0 .4rem">✏️ ${_('Editar información de mi cuenta','Nire kontuaren informazioa editatu')}</h3>${editFlds}<div class="row" style="gap:.6rem;margin-top:1rem"><button class="btn s" style="flex:1" data-a="prof">💾 ${_('Guardar cambios','Aldaketak gorde')}</button><button class="btn g" style="flex:1" data-a="edprof">${_('Cancelar','Utzi')}</button></div></div>`:''}<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)"><button class="btn g" style="width:100%" data-a="out">${_('Cerrar sesión','Saioa itxi')}</button></div></div>`+pextra();
-}
+let h=back()+head(_('Mi perfil / Cuenta','Nire profila / Kontua'));
+if(u.on){return h+pextra()+`<div class="card"><div class="row" style="align-items:flex-start;gap:1rem">${avImg(u,68)}<div class="grow"><b>${esc(u.name)}</b><p class="mut" style="margin:.15rem 0">${esc(u.user)}</p><p class="mut" style="font-size:.88rem;margin:0 0 .5rem">📍 ${esc(u.addr||'Bilbao')}${u.fam?' · 📞 '+esc(u.fam):''}</p><label class="btn g" style="display:inline-flex;margin:0;cursor:pointer">📷 ${_('Cambiar foto de perfil','Profileko argazkia aldatu')}<input type="file" accept="image/*" style="display:none" onchange="upAv(this)"></label></div><button class="ib rd" data-a="edprof" aria-pressed="${editProf}" aria-label="${_('Editar datos','Datuak editatu')}" title="${_('Editar datos','Datuak editatu')}">⚙️</button></div>${editProf?`<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)">${editFlds}<div class="row" style="margin-top:1rem"><button class="btn s" data-a="prof">💾 ${_('Guardar datos','Datuak gorde')}</button><button class="btn g" data-a="edprof">${_('Cancelar','Utzi')}</button></div></div>`:''}<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)"><button class="btn g" style="width:100%" data-a="out">${_('Cerrar sesión','Saioa itxi')}</button></div></div>`;}
 return h+`<div class="tabs">${[['create',_('Crear cuenta','Kontua sortu')],['login',_('Iniciar sesión','Saioa hasi')]].map(t=>`<button class="btn ${pm==t[0]?'':'g'}" data-a="mode" data-v="${t[0]}">${t[1]}</button>`).join('')}</div><div class="card">${pm=='create'?flds+`<button class="btn s" style="margin-top:1rem" data-a="auth" data-v="c">${_('Crear cuenta','Kontua sortu')}</button>`:`<label for="lu">${_('Usuario o correo/teléfono','Erabiltzailea edo posta/telefonoa')}</label><input id="lu" data-f="lg.u"><label for="lp">${_('Contraseña','Pasahitza')}</label><input id="lp" type="password" data-f="lg.p"><button class="btn s" style="margin-top:1rem" data-a="auth" data-v="l">${_('Iniciar sesión','Saioa hasi')}</button>`}</div>`}
 let admOk=false,admTab='reqs',admErr=false;
 function admin(){
@@ -510,7 +419,7 @@ const u=usersList.find(x=>x.id==uid)||{name:'Usuario',username:'',addr:'Bilbao'}
 const thread=teamMsgs.filter(m=>(m.sender_id==uid&&m.receiver_id==TEAM_ID)||(m.sender_id==TEAM_ID&&m.receiver_id==uid));
 const formatted=thread.map(m=>({f:m.sender_id==TEAM_ID?'u':'h',n:m.sender_id==TEAM_ID?'Equipo Hurbil':u.name,t:m.text}));
 return`<div class="card"><div class="row" style="margin-bottom:.5rem">${avImg(u,42)}<div><b>${esc(u.name)}</b><br><span class="mut">${esc(u.username||'')} · 📍 ${esc(u.addr||'Bilbao')}</span></div></div>${msgs(formatted,'Equipo Hurbil')}${sendBox('admteam:'+uid)}</div>`;
-}).join(''):`<div class="card"><p class="mut">${_('Aún ningún usuario ha escrito al Equipo Hurbil desde Chats.','Oraindik ez du inork idatzi Hurbil Taldeari Txatetatik.')}</p></div>`;
+}).join(''):`<div class="card"><p class="mut">${_('Aún ningún usuario ha escrito al Equipo Hurbil desde el chat.','Oraindik ez du inork idatzi Hurbil Taldeari txatetik.')}</p></div>`;
 return`${back()}<div class="row" style="justify-content:space-between;align-items:center"><h2>${_('Administración','Administrazioa')}</h2><button class="btn g" onclick="admOk=false;render()">${_('Salir','Irten')}</button></div><p class="mut" style="margin-top:-.3rem"><span style="color:var(--s)">●</span> ${_('En directo · panel de control','Zuzenean · kontrol panela')}</p><div class="row" style="gap:.5rem;margin:1rem 0"><button class="btn ${admTab==='reqs'?'s':''}" style="flex:1" onclick="admTab='reqs';render()">📋 ${_('Solicitudes','Eskaerak')} (${db.reqs.length+db.plans.length})</button><button class="btn ${admTab==='msgs'?'s':''}" style="flex:1" onclick="admTab='msgs';render()">💬 ${_('Mensajes Hurbil','Hurbil Mezuak')} (${teamThreadIds.length})</button><button class="btn ${admTab==='accs'?'s':''}" style="flex:1" onclick="admTab='accs';render()">👥 ${_('Cuentas','Kontuak')} (${usersList.length})</button></div>${admTab==='reqs'?(reqCards+allPlanCards):admTab==='msgs'?teamChatCards:accCards}<button class="btn g" style="margin-top:1rem" data-a="rst">${_('Restablecer datos de muestra','Laginketa-datuak berrezarri')}</button>`;
 }
 function modal(){if(!md)return'';let b='';
@@ -523,6 +432,17 @@ if(!cur){md=null;return''}
 const ago=Math.max(1,Math.round((Date.now()-cur.createdAt)/60000));
 const agoTxt=ago<60?`${ago} min`:`${Math.round(ago/60)} h`;
 b=`<div class="row" style="justify-content:space-between;margin-bottom:.6rem"><div class="row">${avImg({name:cur.userName,avatar:cur.avatar},38)}<div><b>${esc(cur.userName||'Hurbil')}</b><br><small class="mut">${esc(cur.svc||'')} · ${agoTxt}</small></div></div><span class="bd">${storyIdx+1}/${list.length}</span></div><div style="background:#000;border-radius:16px;overflow:hidden;display:flex;align-items:center;justify-content:center;max-height:58vh">${cur.type==='video'?`<video src="${esc(cur.url)}" controls autoplay playsinline style="width:100%;max-height:58vh;object-fit:contain"></video>`:`<img src="${esc(cur.url)}" alt="" style="width:100%;max-height:58vh;object-fit:contain">`}</div>${cur.cap?`<p style="margin:.6rem 0 0;font-weight:700">${esc(cur.cap)}</p>`:''}${list.length>1?`<div class="row" style="gap:.6rem;margin-top:.7rem"><button class="btn g" style="flex:1" data-a="stprev">← ${_('Anterior','Aurrekoa')}</button><button class="btn g" style="flex:1" data-a="stnext">${_('Siguiente','Hurrengoa')} →</button></div>`:''}`}
+else if(md=='dm'&&dmUser){const peer=usersList.find(x=>x.id==dmUser)||{name:'Chat',username:''};const chatMsgs=dmList.filter(m=>(m.sender_id==sbUid&&m.receiver_id==dmUser)||(m.sender_id==dmUser&&m.receiver_id==sbUid));
+b=`<div style="display:flex;align-items:center;gap:.75rem;padding-bottom:.75rem;border-bottom:1px solid #efefef;margin-bottom:.2rem"><button style="background:none;border:0;font-size:1.4rem;padding:.2rem .4rem;min-height:auto;color:#111827" onclick="md='chat';mt='friends';draftChat='';render()">←</button><div class="ig-ring">${avImg(peer,42)}</div><div class="grow" style="cursor:pointer" onclick="md=null;ct='neigh';viewU='${peer.id}';go('comm');render()"><div style="font-weight:800;font-size:1rem;color:#111827;line-height:1.2">${esc(peer.name)}</div><div style="font-size:.78rem;color:#6b7280">${esc(peer.username||'')} · <span style="color:#16a34a;font-weight:700">${_('Activo ahora','Aktibo orain')}</span></div></div></div>`
++`<div class="ig-feed">${chatMsgs.length?chatMsgs.map(m=>{const mine=m.sender_id==sbUid,tm=m.created_at?new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'',pl=m.plan_id?db.plans.find(x=>String(x.id)==String(m.plan_id)):null;let card='';if(pl&&pl.prop){const q=pl.prop,meN=db.u.name,okMe=q.acc.includes(meN);card=`<div style="margin-top:.55rem;background:#fff;color:#111827;border-radius:14px;padding:.75rem;border:1px solid #e5e7eb;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-weight:800;font-size:.93rem">🤝 ${esc(pl.t[L()]||pl.t.es)}</div><div style="font-size:.8rem;color:#6b7280;margin:.2rem 0">📅 ${esc(pl.w)} · ${pl.h} h</div><div style="font-size:.8rem;font-weight:700;color:#4f46e5;margin:.3rem 0">${PS[q.st][L()]} (${q.acc.length}/2)</div>${q.st=='draft'?(!okMe?`<button class="btn s" style="width:100%;margin-top:.35rem;min-height:auto;padding:.5rem;border-radius:10px;font-size:.9rem" data-a="acc" data-v="${pl.id}" data-n="${esc(meN)}">✓ ${_('Aceptar plan conjunto','Plan bateratua onartu')}</button>`:`<div style="font-size:.8rem;color:#16a34a;font-weight:700">✓ ${_('Has aceptado · esperando a ','Onartu duzu · zain: ')}${esc(peer.name)}</div>`):''}</div>`}return mine?`<div class="ig-me">${esc(m.text)}${card}${tm?`<div style="font-size:.65rem;opacity:.75;text-align:right;margin-top:.2rem">${tm}</div>`:''}</div>`:`<div class="ig-them">${avImg(peer,28)}<div class="ig-bubble">${esc(m.text)}${card}${tm?`<div style="font-size:.65rem;color:#9ca3af;margin-top:.2rem">${tm}</div>`:''}</div></div>`}).join(''):`<div style="text-align:center;margin:2rem 0"><div class="ig-ring" style="margin-bottom:.5rem">${avImg(peer,64)}</div><div style="font-weight:800">${esc(peer.name)}</div><div class="mut" style="font-size:.85rem">${esc(peer.username||'')} · Hurbil Bilbao</div><p class="mut" style="font-size:.85rem;margin-top:.6rem">${_('Envía un mensaje para empezar la conversación','Bidali mezu bat elkarrizketa hasteko')}</p></div>`}</div>`
++`<div class="ig-bar"><input aria-label="${_('Escribe un mensaje','Idatzi mezu bat')}" placeholder="${_('Envía un mensaje...','Bidali mezu bat...')}" value="${esc(draftChat)}" oninput="draftChat=this.value" onkeydown="if(event.key==='Enter')this.nextElementSibling.click()"><button class="ig-send" data-a="send" data-v="dm:${dmUser}">${_('Enviar','Bidali')}</button></div>`}
+else{
+const cloudTeam=sbUid?dmList.filter(m=>(m.sender_id==sbUid&&m.receiver_id==TEAM_ID)||(m.sender_id==TEAM_ID&&m.receiver_id==sbUid)):[];
+const welcome={f:'h',t:_('¡Hola! Somos el equipo de Hurbil en Bilbao. Escríbenos aquí lo que necesites y te responderemos personalmente desde administración.','Kaixo! Bilboko Hurbil taldea gara. Idatzi hemen behar duzuna eta administrazioatik zuzenean erantzungo dizugu.')};
+const teamList=sbUid?[welcome,...cloudTeam.map(m=>({f:m.sender_id==sbUid?'u':'h',t:m.text}))]:db.team;
+b=`<div class="row"><h2 class="grow">💬 ${_('Direct','Mezuak')}</h2></div><div class="tabs">${[['friends',_('Mensajes','Mezuak')],['team',_('Equipo Hurbil','Hurbil taldea')],['plans',_('Planes','Planak')]].map(t=>`<button class="btn ${mt==t[0]?'':'g'}" data-a="tm" data-v="${t[0]}">${t[1]}</button>`).join('')}</div>`+
+(mt=='team'?msgs(teamList,'')+sendBox('team'):mt=='friends'?(usersList.filter(u=>u.id!=sbUid&&(folRows.some(x=>x.follower_id==sbUid&&x.following_id==u.id&&x.status=='accepted')||folRows.some(x=>x.follower_id==u.id&&x.following_id==sbUid&&x.status=='accepted'))).map(u=>{const last=[...dmList].reverse().find(m=>(m.sender_id==sbUid&&m.receiver_id==u.id)||(m.sender_id==u.id&&m.receiver_id==sbUid));const unread=last&&last.receiver_id==sbUid&&(last.id||0)>lastSeenDm;return`<div data-a="dm" data-v="${u.id}" style="display:flex;align-items:center;gap:.8rem;padding:.65rem .5rem;border-radius:14px;cursor:pointer;margin:.25rem 0;transition:background .15s" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"><div class="${unread?'ig-ring':''}">${avImg(u,52)}</div><div class="grow" style="min-width:0"><div style="font-weight:${unread?'800':'700'};font-size:.98rem;color:#111827">${esc(u.name)}</div><div style="font-size:.84rem;color:${unread?'#111827':'#6b7280'};font-weight:${unread?'700':'400'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last?esc(last.text):_('Toca para enviar un mensaje','Sakatu mezua bidaltzeko')}</div></div>${unread?'<span style="width:9px;height:9px;border-radius:50%;background:#0095f6;flex-shrink:0"></span>':'<span style="color:#9ca3af;font-size:1.2rem">›</span>'}</div>`}).join('')||`<p class="mut">${_('Acepta o envía solicitudes en Comunidad para chatear aquí.','Onartu edo bidali eskaerak Komunitatean hemen txateatzeko.')}</p>`):db.plans.map(p=>`<div class="row" style="margin:.4rem 0"><button class="opt" data-a="gop" data-v="${p.id}">🤝 ${p.t[L()]||p.t.es}</button></div>`).join(''));
+}
 return`<div class="ov"><div class="mo" role="dialog" aria-modal="true">${b}<button class="btn g" style="margin-top:1rem;width:100%" data-a="close">✕ ${_('Cerrar','Itxi')}</button></div></div>`}
 const saved=()=>db.reqs.reduce((s,r)=>s+(r.base-r.tot),0)+db.plans.filter(p=>p.prop&&p.prop.st=='accepted'&&p.m.includes(fn())).reduce((s,p)=>s+13*p.h*.15,0);
 function pextra(){const sv=`${_('Has ahorrado','Aurreztu duzu')} ${fmt(saved())}`,bo=db.reqs.find(r=>r.bono&&!arch(r));let b='';
@@ -538,10 +458,11 @@ function work(){const h=back()+head(_('Portal de trabajadores','Langileen ataria
 if(!wk)return h+`<div class="card"><label for="wn">${_('Trabajador','Langilea')}</label><select id="wn" data-f="wl.n">${W.map(n=>`<option ${wl.n==n?'selected':''}>${n}</option>`).join('')}</select><label for="wp">${_('PIN de acceso (4 dígitos)','Sarbide PINa (4 digitu)')}</label><input id="wp" type="password" inputmode="numeric" maxlength="4" data-f="wl.p" value="${esc(wl.p)}"><button class="btn s" style="margin-top:1rem" data-a="wlog">${_('Entrar','Sartu')}</button></div>`;
 const m=db.reqs.filter(r=>r.w==wk&&!ended(r));
 return h+`<div class="row"><b class="grow">👤 ${esc(wk)}</b><button class="btn g" data-a="wout">${_('Salir','Irten')}</button></div>`+(m.length?m.map(r=>{const t=`${svc(r)}. ${esc(r.cli||'')}. ${r.addr}. ${r.ses.map(sl).join('. ')}. PIN ${(r.pin||'').split('').join(' ')}`;return`<article class="card"><div class="row"><h3 class="grow">${svc(r)}</h3>${S(t)}</div><p>👤 ${esc(r.cli||'-')}</p><p>📍 ${esc(r.addr)}</p>${r.ses.map(q=>`<p>📅 ${sl(q)}</p>`).join('')}<p style="font-size:1.4rem">🔐 ${_('PIN del cliente','Bezeroaren PINa')}: <b style="letter-spacing:.2em">${r.pin||'-'}</b></p><small class="mut">${_('Comprueba este código con el cliente al llegar.','Egiaztatu kode hau bezeroarekin iristean.')}</small></article>`}).join(''):`<div class="card"><p>${_('No tienes tareas asignadas ahora.','Ez duzu eginkizunik esleituta orain.')}</p></div>`)}
-function render(){const h=route,pg={help,reqs,comm,prof,admin,team,work,chats}[h]||home;
+function render(){const h=route,pg={help,reqs,comm,prof,admin,team,work}[h]||home;
 document.documentElement.lang=db.lang;document.body.className=(db.hc?'hc ':'')+(db.easy?'easy':'');document.documentElement.style.fontSize=(16+db.fs*2+(db.easy?4:0))+'px';
 $('#hd').innerHTML=hdr();$('#app').innerHTML=pg()+`<footer class="adv" style="margin-top:2rem;text-align:center"><small>Hurbil · Bilbao · 644 270 017 · <a href="#admin" data-a="go" data-v="admin" style="opacity:.6">admin</a> · <a href="#work" data-a="go" data-v="work" style="opacity:.6">trabajadores</a></small></footer>`;
-$('#fab').innerHTML=`<div class="fab"><button class="sos" data-a="md" data-v="sos" aria-label="SOS Emergencia">🆘 SOS</button></div>`;
+const uDm=unreadDmCount();
+$('#fab').innerHTML=`<div class="fab"><button class="cb" data-a="md" data-v="chat">💬 ${_('Chat','Txata')}${uDm?`<span class="badge">${uDm}</span>`:''}</button><button class="sos" data-a="md" data-v="sos" aria-label="SOS Emergencia">🆘 SOS</button></div>`;
 $('#md').innerHTML=modal();
 document.querySelectorAll('.msgs,.ig-feed').forEach(e=>e.scrollTop=e.scrollHeight);if(fo){const i=document.querySelector('.send input,.ig-bar input');i&&i.focus();fo=false}}
 window.upAv=inp=>{const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=140;c.height=140;c.getContext('2d').drawImage(im,0,0,140,140);db.u.avatar=c.toDataURL('image/jpeg',.75);save();render();toast(_('Foto actualizada','Argazkia eguneratuta'))};im.src=e.target.result};r.readAsDataURL(f)};
@@ -563,7 +484,7 @@ switch(a){
 case'say':say(el.dataset.t);return;
 case'lang':db.lang=v;break;case'fs':db.fs=Math.max(-1,Math.min(6,db.fs+ +v));break;case'hc':db.hc^=1;break;case'easy':db.easy^=1;break;
 case'notif':{if('Notification' in window&&Notification.permission==='granted'){db.notif=db.notif===0?1:0;toast(db.notif?_('Avisos activados','Abisuak aktibatuta'):_('Avisos silenciados','Abisuak isilduta'));break}if(!('Notification' in window)){toast(_('Tu navegador no soporta notificaciones.','Zure nabigatzaileak ez ditu jakinarazpenak onartzen.'));break}Notification.requestPermission().then(p=>{if(p==='granted'){db.notif=1;notifyUser('Hurbil',_('Notificaciones activadas correctamente','Jakinarazpenak behar bezala aktibatu dira'))}else toast(_('Permiso de notificaciones denegado en el navegador.','Jakinarazpen baimena ukatuta nabigatzailean.'));save();render()});break}
-case'md':md=v;break;case'close':md=null;draftChat='';break;case'go':md=null;draftChat='';if(v=='chats')dmUser=null;go(v);break;case'tm':mt=v;draftChat='';if(v=='team'&&dmList.length){lastSeenDm=Math.max(...dmList.map(x=>x.id||0));localStorage.setItem('hurbil_seen_dm',String(lastSeenDm))}break;
+case'md':md=v;draftChat='';if(v=='chat')mt='friends';break;case'close':md=null;draftChat='';break;case'go':md=null;draftChat='';go(v);break;case'tm':mt=v;draftChat='';if(v=='team'&&dmList.length){lastSeenDm=Math.max(...dmList.map(x=>x.id||0));localStorage.setItem('hurbil_seen_dm',String(lastSeenDm))}break;
 case'openstory':{storyReqId=el.dataset.id;draftChat='';md='story_up';break}
 case'viewstory':{const list=activeStories();const idx=list.findIndex(x=>String(x.id)===String(v));storyIdx=idx>=0?idx:0;md='story_view';break}
 case'stnext':{const list=activeStories();if(list.length)storyIdx=(storyIdx+1)%list.length;break}
@@ -600,7 +521,7 @@ case'rate':{const x=tr[id];if(!x?.s){toast(_('Elige de 1 a 5 estrellas.','Aukera
 case'facc':{const r=folRows.find(x=>x.follower_id==v&&x.following_id==sbUid);if(r)r.status='accepted';sb.from('follows').update({status:'accepted'}).eq('follower_id',v).eq('following_id',sbUid).then(()=>syncCloud());toast(_('Solicitud aceptada','Eskaera onartuta'));break}
 case'frej':{folRows=folRows.filter(x=>!(x.follower_id==v&&x.following_id==sbUid));sb.from('follows').delete().eq('follower_id',v).eq('following_id',sbUid).then(()=>syncCloud());toast(_('Solicitud rechazada','Eskaera baztertuta'));break}
 case'uprof':{viewU=viewU==v?null:v;break}
-case'dm':{dmUser=v;draftChat='';md=null;go('chats');if(dmList.length){lastSeenDm=Math.max(...dmList.map(x=>x.id||0));localStorage.setItem('hurbil_seen_dm',String(lastSeenDm))}syncCloud();break}
+case'dm':{dmUser=v;draftChat='';md='dm';if(dmList.length){lastSeenDm=Math.max(...dmList.map(x=>x.id||0));localStorage.setItem('hurbil_seen_dm',String(lastSeenDm))}syncCloud();break}
 case'tab':ct=v;break;case'flt':fl=!fl;break;
 case'join':{const p=db.plans.find(x=>x.id==+v),n=fn();if(p.m.includes(n)){p.m=p.m.filter(x=>x!=n);p.prop=null}else{p.m.push(n);if(p.m.length==2){p.prop={st:'draft',acc:[]};p.msgs.push({n:p.m[0],t:_('¡Genial, ya somos dos! Vamos a por este plan.','Bikaina, bi gara! Egin dezagun plan hau.')},{n:'Hurbil',t:_('🤝 Propuesta de plan conjunto creada para 2 personas. Aceptadla los dos y la enviamos a Hurbil.','🤝 2 pertsonentzako plan bateratuaren proposamena sortu da. Biok onartu eta Hurbili bidaliko diogu.')});oc=p.id}}sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>{});break}
 case'acc':{const p=db.plans.find(x=>String(x.id)==v),n=el.dataset.n;if(p&&p.prop&&!p.prop.acc.includes(n)){p.prop.acc.push(n);if(p.prop.acc.length>=2){p.prop.st='sent';p.msgs.push({n:'Hurbil',t:_('📨 Plan conjunto enviado a Hurbil para confirmación.','📨 Plan bateratua Hurbilera bidalita baieztatzeko.')});toast(_('¡Los dos habéis aceptado! Plan enviado a Hurbil.','Biok onartu duzue! Plana Hurbilera bidalita.'))}else{toast(_('Has aceptado el plan. Falta la otra persona.','Plana onartu duzu. Beste pertsona falta da.'))}sb.from('plans').upsert({id:String(p.id),data:p}).then(()=>syncCloud())}break}
