@@ -1,9 +1,9 @@
-const CACHE_NAME = 'hurbil-v3';
+const CACHE_NAME = 'hurbil-v4';
 const ASSETS = [
   '/Hurbil/',
   '/Hurbil/index.html',
   '/Hurbil/manifest.json',
-  '/Hurbil/icon-512.png'
+  '/Hurbil/logo.png'
 ];
 
 self.addEventListener('install', (event) => {
