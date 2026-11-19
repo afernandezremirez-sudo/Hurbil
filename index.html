@@ -64,6 +64,16 @@ label{font-weight:800;display:block;margin:.75rem 0 .3rem}
 .stories-bar::-webkit-scrollbar{display:none}
 .st-item{display:flex;flex-direction:column;align-items:center;gap:.3rem;min-width:68px;cursor:pointer;text-align:center}
 .st-item span{font-size:.78rem;font-weight:800;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ig-story-full{position:fixed;inset:0;background:#09090b;color:#fff;z-index:20;display:flex;flex-direction:column;justify-content:space-between;user-select:none}
+.ig-story-top{position:relative;z-index:3;padding:.75rem 1rem 1.2rem;background:linear-gradient(180deg,rgba(0,0,0,.75) 0%,rgba(0,0,0,0) 100%)}
+.ig-story-bars{display:flex;gap:4px;margin-bottom:.7rem}
+.ig-story-bars span{flex:1;height:3px;border-radius:999px;background:rgba(255,255,255,.32);overflow:hidden}
+.ig-story-bars span.on{background:#fff}
+.ig-story-media{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+.ig-story-media img,.ig-story-media video{width:100%;height:100%;max-width:540px;object-fit:contain}
+.ig-story-tap{position:absolute;inset:72px 0 80px;display:flex;z-index:2}
+.ig-story-tap div{flex:1;cursor:pointer}
+.ig-story-bot{position:relative;z-index:3;padding:1.5rem 1.1rem 1.3rem;background:linear-gradient(0deg,rgba(0,0,0,.85) 0%,rgba(0,0,0,0) 100%);text-align:center}
 .ig-feed{max-height:440px;min-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;padding:.6rem .3rem;background:#fff;border-radius:12px}
 .ig-me{align-self:flex-end;max-width:78%;background:linear-gradient(135deg,#3797f0,#5851db);color:#fff;padding:.65rem .95rem;border-radius:20px 20px 4px 20px;font-size:.96rem;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .ig-them{align-self:flex-start;display:flex;align-items:flex-end;gap:.5rem;max-width:82%}
@@ -96,7 +106,7 @@ const SB_URL='https://oijhfovricxgpnczwpfv.supabase.co';
 const SB_KEY='sb_publishable_I1I6eY2egVrjwMzbDqrs0Q_2EK05T2C';
 const sb=window.supabase.createClient(SB_URL,SB_KEY);
 const TEAM_ID='hurbil_team';
-let sbUid=null,usersList=[],lastSeenDm=+(localStorage.getItem('hurbil_seen_dm')||0),firstSync=true,askDelPlan=null,askDelReq=null,draftChat='',editProf=false,storyReqId=null,storyIdx=0,storyUploading=false;
+let sbUid=null,usersList=[],lastSeenDm=+(localStorage.getItem('hurbil_seen_dm')||0),firstSync=true,askDelPlan=null,askDelReq=null,draftChat='',editProf=false,storyReqId=null,storyIdx=0,storyUploading=false,prevRoute='home';
 let db;try{db=JSON.parse(localStorage.getItem('hurbil2'))}catch(e){}db=db||seed();
 db.delPlans=db.delPlans||[];db.delReqs=db.delReqs||[];db.stories=db.stories||[];
 const isUserTyping=()=>{const ae=document.activeElement;return ae&&['INPUT','TEXTAREA','SELECT'].includes(ae.tagName)};
@@ -196,7 +206,7 @@ if(mapped.length)db.plans=mapped;
 db.plans=db.plans.filter(p=>!db.delPlans.includes(String(p.id)));
 db.reqs=db.reqs.filter(r=>!db.delReqs.includes(String(r.id)));
 firstSync=false;save();
-if(!isUserTyping())render();
+if(!isUserTyping()&&route!=='story')render();
 }
 const _=(a,b)=>db.lang=='eu'?b:a,L=()=>db.lang=='eu'?1:0,fn=()=>db.u.name.split(' ')[0]||'Aimar';
 const fmt=n=>n.toFixed(2).replace('.',',')+' €';
@@ -396,6 +406,15 @@ return`<article class="card"><div class="row" style="justify-content:space-betwe
 }).join(''):`<div class="card"><p>${_('Aún no hay planes publicados por la gente a la que sigues.','Oraindik ez dago jarraitzen duzun jendeak argitaratutako planik.')}</p></div>`;
 }
 return h}
+function storyPage(){
+const list=activeStories();
+const cur=list[storyIdx]||list[0];
+if(!cur){go(prevRoute||'home');return home()}
+const ago=Math.max(1,Math.round((Date.now()-cur.createdAt)/60000));
+const agoTxt=ago<60?`${ago} min`:`${Math.round(ago/60)} h`;
+const uObj=cur.userId===sbUid?db.u:(usersList.find(x=>x.id===cur.userId)||{name:cur.userName,avatar:cur.avatar});
+return`<div class="ig-story-full"><div class="ig-story-top"><div class="ig-story-bars">${list.map((_,i)=>`<span class="${i<=storyIdx?'on':''}"></span>`).join('')}</div><div class="row" style="justify-content:space-between;align-items:center"><div class="row">${avImg(uObj,40)}<div><b style="color:#fff;font-size:1rem">${esc(cur.userName||'Hurbil')}</b><div style="font-size:.8rem;color:rgba(255,255,255,.78)">${esc(cur.svc||'')} · ${agoTxt}</div></div></div><button style="background:rgba(255,255,255,.16);border:0;color:#fff;width:42px;height:42px;border-radius:50%;font-size:1.3rem;font-weight:800" data-a="stclose" aria-label="${_('Cerrar','Itxi')}">✕</button></div></div><div class="ig-story-media">${cur.type==='video'?`<video src="${esc(cur.url)}" controls autoplay playsinline></video>`:`<img src="${esc(cur.url)}" alt="">`}</div>${cur.type!=='video'?`<div class="ig-story-tap"><div data-a="stprev" title="${_('Anterior','Aurrekoa')}"></div><div data-a="stnext" title="${_('Siguiente','Hurrengoa')}"></div></div>`:''}${cur.cap||list.length>1?`<div class="ig-story-bot">${cur.cap?`<p style="margin:0 0 .5rem;font-size:1.05rem;font-weight:700;color:#fff">${esc(cur.cap)}</p>`:''}${list.length>1?`<div class="row" style="justify-content:center;gap:.8rem"><button class="pill" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)" data-a="stprev">← ${_('Anterior','Aurrekoa')}</button><button class="pill" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)" data-a="stnext">${_('Siguiente','Hurrengoa')} →</button></div>`:''}</div>`:''}</div>`;
+}
 function chatPage(){
 if(dmUser){
 const peer=usersList.find(x=>x.id==dmUser)||{name:'Chat',username:''};
@@ -445,11 +464,6 @@ if(md=='sos'){const m=encodeURIComponent(`🆘 URGENTE: ${db.u.name} necesita ay
 b=`<div class="row"><h2 class="grow" style="color:var(--r)">🆘 ${_('Emergencia','Larrialdia')}</h2>${S(_('Ayuda inmediata. Pulsa llamar al 644 270 017.','Berehalako laguntza. Sakatu 644 270 017 zenbakira deitzeko.'))}</div><p><b>${_('Si es muy grave, llama también al 112.','Oso larria bada, deitu 112ra ere.')}</b></p><div class="row" style="flex-direction:column;align-items:stretch"><a class="btn" href="tel:644270017">📞 ${_('Llamar a Hurbil','Hurbilera deitu')} · 644 270 017</a><a class="btn s" target="_blank" rel="noopener" href="https://wa.me/${phone(db.u.fam)||''}?text=${m}">📲 ${_('Avisar a mi familiar por WhatsApp','Abisatu nire senideari WhatsApp bidez')}</a><a class="btn g" target="_blank" rel="noopener" href="https://wa.me/34644270017?text=${m}">💬 ${_('Enviar alerta urgente con mi dirección','Bidali larrialdi-alerta nire helbidearekin')}</a></div><p class="mut">📍 ${esc(db.u.addr||'Bilbao')}</p>`}
 else if(md=='story_up'){const r=db.reqs.find(x=>String(x.id)===String(storyReqId));
 b=`<div class="row"><h2 class="grow">📸 ${_('Subir historia del servicio','Zerbitzuaren historia igo')}</h2></div>${r?`<p class="mut" style="margin:.2rem 0 .7rem">${svc(r)}</p>`:''}<label for="st_cap">✏️ ${_('Texto o comentario (opcional)','Testua edo iruzkina (aukerakoa)')}</label><input id="st_cap" placeholder="${_('Ej. ¡Paseando por Bilbao con Ander!','Adib. Bilbotik paseatzen Anderrekin!')}" value="${esc(draftChat)}" oninput="draftChat=this.value"><label style="margin-top:.9rem">📷 ${_('Elige foto o vídeo (máx. 20 s)','Aukeratu argazkia edo bideoa (geh. 20 s)')}</label><label class="btn s" style="width:100%;margin-top:.4rem;cursor:pointer;${storyUploading?'opacity:.6;pointer-events:none':''}">${storyUploading?'⏳ '+_('Subiendo...','Igotzen...'):'📁 '+_('Seleccionar foto o vídeo','Hautatu argazkia edo bideoa')}<input type="file" accept="image/*,video/*" style="display:none" onchange="upStory(this)"></label><p class="mut" style="font-size:.82rem;margin-top:.6rem">⏱️ ${_('La historia estará visible durante 24 horas para tus seguidores.','Historia 24 orduz egongo da ikusgai zure jarraitzaileentzat.')}</p>`}
-else if(md=='story_view'){const list=activeStories();const cur=list[storyIdx]||list[0];
-if(!cur){md=null;return''}
-const ago=Math.max(1,Math.round((Date.now()-cur.createdAt)/60000));
-const agoTxt=ago<60?`${ago} min`:`${Math.round(ago/60)} h`;
-b=`<div class="row" style="justify-content:space-between;margin-bottom:.6rem"><div class="row">${avImg({name:cur.userName,avatar:cur.avatar},38)}<div><b>${esc(cur.userName||'Hurbil')}</b><br><small class="mut">${esc(cur.svc||'')} · ${agoTxt}</small></div></div><span class="bd">${storyIdx+1}/${list.length}</span></div><div style="background:#000;border-radius:16px;overflow:hidden;display:flex;align-items:center;justify-content:center;max-height:58vh">${cur.type==='video'?`<video src="${esc(cur.url)}" controls autoplay playsinline style="width:100%;max-height:58vh;object-fit:contain"></video>`:`<img src="${esc(cur.url)}" alt="" style="width:100%;max-height:58vh;object-fit:contain">`}</div>${cur.cap?`<p style="margin:.6rem 0 0;font-weight:700">${esc(cur.cap)}</p>`:''}${list.length>1?`<div class="row" style="gap:.6rem;margin-top:.7rem"><button class="btn g" style="flex:1" data-a="stprev">← ${_('Anterior','Aurrekoa')}</button><button class="btn g" style="flex:1" data-a="stnext">${_('Siguiente','Hurrengoa')} →</button></div>`:''}`}
 return`<div class="ov"><div class="mo" role="dialog" aria-modal="true">${b}<button class="btn g" style="margin-top:1rem;width:100%" data-a="close">✕ ${_('Cerrar','Itxi')}</button></div></div>`}
 const saved=()=>db.reqs.reduce((s,r)=>s+(r.base-r.tot),0)+db.plans.filter(p=>p.prop&&p.prop.st=='accepted'&&p.m.includes(fn())).reduce((s,p)=>s+13*p.h*.15,0);
 function pextra(){const sv=`${_('Has ahorrado','Aurreztu duzu')} ${fmt(saved())}`,bo=db.reqs.find(r=>r.bono&&!arch(r));let b='';
@@ -465,8 +479,11 @@ function work(){const h=back()+head(_('Portal de trabajadores','Langileen ataria
 if(!wk)return h+`<div class="card"><label for="wn">${_('Trabajador','Langilea')}</label><select id="wn" data-f="wl.n">${W.map(n=>`<option ${wl.n==n?'selected':''}>${n}</option>`).join('')}</select><label for="wp">${_('PIN de acceso (4 dígitos)','Sarbide PINa (4 digitu)')}</label><input id="wp" type="password" inputmode="numeric" maxlength="4" data-f="wl.p" value="${esc(wl.p)}"><button class="btn s" style="margin-top:1rem" data-a="wlog">${_('Entrar','Sartu')}</button></div>`;
 const m=db.reqs.filter(r=>r.w==wk&&!ended(r));
 return h+`<div class="row"><b class="grow">👤 ${esc(wk)}</b><button class="btn g" data-a="wout">${_('Salir','Irten')}</button></div>`+(m.length?m.map(r=>{const t=`${svc(r)}. ${esc(r.cli||'')}. ${r.addr}. ${r.ses.map(sl).join('. ')}. PIN ${(r.pin||'').split('').join(' ')}`;return`<article class="card"><div class="row"><h3 class="grow">${svc(r)}</h3>${S(t)}</div><p>👤 ${esc(r.cli||'-')}</p><p>📍 ${esc(r.addr)}</p>${r.ses.map(q=>`<p>📅 ${sl(q)}</p>`).join('')}<p style="font-size:1.4rem">🔐 ${_('PIN del cliente','Bezeroaren PINa')}: <b style="letter-spacing:.2em">${r.pin||'-'}</b></p><small class="mut">${_('Comprueba este código con el cliente al llegar.','Egiaztatu kode hau bezeroarekin iristean.')}</small></article>`}).join(''):`<div class="card"><p>${_('No tienes tareas asignadas ahora.','Ez duzu eginkizunik esleituta orain.')}</p></div>`)}
-function render(){const h=route,pg={help,reqs,comm,prof,admin,team,work,chat:chatPage}[h]||home;
+function render(){const h=route,pg={help,reqs,comm,prof,admin,team,work,chat:chatPage,story:storyPage}[h]||home;
 document.documentElement.lang=db.lang;document.body.className=(db.hc?'hc ':'')+(db.easy?'easy':'');document.documentElement.style.fontSize=(16+db.fs*2+(db.easy?4:0))+'px';
+if(h==='story'){
+$('#hd').innerHTML='';$('#app').innerHTML=storyPage();$('#fab').innerHTML='';$('#md').innerHTML='';return;
+}
 $('#hd').innerHTML=hdr();$('#app').innerHTML=pg()+`<footer class="adv" style="margin-top:2rem;text-align:center"><small>Hurbil · Bilbao · 644 270 017 · <a href="#admin" data-a="go" data-v="admin" style="opacity:.6">admin</a> · <a href="#work" data-a="go" data-v="work" style="opacity:.6">trabajadores</a></small></footer>`;
 const uDm=unreadDmCount();
 $('#fab').innerHTML=`<div class="fab"><button class="cb" data-a="openchat">💬 ${_('Chat','Txata')}${uDm?`<span class="badge">${uDm}</span>`:''}</button><button class="sos" data-a="md" data-v="sos" aria-label="SOS Emergencia">🆘 SOS</button></div>`;
@@ -493,9 +510,10 @@ case'lang':db.lang=v;break;case'fs':db.fs=Math.max(-1,Math.min(6,db.fs+ +v));bre
 case'notif':{if('Notification' in window&&Notification.permission==='granted'){db.notif=db.notif===0?1:0;toast(db.notif?_('Avisos activados','Abisuak aktibatuta'):_('Avisos silenciados','Abisuak isilduta'));break}if(!('Notification' in window)){toast(_('Tu navegador no soporta notificaciones.','Zure nabigatzaileak ez ditu jakinarazpenak onartzen.'));break}Notification.requestPermission().then(p=>{if(p==='granted'){db.notif=1;notifyUser('Hurbil',_('Notificaciones activadas correctamente','Jakinarazpenak behar bezala aktibatu dira'))}else toast(_('Permiso de notificaciones denegado en el navegador.','Jakinarazpen baimena ukatuta nabigatzailean.'));save();render()});break}
 case'md':md=v;draftChat='';break;case'openchat':md=null;dmUser=null;mt='friends';draftChat='';go('chat');break;case'dmback':dmUser=null;mt='friends';draftChat='';break;case'close':md=null;draftChat='';break;case'go':md=null;draftChat='';go(v);break;case'tm':mt=v;draftChat='';if(v=='team'&&dmList.length){lastSeenDm=Math.max(...dmList.map(x=>x.id||0));localStorage.setItem('hurbil_seen_dm',String(lastSeenDm))}break;
 case'openstory':{storyReqId=el.dataset.id;draftChat='';md='story_up';break}
-case'viewstory':{const list=activeStories();const idx=list.findIndex(x=>String(x.id)===String(v));storyIdx=idx>=0?idx:0;md='story_view';break}
-case'stnext':{const list=activeStories();if(list.length)storyIdx=(storyIdx+1)%list.length;break}
-case'stprev':{const list=activeStories();if(list.length)storyIdx=(storyIdx-1+list.length)%list.length;break}
+case'viewstory':{const list=activeStories();const idx=list.findIndex(x=>String(x.id)===String(v));storyIdx=idx>=0?idx:0;if(route!=='story')prevRoute=route;md=null;go('story');break}
+case'stclose':{go(prevRoute||'home');break}
+case'stnext':{const list=activeStories();if(list.length){if(storyIdx+1<list.length)storyIdx++;else go(prevRoute||'home')}break}
+case'stprev':{const list=activeStories();if(list.length)storyIdx=Math.max(0,storyIdx-1);break}
 case'edprof':{editProf=!editProf;break}
 case'cat':w.cat=+v;w.opt=null;w.txt='';break;case'opt':w.opt=v=='o'?'o':+v;if(v!='o')w.txt='';break;
 case'wplan':w.plan=v;break;
@@ -562,7 +580,7 @@ case'rst':db=seed();break}save();render()}
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(e.target.classList.contains('ov')){md=null;draftChat='';render();return}if(el&&!['SELECT','INPUT'].includes(el.tagName)){if(el.dataset.a=='go')e.preventDefault();act(el)}});
 document.addEventListener('change',e=>{if((e.target.tagName=='SELECT'||e.target.type=='date'||e.target.type=='checkbox')&&e.target.dataset.a)act(e.target)});
 document.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;const k=f.split('.');let o=X[k[0]];for(const p of k.slice(1,-1))o=o[p]??={};o[k[k.length-1]]=e.target.value;save();if(k[0]=='w'){if(w.s==4){const eb=document.querySelector('.est-box');if(eb){const c=estCalc();eb.innerHTML=`<small class="mut">${c.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado','Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(c.tot)}</div>`}}const n=$('#nx');if(n)n.disabled=!ok()}});
-document.addEventListener('keydown',e=>{if(e.key=='Escape'&&md){md=null;draftChat='';render()}if(e.key=='Enter'&&e.target.closest('.send,.ig-bar')&&e.target.tagName=='INPUT')e.target.parentElement.querySelector('button').click()});
+document.addEventListener('keydown',e=>{if(e.key=='Escape'){if(route==='story'){go(prevRoute||'home');render();return}if(md){md=null;draftChat='';render()}}if(e.key=='Enter'&&e.target.closest('.send,.ig-bar')&&e.target.tagName=='INPUT')e.target.parentElement.querySelector('button').click()});
 addEventListener('hashchange',()=>{route=location.hash.slice(1)||'home';scrollTo(0,0);render()});render();syncCloud();setInterval(()=>{if(sbUid||admOk)syncCloud(true)},6000);
 if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('/Hurbil/sw.js',{scope:'/Hurbil/'}).catch(()=>{})})}
 </script></body></html>
