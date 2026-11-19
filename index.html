@@ -108,7 +108,7 @@ reqs:[{id:1,c:0,o:1,t:'',ses:[{d:d0(1),t:'11:00',h:2}],hTot:5,bono:1,date:d0(1),
 occ:{[d0(1)+'|9']:4,[d0(1)+'|10']:4,[d0(2)+'|17']:4,[d0(2)+'|18']:4},
 fol:[],plans:[{id:1,t:['Paseo por Doña Casilda','Doña Casilda inguruko ibilaldia'],when:['Mañana 11:00','Bihar 11:00'],h:2,max:3,m:['Maite'],prop:null,msgs:[{n:'Maite',t:'¡Hola! Yo llevo un termo de café, ¿os apuntáis?'}]},
 {id:2,t:['Café en Indautxu','Kafea Indautxun'],when:['Jueves 17:00','Osteguna 17:00'],h:1,max:3,m:['Arantxa'],prop:null,msgs:[{n:'Arantxa',t:'Buenas tardes, ¿quién se anima a tomar un café?'}]}],
-team:[{f:'h',t:'¡Hola! Somos el equipo de Hurbil en Bilbao. Escríbenos aquí lo que necesites y te respondemos en cuanto lo leamos.'}]}}
+team:[{f:'h',t:'¡Hola! Somos el equipo de Hurbil en Bilbao. Escríbenos aquí lo que necesites y te responderemos en cuanto lo leamos.'}]}}
 const SB_URL='https://oijhfovricxgpnczwpfv.supabase.co';
 const SB_KEY='sb_publishable_I1I6eY2egVrjwMzbDqrs0Q_2EK05T2C';
 const sb=window.supabase.createClient(SB_URL,SB_KEY);
@@ -143,7 +143,8 @@ try{new Notification(title,{body,icon:'/Hurbil/logo.png'})}catch(e){}
 const unreadDmCount=()=>sbUid?dmList.filter(m=>m.receiver_id==sbUid&&(m.id||0)>lastSeenDm).length:0;
 const pendingCommCount=()=>{if(!sbUid)return 0;const fReq=folRows.filter(x=>x.following_id==sbUid&&x.status=='pending').length;const pInt=db.plans.filter(p=>p.ownerId==sbUid&&p.int&&p.int.length).reduce((s,p)=>s+p.int.length,0);return fReq+pInt};
 const activeStories=()=>{const now=Date.now();return(db.stories||[]).filter(s=>s&&s.exp>now)};
-const canPostStory=r=>{if(!['accepted','assigned','ongoing'].includes(r.st))return false;const now=Date.now();return(r.ses||[]).some(s=>{const st=new Date(s.d+'T'+s.t).getTime();const en=st+(+s.h||1)*36e5;return now>=(st-15*60*1000)&&now<=en})};
+const parseLocalTs=(dStr,tStr)=>{const[y,m,d]=String(dStr||'').split('-').map(Number);const[hh,mm]=String(tStr||'00:00').split(':').map(Number);if(!y||!m||!d)return NaN;return new Date(y,m-1,d,hh||0,mm||0,0).getTime()};
+const canPostStory=r=>{if(!['accepted','assigned','ongoing'].includes(r.st))return false;const now=Date.now();return(r.ses||[]).some(s=>{const st=parseLocalTs(s.d,s.t);if(isNaN(st))return false;const en=st+((+s.h||1)+2)*36e5;return now>=(st-30*60*1000)&&now<=en})};
 
 async function syncCloud(fromTimer=false){
 if(fromTimer&&isUserTyping())return;
@@ -435,7 +436,9 @@ let viewU=null;
 function comm(){const fCnt=folRows.filter(x=>x.following_id==sbUid&&x.status=='pending').length;
 const pCnt=db.plans.filter(p=>p.ownerId==sbUid&&p.int&&p.int.length).reduce((s,p)=>s+p.int.length,0);
 const stList=activeStories();
-const stBar=stList.length?`<div class="card" style="padding:.7rem .9rem"><small class="mut" style="font-weight:800">📸 ${_('Historias en directo (24 h)','Zuzeneko historiak (24 h)')}</small><div class="stories-bar">${stList.map(st=>{const u=st.userId===sbUid?db.u:(usersList.find(x=>x.id===st.userId)||{name:st.userName||'Vecino',avatar:st.avatar||''});return`<div class="st-item" data-a="viewstory" data-v="${st.id}"><div class="ig-ring">${avImg(u,54)}</div><span>${esc((u.name||'Vecino').split(' ')[0])}</span></div>`}).join('')}</div></div>`:'';
+const liveReq=db.reqs.find(canPostStory);
+const addBtn=liveReq?`<div class="st-item" data-a="openstory" data-id="${liveReq.id}"><div style="position:relative;display:inline-flex">${avImg(db.u,54)}<span style="position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:#0095f6;color:#fff;font-weight:800;font-size:.95rem;display:flex;align-items:center;justify-content:center;border:2px solid #fff">+</span></div><span>${_('Tu historia','Zure historia')}</span></div>`:'';
+const stBar=(stList.length||liveReq)?`<div class="card" style="padding:.7rem .9rem"><small class="mut" style="font-weight:800">📸 ${_('Historias en directo (24 h)','Zuzeneko historiak (24 h)')}</small><div class="stories-bar">${addBtn}${stList.map(st=>{const u=st.userId===sbUid?db.u:(usersList.find(x=>x.id===st.userId)||{name:st.userName||'Vecino',avatar:st.avatar||''});return`<div class="st-item" data-a="viewstory" data-v="${st.id}"><div class="ig-ring">${avImg(u,54)}</div><span>${esc((u.name||'Vecino').split(' ')[0])}</span></div>`}).join('')}</div></div>`:'';
 let h=back()+head(_('Comunidad y planes','Komunitatea eta planak'))+stBar+`<div class="tabs" role="tablist">${[['neigh',_('Personas · Red social','Pertsonak · Sare soziala'),fCnt],['plans',_('Planes conjuntos','Plan bateratuak'),pCnt]].map(t=>`<button class="btn ${ct==t[0]?'':'g'}" role="tab" aria-selected="${ct==t[0]}" data-a="tab" data-v="${t[0]}">${t[1]}${t[2]?`<span class="badge">${t[2]}</span>`:''}</button>`).join('')}</div>`;
 if(ct=='neigh'){
 if(viewU){
