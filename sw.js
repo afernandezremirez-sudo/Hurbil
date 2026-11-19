@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hurbil-v4';
+const CACHE_NAME = 'hurbil-v5';
 const ASSETS = [
   '/Hurbil/',
   '/Hurbil/index.html',
