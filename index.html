@@ -28,7 +28,7 @@ body.hc .live-story-hero{background:#000;border:2px solid #FFE600}
 .row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}.row>.grow{flex:1}
 .btn{background:var(--p);color:var(--pt);border:1px solid var(--p);border-radius:16px;padding:.8rem 1.3rem;font-weight:800;font-size:1.05rem;min-height:52px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;position:relative}
 .btn:hover{background:var(--ph)}.btn.g{background:var(--sb);color:var(--t);border-color:var(--sbd)}.btn.s{background:var(--s);border-color:var(--s);color:var(--st)}.btn:disabled{opacity:.45;cursor:not-allowed}
-.spk{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#DCE8F2;color:#1E293B;font-size:1.15rem}
+.spk{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#DCE8F2;color:#1E293B;font-size:1.15rem;touch-action:manipulation}
 body.hc .spk{background:#1a1a00;border:2px solid #FFE600}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:.7rem}
 .mw{position:relative;margin:.7rem 0}.mb{display:flex;align-items:center;justify-content:center;width:100%;min-height:66px;border-radius:16px;padding:.9rem 3.6rem;font-size:1.25rem;font-weight:800;text-decoration:none;text-align:center}
@@ -232,9 +232,9 @@ const LOGO=`<img src="/Hurbil/logo.png" alt="Logo Hurbil" style="width:44px;heig
 const W0=()=>({s:1,cat:null,opt:null,txt:'',plan:'normal',who:'me',rName:db.u.name||'',rAddr:db.u.addr||'',rPhone:db.u.contact||'',rDo:'',rNotes:'',share:false,sd:d0(1),st:'11:00',sh:1,ses:[],addTo:0,pay:''});
 const w=W0(),tr={},lg={u:'',p:''},wl={n:W[0],p:''},X={get db(){return db},w,tr,lg,wl};
 let wk=null,route=location.hash.slice(1)||'home',md=null,mt='friends',ct='neigh',fl=false,oc=null,sp=false,pm='create',fo=false,sayBtn=null;
-const stopSay=()=>{if(window.speechSynthesis)speechSynthesis.cancel();if(sayBtn){sayBtn.textContent='🔊';sayBtn=null}};
-const S=t=>`<button class="spk" data-a="say" data-t="${esc(t)}" aria-label="${_('Escuchar','Entzun')}">🔊</button>`;
-const say=(t,el)=>{if(!window.speechSynthesis)return;const same=sayBtn&&sayBtn===el&&speechSynthesis.speaking;stopSay();if(same)return;if(el){sayBtn=el;el.textContent='⏹️'}const u=new SpeechSynthesisUtterance(t);u.lang=db.lang=='eu'?'eu-ES':'es-ES';u.rate=.9;u.onend=u.onerror=()=>{if(sayBtn===el){el.textContent='🔊';sayBtn=null}};speechSynthesis.speak(u)};
+const stopSay=()=>{if(window.speechSynthesis){try{speechSynthesis.pause();speechSynthesis.cancel()}catch(e){}}if(sayBtn){sayBtn.textContent='🔊';sayBtn.dataset.on='';sayBtn=null}};
+const S=t=>`<button type="button" class="spk" data-a="say" data-t="${esc(t)}" aria-label="${_('Escuchar','Entzun')}">🔊</button>`;
+const say=(t,el)=>{if(!window.speechSynthesis)return;const same=el&&el.dataset.on==='1';stopSay();if(same)return;if(el){sayBtn=el;el.dataset.on='1';el.textContent='⏹️'}const u=new SpeechSynthesisUtterance(t);u.lang=db.lang=='eu'?'eu-ES':'es-ES';u.rate=.9;u.onend=u.onerror=()=>{if(sayBtn===el){el.textContent='🔊';el.dataset.on='';sayBtn=null}};speechSynthesis.speak(u)};
 const go=r=>{stopSay();clearTimeout(storyTimer);route=r;try{history.replaceState(null,'','#'+(r=='home'?'':r))}catch(e){}scrollTo(0,0)};
 const toast=m=>{const e=$('#toast');e.textContent=m;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,4000)};
 const fd=d=>d?new Date(d+'T12:00').toLocaleDateString(db.lang=='eu'?'eu':'es-ES',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
@@ -475,7 +475,7 @@ if(bo){const tot=bo.hTot,con=bo.ses.filter(x=>end(x.d,x.t,x.h)<Date.now()).reduc
 b=`<div class="card"><div class="row"><h3 class="grow">🎟️ ${_('Mi bono','Nire bonoa')}</h3>${S(tx)}</div><div class="bar" style="margin:.5rem 0"><i style="width:${con/tot*100}%"></i><i class="f" style="width:${(sch-con)/tot*100}%"></i></div><p>${tx}</p></div>`}
 return`<div class="card"><div class="row"><h3 class="grow">💶 ${_('Mi ahorro total','Nire aurrezki osoa')}</h3>${S(sv)}</div><p style="font-size:1.7rem;font-weight:800;margin:.2rem 0">${fmt(saved())}</p><p class="mut">${_('Frente a la tarifa estándar de 13 €/h, con bonos y planes conjuntos.','13 €/orduko tarifa estandarrarekin alderatuta, bonoekin eta plan bateratuekin.')}</p></div>`+b}
 const WK=[['Aimar Fernandez','🧑🏻',['Compañía y paseos','Konpainia eta ibilaldiak'],['Soy de Bilbao de toda la vida y me encanta pasear por Doña Casilda charlando sin prisa.','Bilbokoa naiz betidanik eta Doña Casildan lasai-lasai berriketan ibiltzea maite dut.']],
-['Ander Herrera','🧔🏻',['Recados y móvil','Egitekoak eta mugikorra'],['Te ayudo con el móvil, las citas y los recados con mucha paciencia: sin prisas ni tecnicismos.','Mugikorrarekin, hitzorduekin eta egitekoekin laguntzen dizut pazientzia handiz: presarik eta teknizismorik gabe.']],
+['Ander Herrera','🧔🏻',['Recados y móvil','Egitekoak eta mugikorra'],['Te ayudo con el móvil, las citas y los recados con mucha paciencia: sin prisa ni tecnicismos.','Mugikorrarekin, hitzorduekin eta egitekoekin laguntzen dizut pazientzia handiz: presarik eta teknizismorik gabe.']],
 ['Eder Fernandez','👨🏻',['Acompañamiento médico','Laguntza medikoa'],['Te acompaño al centro de salud o al hospital y me quedo contigo hasta que vuelves a casa.','Osasun-zentrora edo ospitalera laguntzen dizut eta zurekin geratzen naiz etxera itzuli arte.']],
 ['Eidan Irastorza','🧑🏽',['Hogar y tareas ligeras','Etxea eta lan arinak'],['Te echo una mano en casa: ordenar, preparar algo sencillo o regar las plantas, a tu ritmo.','Etxean laguntzen dizut: ordenatu, janari sinplea prestatu edo landareak ureztatu, zure erritmoan.']]];
 function team(){return back()+head(_('Conoce a nuestro equipo','Ezagutu gure taldea'))+WK.map(k=>{const t=`${k[0]}. ${k[2][L()]}. ${k[3][L()]}`;return`<article class="card"><div class="row" style="align-items:flex-start"><div style="font-size:2.4rem;line-height:1">${k[1]}</div><div class="grow"><h3>${k[0]}</h3><span class="bd">${k[2][L()]}</span></div>${S(t)}</div><p>${k[3][L()]}</p></article>`}).join('')}
