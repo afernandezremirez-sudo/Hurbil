@@ -28,7 +28,7 @@ body.hc .live-story-hero{background:#000;border:2px solid #FFE600}
 .row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}.row>.grow{flex:1}
 .btn{background:var(--p);color:var(--pt);border:1px solid var(--p);border-radius:16px;padding:.8rem 1.3rem;font-weight:800;font-size:1.05rem;min-height:52px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;position:relative}
 .btn:hover{background:var(--ph)}.btn.g{background:var(--sb);color:var(--t);border-color:var(--sbd)}.btn.s{background:var(--s);border-color:var(--s);color:var(--st)}.btn:disabled{opacity:.45;cursor:not-allowed}
-.spk{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#DCE8F2;color:#1E293B;font-size:1.15rem;touch-action:manipulation}
+.spk{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#DCE8F2;color:#1E293B;font-size:1.15rem;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 body.hc .spk{background:#1a1a00;border:2px solid #FFE600}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:.7rem}
 .mw{position:relative;margin:.7rem 0}.mb{display:flex;align-items:center;justify-content:center;width:100%;min-height:66px;border-radius:16px;padding:.9rem 3.6rem;font-size:1.25rem;font-weight:800;text-decoration:none;text-align:center}
@@ -208,7 +208,7 @@ if(mapped.length)db.plans=mapped;
 db.plans=db.plans.filter(p=>!db.delPlans.includes(String(p.id)));
 db.reqs=db.reqs.filter(r=>!db.delReqs.includes(String(r.id)));
 firstSync=false;save();
-if(!isUserTyping()&&route!=='story')render();
+if(!isUserTyping()&&route!=='story'&&!sayBtn)render();
 }
 const _=(a,b)=>db.lang=='eu'?b:a,L=()=>db.lang=='eu'?1:0,fn=()=>db.u.name.split(' ')[0]||'Aimar';
 const fmt=n=>n.toFixed(2).replace('.',',')+' €';
@@ -231,10 +231,10 @@ const PAY=[
 const LOGO=`<img src="/Hurbil/logo.png" alt="Logo Hurbil" style="width:44px;height:44px;border-radius:10px;object-fit:contain;flex:none">`;
 const W0=()=>({s:1,cat:null,opt:null,txt:'',plan:'normal',who:'me',rName:db.u.name||'',rAddr:db.u.addr||'',rPhone:db.u.contact||'',rDo:'',rNotes:'',share:false,sd:d0(1),st:'11:00',sh:1,ses:[],addTo:0,pay:''});
 const w=W0(),tr={},lg={u:'',p:''},wl={n:W[0],p:''},X={get db(){return db},w,tr,lg,wl};
-let wk=null,route=location.hash.slice(1)||'home',md=null,mt='friends',ct='neigh',fl=false,oc=null,sp=false,pm='create',fo=false,sayBtn=null;
-const stopSay=()=>{if(window.speechSynthesis){try{speechSynthesis.pause();speechSynthesis.cancel()}catch(e){}}if(sayBtn){sayBtn.textContent='🔊';sayBtn.dataset.on='';sayBtn=null}};
+let wk=null,route=location.hash.slice(1)||'home',md=null,mt='friends',ct='neigh',fl=false,oc=null,sp=false,pm='create',fo=false,sayBtn=null,saySeq=0;
+const stopSay=()=>{saySeq++;if(window.speechSynthesis){try{speechSynthesis.pause();speechSynthesis.cancel()}catch(e){}}document.querySelectorAll('.spk').forEach(b=>{b.textContent='🔊';b.dataset.on=''});sayBtn=null};
 const S=t=>`<button type="button" class="spk" data-a="say" data-t="${esc(t)}" aria-label="${_('Escuchar','Entzun')}">🔊</button>`;
-const say=(t,el)=>{if(!window.speechSynthesis)return;const same=el&&el.dataset.on==='1';stopSay();if(same)return;if(el){sayBtn=el;el.dataset.on='1';el.textContent='⏹️'}const u=new SpeechSynthesisUtterance(t);u.lang=db.lang=='eu'?'eu-ES':'es-ES';u.rate=.9;u.onend=u.onerror=()=>{if(sayBtn===el){el.textContent='🔊';el.dataset.on='';sayBtn=null}};speechSynthesis.speak(u)};
+const say=(t,el)=>{const wasOn=el&&el.dataset.on==='1';stopSay();if(wasOn||!window.speechSynthesis)return;const id=++saySeq;if(el){sayBtn=el;el.dataset.on='1';el.textContent='⏹️'}const u=new SpeechSynthesisUtterance(t);u.lang=db.lang=='eu'?'eu-ES':'es-ES';u.rate=.9;const done=()=>{if(saySeq===id)stopSay()};u.onend=done;u.onerror=done;setTimeout(()=>{try{speechSynthesis.speak(u)}catch(e){done()}},40)};
 const go=r=>{stopSay();clearTimeout(storyTimer);route=r;try{history.replaceState(null,'','#'+(r=='home'?'':r))}catch(e){}scrollTo(0,0)};
 const toast=m=>{const e=$('#toast');e.textContent=m;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,4000)};
 const fd=d=>d?new Date(d+'T12:00').toLocaleDateString(db.lang=='eu'?'eu':'es-ES',{day:'2-digit',month:'2-digit',year:'numeric'}):'';
@@ -602,5 +602,5 @@ document.addEventListener('change',e=>{if((e.target.tagName=='SELECT'||e.target.
 document.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;const k=f.split('.');let o=X[k[0]];for(const p of k.slice(1,-1))o=o[p]??={};o[k[k.length-1]]=e.target.value;save();if(k[0]=='w'){if(w.s==4){const eb=document.querySelector('.est-box');if(eb){const c=estCalc();eb.innerHTML=`<small class="mut">${c.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado','Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(c.tot)}</div>`}}const n=$('#nx');if(n)n.disabled=!ok()}});
 document.addEventListener('keydown',e=>{if(e.key=='Escape'){stopSay();if(route==='story'){askDelStory=false;go(prevRoute||'home');render();return}if(md){md=null;draftChat='';render()}}if(e.key=='Enter'&&e.target.closest('.send,.ig-bar')&&e.target.tagName=='INPUT')e.target.parentElement.querySelector('button').click()});
 addEventListener('hashchange',()=>{stopSay();route=location.hash.slice(1)||'home';scrollTo(0,0);render()});render();syncCloud();setInterval(()=>{if(sbUid||admOk)syncCloud(true)},6000);
-if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('/Hurbil/sw.js',{scope:'/Hurbil/'}).catch(()=>{})})}
+if('serviceWorker' in navigator){addEventListener('load',()=>{navigator.serviceWorker.register('/Hurbil/sw.js',{scope:'/Hurbil/'}).then(reg=>reg.update()).catch(()=>{})})}
 </script></body></html>
