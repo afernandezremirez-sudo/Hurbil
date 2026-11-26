@@ -130,23 +130,19 @@
 const $ = s => document.querySelector(s),
       esc = s => String(s ?? "").replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
 const d0 = n => { const x = new Date(); x.setDate(x.getDate() + n); return x.toISOString().slice(0, 10); };
-const ADDR = 'Calle Ercilla 15, Indautxu, Bilbao';
 
 function seed() {
   return {
     lang: 'es', fs: 1, hc: 0, easy: 0, notif: 1, delPlans: [], delReqs: [], stories: [],
-    u: { name: 'Aimar Fernandez', user: '@aimar_bilbao', contact: 'aimar@hurbil.eus', pass: 'hurbil123', addr: ADDR, fam: '600123456', on: 1 },
-    reqs: [
-      { id: 1, c: 0, o: 1, t: "", ses: [{ d: d0(1), t: '11:00', h: 2 }], hTot: 5, bono: 1, date: d0(1), time: '11:00', h: 2, addr: ADDR, cli: 'Aimar Fernandez', ppl: 1, base: 105, tot: 97.50, st: 'assigned', w: 'Ander Herrera', pin: '4821' },
-      { id: 2, c: 1, o: 1, t: "", ses: [{ d: d0(-2), t: '17:00', h: 1 }], hTot: 1, bono: 0, date: d0(-2), time: '17:00', h: 1, addr: ADDR, cli: 'Aimar Fernandez', ppl: 1, base: 21, tot: 21, st: 'done', w: 'Eder Fernandez', pin: '7305', doneAt: Date.now() - 72e5 }
-    ],
+    u: { name: '', user: '', contact: '', pass: '', addr: '', fam: '', on: 0 },
+    reqs: [],
     occ: { [d0(1) + '|9']: 4, [d0(1) + '|10']: 4, [d0(2) + '|17']: 4, [d0(2) + '|18']: 4 },
     fol: [],
     plans: [
       { id: 1, t: ['Paseo por Doña Casilda', 'Doña Casilda inguruko ibilaldia'], when: ['Mañana 11:00', 'Bihar 11:00'], h: 2, max: 3, m: ['Maite'], prop: null, msgs: [{ n: 'Maite', t: '¡Hola! Yo llevo un termo de café, ¿os apuntáis?' }] },
       { id: 2, t: ['Café en Indautxu', 'Kafea Indautxun'], when: ['Jueves 17:00', 'Osteguna 17:00'], h: 1, max: 3, m: ['Arantxa'], prop: null, msgs: [{ n: 'Arantxa', t: 'Buenas tardes, ¿quién se anima a tomar un café?' }] }
     ],
-    team: [{ f: 'h', t: '¡Hola, Aimar! Somos el equipo de Hurbil. ¿En qué te podemos ayudar?' }]
+    team: [{ f: 'h', t: '¡Hola! Somos el equipo de Hurbil. ¿En qué te podemos ayudar?' }]
   };
 }
 
@@ -157,7 +153,7 @@ const TEAM_ID = 'hurbil_team';
 
 let sbUid = null, usersList = [], lastSeenDm = +(localStorage.getItem('hurbil_seen_dm') || 0), firstSync = true, askDelPlan = null, askDelReq = null, askDelStory = false, draftChat = "", editProf = false, storyReqId = null, storyIdx = 0, storyUploading = false, prevRoute = 'home', storyTimer = null, sendingReq = false;
 let db;
-try { db = JSON.parse(localStorage.getItem('hurbil2')); } catch (e) {}
+try { db = JSON.parse(localStorage.getItem('hurbil3')); } catch (e) {}
 db = db || seed();
 db.delPlans = db.delPlans || [];
 db.delReqs = db.delReqs || [];
@@ -169,7 +165,7 @@ const isUserTyping = () => {
 };
 
 const save = () => {
-  try { localStorage.setItem('hurbil2', JSON.stringify(db)); } catch (e) {}
+  try { localStorage.setItem('hurbil3', JSON.stringify(db)); } catch (e) {}
   if (sbUid && db.u.on) {
     sb.from('profiles').upsert({
       id: sbUid,
@@ -269,13 +265,16 @@ async function syncCloud(fromTimer = false) {
         }
         dmList = dms;
       }
+    } else {
+      sbUid = null;
+      db.u.on = 0;
     }
     const { data: tMsgs } = await sb.from('direct_messages').select('*').or(`sender_id.eq.${TEAM_ID},receiver_id.eq.${TEAM_ID}`).order('id', { ascending: true });
     if (tMsgs) teamMsgs = tMsgs;
     const { data: allU } = await sb.from('profiles').select('id,name,username,addr,avatar');
     if (allU) usersList = allU;
     const { data: rList } = await sb.from('requests').select('*').order('id', { ascending: false });
-    if (rList && rList.length) db.reqs = rList.map(r => ({ ...r.data, id: r.id })).filter(r => !db.delReqs.includes(String(r.id)));
+    if (rList) db.reqs = rList.map(r => ({ ...r.data, id: r.id, user_id: r.user_id })).filter(r => !db.delReqs.includes(String(r.id)));
     const { data: pList } = await sb.from('plans').select('*');
     if (pList) {
       const storyRows = pList.filter(p => String(p.id).startsWith('story_')).map(p => p.data);
@@ -308,7 +307,7 @@ async function syncCloud(fromTimer = false) {
 
 const _ = (a, b) => db.lang == 'eu' ? b : a,
       L = () => db.lang == 'eu' ? 1 : 0,
-      fn = () => db.u.name.split(' ')[0] || 'Aimar';
+      fn = () => db.u.name.split(' ')[0] || '';
 const fmt = n => n.toFixed(2).replace('.', ',') + ' €';
 const W = ['Aimar Fernandez', 'Ander Herrera', 'Eder Fernandez', 'Eidan Irastorza'];
 const ST = {
@@ -337,6 +336,8 @@ const LOGO = '<img src="/Hurbil/logo.png" alt="Logo Hurbil" style="width:44px;he
 const W0 = () => ({ s: 1, cat: null, opt: null, txt: "", plan: 'normal', who: 'me', rName: db.u.name || "", rAddr: db.u.addr || "", rPhone: db.u.contact || "", rDo: "", rNotes: "", share: false, sd: d0(1), st: '11:00', sh: 1, ses: [], addTo: 0, pay: "" });
 const w = W0(), tr = {}, lg = { u: "", p: "" }, wl = { n: W[0], p: "" }, X = { get db() { return db; }, w, tr, lg, wl };
 let wk = null, route = location.hash.slice(1) || 'home', md = null, mt = 'friends', ct = 'neigh', fl = false, oc = null, sp = false, pm = 'create', fo = false, sayBtn = null, saySeq = 0;
+
+const myReqs = () => sbUid ? db.reqs.filter(r => !r.user_id || r.user_id === sbUid) : db.reqs.filter(r => !r.user_id);
 
 const stopSay = () => {
   saySeq++;
@@ -370,7 +371,6 @@ const toast = m => {
 const fd = d => d ? new Date(d + 'T12:00').toLocaleDateString(db.lang == 'eu' ? 'eu' : 'es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) : "";
 const sesH = a => a.reduce((s, x) => s + (+x.h || 0), 0);
 
-// NUEVAS TARIFAS ACTUALIZADAS: Normal 21 €/h | Bono 5h: 97,50 € (19,50 €/h) | Plan Mensual 12h: 216 € (18 €/h) | Plan Conjunto: 16 €/h por persona
 const estCalc = () => {
   const h = w.plan == 'normal' ? Math.max(1, +w.sh || 1) : Math.max(w.plan == 'bono' ? 5 : 12, sesH(w.ses));
   if (w.plan == 'bono') {
@@ -394,7 +394,6 @@ const estCalc = () => {
 const rate = h => h >= 12 ? 18 : h >= 5 ? 19.50 : 21;
 const pr = (h, p) => {
   if (p >= 2) {
-    // Plan conjunto: 16 €/h por persona (32 €/h compartido)
     const tot = 16 * h;
     return { b: 21 * h, bn: (21 - 16) * h, g: 0, gx: 0, tot };
   }
@@ -406,7 +405,7 @@ const T = n => String(n).padStart(2, '0') + ':00', rng = x => x.t + ' (' + x.h +
 const end = (d, t, h) => new Date(d + 'T' + t).getTime() + h * 36e5, ended = r => Math.max(...r.ses.map(x => end(x.d, x.t, x.h))) < Date.now();
 const PS = {
   draft: ['Esperando que ambos acepten', 'Biak onartzeko zain'],
-  sent: ['Enviado a Hurbil pendiente', 'Hurbili bidalita zain'],
+  sent: ['Enviado a Hurbil · pendiente', 'Hurbili bidalita · zain'],
   accepted: ['Aceptado por Hurbil', 'Hurbilek onartu du'],
   rejected: ['Rechazado por Hurbil', 'Hurbilek baztertu du']
 };
@@ -434,7 +433,8 @@ function home() {
   const t = _('¿En qué podemos ayudarte hoy?', 'Zertan lagun dezakegu gaur?'),
         sub = _('Pide a una persona de confianza que vaya a casa. Tú eliges qué necesitas y cuándo.', 'Eskatu konfiantzazko pertsona bati etxera joateko. Zuk aukeratzen duzu zer behar duzun eta noiz.');
   const cc = pendingCommCount();
-  const liveReq = db.reqs.find(canPostStory);
+  const mine = myReqs();
+  const liveReq = mine.find(canPostStory);
   const liveStories = liveReq ? activeStories().filter(st => String(st.reqId) === String(liveReq.id)) : [];
   const liveBanner = liveReq ? `<div class="live-story-hero"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.3rem"><b>✨ ${_('Estás en horario de servicio', 'Zerbitzu-ordutegian zaude')}</b>${liveStories.length ? `<button class="pill" data-a="viewstory" data-v="${liveStories[0].id}">👁️ ${_('Ver', 'Ikusi')} (${liveStories.length})</button>` : ""}</div><p style="margin:.15rem 0 .2rem;font-weight:700">${svc(liveReq)}${liveReq.w ? ' · ' + esc(liveReq.w) : ""}</p><p class="mut" style="font-size:.86rem;margin:0 0 .65rem">${_('Comparte una foto o vídeo (máx. 20 s) visible 24 h para tus seguidores.', 'Partekatu argazki edo bideo bat (geh. 20 s), 24 orduz ikusgai zure jarraitzaileentzat.')}</p><button class="btn" style="width:100%;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);border:0;color:#fff" data-a="openstory" data-id="${liveReq.id}">📸 ${_('Subir historia del servicio', 'Zerbitzuaren historia igo')}</button></div>` : "";
   const bt = (c, l, at, bdg = 0) => `<div class="mw"><a class="mb ${c}" ${at}>${l}${bdg ? `<span class="badge">${bdg}</span>` : ""}</a>${S(l.replace(/^\S+\s/, ""))}</div>`,
@@ -444,7 +444,7 @@ function home() {
         tm = 'Aimar Fernandez, Ander Herrera, Eder Fernandez, Eidan Irastorza';
   return `${liveBanner}<div class="row" style="align-items:flex-start"><div class="grow"><h1>${t}</h1><p class="mut" style="margin:.3rem 0 .8rem">${sub}</p></div>${S(t + '. ' + sub)}</div>
   ${bt('pri', '🤝 ' + _('Pedir ayuda', 'Laguntza eskatu'), goAttr('help'))}
-  ${bt('soft', '📋 ' + _('Mis solicitudes', 'Nire eskaerak') + ` (${db.reqs.filter(r => !arch(r)).length})`, goAttr('reqs'))}
+  ${bt('soft', '📋 ' + _('Mis solicitudes', 'Nire eskaerak') + ` (${mine.filter(r => !arch(r)).length})`, goAttr('reqs'))}
   ${bt('soft', '👥 ' + _('Comunidad y planes', 'Komunitatea eta planak'), goAttr('comm'), cc)}
   ${bt('soft', '👋 ' + _('Conoce a nuestro equipo', 'Ezagutu gure taldea'), goAttr('team'))}
   ${bt('soft', '📞 ' + _('Llamar', 'Deitu') + ': 644 270 017', 'href="tel:644270017"')}
@@ -573,7 +573,8 @@ const jcard = p => {
 };
 
 function reqs() {
-  const vis = db.reqs.filter(r => !arch(r)), ar = db.reqs.filter(arch), jp = db.plans.filter(p => p.prop && p.m.includes(fn()));
+  const mine = myReqs();
+  const vis = mine.filter(r => !arch(r)), ar = mine.filter(arch), jp = db.plans.filter(p => p.prop && p.m.includes(fn()));
   return back() + head(_('Mis solicitudes', 'Nire eskaerak')) + (vis.length + jp.length ? vis.map(rcard).join("") + jp.map(jcard).join("") : `<div class="card"><p>${_('Aún no tienes solicitudes.', 'Oraindik ez duzu eskaerarik.')}</p><a class="btn" href="#help" data-a="go" data-v="help">${_('Pedir ayuda', 'Laguntza eskatu')}</a></div>`) + (ar.length ? `<details class="card"><summary><b>${_('Archivo de citas finalizadas', 'Amaitutako hitzorduen artxiboa')} (${ar.length})</b></summary>${ar.map(r => `<p class="mut">${svc(r)} · ${sl(r.ses[0])}</p>`).join("")}</details>` : "");
 }
 
@@ -594,7 +595,7 @@ function comm() {
   const fCnt = folRows.filter(x => x.following_id == sbUid && x.status == 'pending').length;
   const pCnt = db.plans.filter(p => p.ownerId == sbUid && p.int && p.int.length).reduce((s, p) => s + p.int.length, 0);
   const stList = activeStories();
-  const liveReq = db.reqs.find(canPostStory);
+  const liveReq = myReqs().find(canPostStory);
   const addBtn = liveReq ? `<div class="st-item" data-a="openstory" data-id="${liveReq.id}"><div style="position:relative;display:inline-flex">${avImg(db.u, 54)}<span style="position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:#0095f6;color:#fff;font-weight:800;font-size:.95rem;display:flex;align-items:center;justify-content:center;border:2px solid #fff">+</span></div><span>${_('Tu historia', 'Zure historia')}</span></div>` : "";
   const stBar = (stList.length || liveReq) ? `<div class="card" style="padding:.7rem .9rem"><small class="mut" style="font-weight:800">📸 ${_('Historias en directo (24 h)', 'Zuzeneko historiak (24 h)')}</small><div class="stories-bar">${addBtn}${stList.map(st => { const u = st.userId === sbUid ? db.u : (usersList.find(x => x.id === st.userId) || { name: st.userName || _('Vecino', 'Bizilaguna'), avatar: st.avatar || "" }); return `<div class="st-item" data-a="viewstory" data-v="${st.id}"><div class="ig-ring">${avImg(u, 54)}</div><span>${esc((u.name || _('Vecino', 'Bizilaguna')).split(' ')[0])}</span></div>`; }).join("")}</div></div>` : "";
   let h = back() + head(_('Comunidad y planes', 'Komunitatea eta planak')) + stBar + `<div class="tabs" role="tablist">${[['neigh', _('Personas · Red social', 'Pertsonak · Sare soziala'), fCnt], ['plans', _('Planes conjuntos', 'Plan bateratuak'), pCnt]].map(t => `<button class="btn ${ct == t[0] ? "" : 'g'}" role="tab" aria-selected="${ct == t[0]}" data-a="tab" data-v="${t[0]}">${t[1]}${t[2] ? `<span class="badge">${t[2]}</span>` : ""}</button>`).join("")}</div>`;
@@ -663,13 +664,13 @@ function chatPage() {
 
 function prof() {
   const u = db.u, f = (k, l, ty) => `<label for="f_${k}">${l}</label><div class="row"><input class="grow" id="f_${k}" type="${k == 'pass' && !sp ? 'password' : ty || 'text'}" data-f="db.u.${k}" value="${esc(u[k] || '')}">${k == 'pass' ? `<button class="ib" data-a="pw">${sp ? _('Ocultar', 'Ezkutatu') : _('Mostrar', 'Erakutsi')}</button>` : ""}</div>${S(l)}`;
-  const flds = f('name', _('Nombre completo', 'Izen osoa')) + f('user', _('Nombre de usuario (ej. @aimar_bilbao)', 'Erabiltzaile-izena (adib. @aimar_bilbao)')) + f('contact', _('Correo electrónico o teléfono', 'Posta elektronikoa edo telefonoa')) + f('pass', _('Contraseña', 'Pasahitza')) + f('addr', _('Barrio o dirección en Bilbao', 'Auzoa edo helbidea Bilbon')) + f('fam', _('Teléfono del familiar de confianza (WhatsApp)', 'Konfiantzazko senidearen telefonoa (WhatsApp)'), 'tel');
-  const editFlds = f('name', _('Nombre completo', 'Izen osoa')) + f('user', _('Nombre de usuario (ej. @aimar_bilbao)', 'Erabiltzaile-izena (adib. @aimar_bilbao)')) + f('contact', _('Correo electrónico o teléfono', 'Posta elektronikoa edo telefonoa')) + f('addr', _('Barrio o dirección en Bilbao', 'Auzoa edo helbidea Bilbon')) + f('fam', _('Teléfono del familiar de confianza (WhatsApp)', 'Konfiantzazko senidearen telefonoa (WhatsApp)'), 'tel');
+  const flds = f('name', _('Nombre completo', 'Izen osoa')) + f('user', _('Nombre de usuario (ej. @amaia_bilbao)', 'Erabiltzaile-izena (adib. @amaia_bilbao)')) + f('contact', _('Correo electrónico', 'Posta elektronikoa'), 'email') + f('pass', _('Contraseña', 'Pasahitza')) + f('addr', _('Barrio o dirección en Bilbao', 'Auzoa edo helbidea Bilbon')) + f('fam', _('Teléfono del familiar de confianza (WhatsApp)', 'Konfiantzazko senidearen telefonoa (WhatsApp)'), 'tel');
+  const editFlds = f('name', _('Nombre completo', 'Izen osoa')) + f('user', _('Nombre de usuario (ej. @amaia_bilbao)', 'Erabiltzaile-izena (adib. @amaia_bilbao)')) + f('contact', _('Correo electrónico', 'Posta elektronikoa'), 'email') + f('addr', _('Barrio o dirección en Bilbao', 'Auzoa edo helbidea Bilbon')) + f('fam', _('Teléfono del familiar de confianza (WhatsApp)', 'Konfiantzazko senidearen telefonoa (WhatsApp)'), 'tel');
   let h = back() + head(_('Mi perfil / Cuenta', 'Nire profila / Kontua'));
   if (u.on) {
     return h + `<div class="card"><div class="row" style="align-items:flex-start;gap:1rem">${avImg(u, 68)}<div class="grow"><b>${esc(u.name)}</b><p class="mut" style="margin:.15rem 0">${esc(u.user)}</p><p class="mut" style="font-size:.88rem;margin:0 0 .5rem">📍 ${esc(u.addr || 'Bilbao')}${u.fam ? ' · ' + esc(u.fam) : ""}</p><label class="btn g" style="display:inline-flex;margin:0;cursor:pointer">📷 ${_('Cambiar foto de perfil', 'Profileko argazkia aldatu')}<input type="file" accept="image/*" style="display:none" onchange="upAv(this)"></label></div><button class="ib rd" data-a="edprof" aria-pressed="${editProf}" aria-label="${_('Editar datos', 'Datuak editatu')}" title="${_('Editar datos', 'Datuak editatu')}">✏️</button></div>${editProf ? `<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)">${editFlds}<div class="row" style="margin-top:1rem"><button class="btn s" data-a="prof">${_('Guardar datos', 'Datuak gorde')}</button><button class="btn g" data-a="edprof">${_('Cancelar', 'Utzi')}</button></div></div>` : ""}<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)"><button class="btn g" style="width:100%" data-a="out">${_('Cerrar sesión', 'Saioa itxi')}</button></div></div>` + pextra();
   }
-  return h + `<div class="tabs">${[['create', _('Crear cuenta', 'Kontua sortu')], ['login', _('Iniciar sesión', 'Saioa hasi')]].map(t => `<button class="btn ${pm == t[0] ? "" : 'g'}" data-a="mode" data-v="${t[0]}">${t[1]}</button>`).join("")}</div><div class="card">${pm == 'create' ? flds + `<button class="btn s" style="margin-top:1rem" data-a="auth" data-v="c">${_('Crear cuenta', 'Kontua sortu')}</button>` : `<label for="lu">${_('Usuario o correo/teléfono', 'Erabiltzailea edo posta/telefonoa')}</label><input id="lu" data-f="lg.u"><label for="lp">${_('Contraseña', 'Pasahitza')}</label><input id="lp" type="password" data-f="lg.p"><button class="btn s" style="margin-top:1rem" data-a="auth" data-v="l">${_('Iniciar sesión', 'Saioa hasi')}</button>`}</div>`;
+  return h + `<div class="tabs">${[['create', _('Crear cuenta', 'Kontua sortu')], ['login', _('Iniciar sesión', 'Saioa hasi')]].map(t => `<button class="btn ${pm == t[0] ? "" : 'g'}" data-a="mode" data-v="${t[0]}">${t[1]}</button>`).join("")}</div><div class="card">${pm == 'create' ? flds + `<button class="btn s" style="margin-top:1rem" data-a="auth" data-v="c">${_('Crear cuenta', 'Kontua sortu')}</button>` : `<label for="lu">${_('Usuario o correo', 'Erabiltzailea edo posta')}</label><input id="lu" data-f="lg.u"><label for="lp">${_('Contraseña', 'Pasahitza')}</label><input id="lp" type="password" data-f="lg.p"><button class="btn s" style="margin-top:1rem" data-a="auth" data-v="l">${_('Iniciar sesión', 'Saioa hasi')}</button>`}</div>`;
 }
 
 let admOk = false, admTab = 'reqs', admErr = false;
@@ -679,7 +680,7 @@ function admin() {
   }
   const sel = (r, k, o) => `<select data-a="adm" data-k="${k}" data-id="${r.id}" aria-label="${k}">${o.map(x => `<option value="${x[0]}"${r[k] === x[0] ? ' selected' : ""}>${x[1]}</option>`).join("")}</select>`;
   const stBadge = s => s === 'done' ? `✅ ${ST.done[L()]}` : s === 'accepted' ? `✅ ${ST.accepted[L()]}` : s === 'rejected' ? `❌ ${ST.rejected[L()]}` : s === 'assigned' ? `👤 ${ST.assigned[L()]}` : s === 'ongoing' ? `🟢 ${ST.ongoing[L()]}` : `⏳ ${_('Pendiente', 'Zain')}`;
-  const reqCards = db.reqs.map(r => `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:.4rem"><span class="bd">${stBadge(r.st)}</span><span class="mut">#${r.id}</span></div><p style="margin:.2rem 0;font-size:1.1rem"><b>${esc(r.cli ? r.cli : 'Aimar Fernandez')}</b></p><p style="margin:.2rem 0">${svc(r)} · ${r.bono > 1 ? `Bono ${r.bono} horas · ` : ""}${r.hTot} h</p><p class="mut" style="margin:.2rem 0">📅 ${r.ses.map(sl).join(' | ')} (${sesH(r.ses)}/${r.hTot} h)</p><p class="mut" style="margin:.2rem 0">📍 ${esc(r.addr)}${r.pin ? ` · 🔑 ${r.pin}` : ""}</p><p style="margin:.4rem 0"><b>${fmt(r.tot)}</b></p><label>${_('Trabajador asignado', 'Esleitutako langilea')}</label>${sel(r, 'w', [['', '-'], ...W.map(x => [x, x])])}<div class="row" style="margin-top:.8rem;gap:.6rem"><button class="btn s" style="flex:1" data-a="adm" data-k="st" data-id="${r.id}" value="accepted">✓ ${_('Aceptar', 'Onartu')}</button><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="adm" data-k="st" data-id="${r.id}" value="rejected">✕ ${_('Rechazar', 'Baztertu')}</button></div></div>`).join("");
+  const reqCards = db.reqs.map(r => `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:.4rem"><span class="bd">${stBadge(r.st)}</span><span class="mut">#${r.id}</span></div><p style="margin:.2rem 0;font-size:1.1rem"><b>${esc(r.cli || _('Cliente', 'Bezeroa'))}</b></p><p style="margin:.2rem 0">${svc(r)} · ${r.bono > 1 ? `Bono ${r.bono} horas · ` : ""}${r.hTot} h</p><p class="mut" style="margin:.2rem 0">📅 ${r.ses.map(sl).join(' | ')} (${sesH(r.ses)}/${r.hTot} h)</p><p class="mut" style="margin:.2rem 0">📍 ${esc(r.addr)}${r.pin ? ` · 🔑 ${r.pin}` : ""}</p><p style="margin:.4rem 0"><b>${fmt(r.tot)}</b></p><label>${_('Trabajador asignado', 'Esleitutako langilea')}</label>${sel(r, 'w', [['', '-'], ...W.map(x => [x, x])])}<div class="row" style="margin-top:.8rem;gap:.6rem"><button class="btn s" style="flex:1" data-a="adm" data-k="st" data-id="${r.id}" value="accepted">✓ ${_('Aceptar', 'Onartu')}</button><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="adm" data-k="st" data-id="${r.id}" value="rejected">✕ ${_('Rechazar', 'Baztertu')}</button></div></div>`).join("");
   const allPlanCards = `<h3 style="margin-top:1.2rem">${_('Planes conjuntos publicados', 'Argitaratutako plan bateratuak')} (${db.plans.length})</h3>` + (db.plans.length ? db.plans.map(p => `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:.4rem"><span class="bd">${p.prop ? PS[p.prop.st][L()] : _('Abierto en Comunidad', 'Komunitatean irekita')}</span><button class="btn g" style="min-height:38px;padding:.3rem .7rem;color:var(--r);border-color:var(--r)" data-a="delplan_ask" data-v="${p.id}">🗑️ ${_('Borrar plan', 'Plana ezabatu')}</button></div><p><b>${esc(p.t[L()] || p.t.es)}</b> · ${p.m.map(esc).join(' + ')}</p>${p.w ? `<p class="mut">📅 ${esc(p.w)}</p>` : ""}${p.prop && p.prop.st !== 'draft' ? `<div class="row" style="gap:.6rem;margin-top:.5rem"><button class="btn s" style="flex:1" data-a="jp" data-v="${p.id}" data-k="accepted">✓ ${_('Aceptar', 'Onartu')}</button><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="jp" data-v="${p.id}" data-k="rejected">✕ ${_('Rechazar', 'Baztertu')}</button></div>` : ""}${String(askDelPlan) === String(p.id) ? `<div class="confirm-box"><p style="margin:0 0 .6rem;font-weight:800">${_('¿Estás seguro de que quieres borrar este plan?', 'Ziur zaude plan hau ezabatu nahi duzula?')}</p><div class="row" style="gap:.6rem"><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="delplan_yes" data-v="${p.id}">${_('Sí, borrar', 'Bai, ezabatu')}</button><button class="btn g" style="flex:1" data-a="delplan_no">${_('No', 'Ez')}</button></div></div>` : ""}</div>`).join("") : `<div class="card"><p class="mut">${_('No hay planes registrados.', 'Ez dago planik erregistratuta.')}</p></div>`);
   const cloudUsersCard = `<div class="card"><h3>👥 ${_('Cuentas registradas en la app', 'Aplikazioan erregistratutako kontuak')} (${usersList.length})</h3>${usersList.length ? usersList.map(u => `<div class="row" style="justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--bd)"><div class="row">${avImg(u, 38)}<div><b>${esc(u.name || _('Sin nombre', 'Izenik gabe'))}</b><br><span class="mut">${esc(u.username || "")} · ${esc(u.addr || 'Bilbao')}</span></div></div><button class="btn" style="min-height:38px;padding:.35rem .75rem;background:var(--r);color:#fff;border-color:var(--r)" data-a="delacc" data-v="${u.id}">${_('Borrar', 'Ezabatu')}</button></div>`).join("") : `<p class="mut">${_('No hay cuentas cargadas de Supabase.', 'Ez dago Supabasetik kargatutako konturik.')}</p>`}</div>`;
   const accCards = cloudUsersCard + `<div class="card"><h3>🔑 PIN ${_('trabajadores', 'langileak')}</h3>${W.map(n => `<p>${n}: <b>${WP[n]}</b></p>`).join("")}</div><div class="card"><h3>⭐ ${_('Valoraciones', 'Balorazioak')}</h3>${W.map(n => { const a = db.reqs.filter(r => r.w === n && r.rate), m = a.length ? a.reduce((s, r) => s + r.rate.s, 0) / a.length : 0; return `<p><b>${n}</b>: ${a.length ? `${stars(Math.round(m))} ${m.toFixed(1).replace('.', ',')} (${a.length})` : _('Sin valoraciones', 'Baloraziorik gabe')}</p>${a.map(r => `<p class="mut">"${esc(r.rate.c ? r.rate.c : '-')}"</p>`).join("")}`; }).join("")}</div>`;
@@ -690,14 +691,14 @@ function admin() {
     const formatted = thread.map(m => ({ f: m.sender_id == TEAM_ID ? 'u' : 'h', n: m.sender_id == TEAM_ID ? 'Equipo Hurbil' : u.name, t: m.text }));
     return `<div class="card"><div class="row" style="margin-bottom:.5rem">${avImg(u, 42)}<div><b>${esc(u.name)}</b><br><span class="mut">${esc(u.username || "")} · ${esc(u.addr || 'Bilbao')}</span></div></div>${msgs(formatted, 'Equipo Hurbil')}${sendBox('admteam:' + uid)}</div>`;
   }).join("") : `<div class="card"><p class="mut">${_('Aún ningún usuario ha escrito al Equipo Hurbil desde el chat.', 'Oraindik ez du inork idatzi Hurbil Taldeari txatetik.')}</p></div>`;
-  return `${back()}<div class="row" style="justify-content:space-between;align-items:center"><h2>⚙️ ${_('Administración', 'Administrazioa')}</h2><button class="btn g" onclick="admOk=false;render()">${_('Salir', 'Irten')}</button></div><p class="mut" style="margin-top:-.3rem"><span style="color:var(--s)">●</span> ${_('En directo · panel de control', 'Zuzenean · kontrol panela')}</p><div class="row" style="gap:.5rem;margin:1rem 0"><button class="btn ${admTab === 'reqs' ? 's' : ""}" style="flex:1" onclick="admTab='reqs';render()">📋 ${_('Solicitudes', 'Eskaerak')} (${db.reqs.length + db.plans.length})</button><button class="btn ${admTab === 'msgs' ? 's' : ""}" style="flex:1" onclick="admTab='msgs';render()">💬 ${_('Mensajes Hurbil', 'Hurbil Mezuak')} (${teamThreadIds.length})</button><button class="btn ${admTab === 'accs' ? 's' : ""}" style="flex:1" onclick="admTab='accs';render()">👥 ${_('Cuentas', 'Kontuak')} (${usersList.length})</button></div>${admTab === 'reqs' ? (reqCards + allPlanCards) : admTab === 'msgs' ? teamChatCards : accCards}<button class="btn g" style="margin-top:.8rem" data-a="rst">${_('Restablecer datos de muestra', 'Laginketa-datuak berrezarri')}</button>`;
+  return `${back()}<div class="row" style="justify-content:space-between;align-items:center"><h2>⚙️ ${_('Administración', 'Administrazioa')}</h2><button class="btn g" onclick="admOk=false;render()">${_('Salir', 'Irten')}</button></div><p class="mut" style="margin-top:-.3rem"><span style="color:var(--s)">●</span> ${_('En directo · panel de control', 'Zuzenean · kontrol panela')}</p><div class="row" style="gap:.5rem;margin:1rem 0"><button class="btn ${admTab === 'reqs' ? 's' : ""}" style="flex:1" onclick="admTab='reqs';render()">📋 ${_('Solicitudes', 'Eskaerak')} (${db.reqs.length + db.plans.length})</button><button class="btn ${admTab === 'msgs' ? 's' : ""}" style="flex:1" onclick="admTab='msgs';render()">💬 ${_('Mensajes Hurbil', 'Hurbil Mezuak')} (${teamThreadIds.length})</button><button class="btn ${admTab === 'accs' ? 's' : ""}" style="flex:1" onclick="admTab='accs';render()">👥 ${_('Cuentas', 'Kontuak')} (${usersList.length})</button></div>${admTab === 'reqs' ? (reqCards + allPlanCards) : admTab === 'msgs' ? teamChatCards : accCards}<button class="btn g" style="margin-top:.8rem" data-a="rst">${_('Restablecer datos locales', 'Datu lokalak berrezarri')}</button>`;
 }
 
 function modal() {
   if (!md) return "";
   let b = "";
   if (md == 'sos') {
-    const m = encodeURIComponent(`🆘 URGENTE: ${db.u.name} necesita ayuda. Dirección: ${db.u.addr || 'Bilbao'}. Hurbil 644 270 017`);
+    const m = encodeURIComponent(`🆘 URGENTE: ${db.u.name || 'Usuario'} necesita ayuda. Dirección: ${db.u.addr || 'Bilbao'}. Hurbil 644 270 017`);
     b = `<div class="row"><h2 class="grow" style="color:var(--r)">🆘 ${_('Emergencia', 'Larrialdia')}</h2>${S(_('Ayuda inmediata. Pulsa llamar al 644 270 017.', 'Berehalako laguntza. Sakatu 644 270 017 zenbakira deitzeko.'))}</div><p><b>${_('Si es muy grave, llama también al 112.', 'Oso larria bada, deitu 112ra ere.')}</b></p><div class="row" style="flex-direction:column;align-items:stretch"><a class="btn" href="tel:644270017">📞 ${_('Llamar a Hurbil', 'Hurbilera deitu')} · 644 270 017</a><a class="btn s" target="_blank" rel="noopener" href="https://wa.me/${phone(db.u.fam) || ""}?text=${m}">💬 ${_('Avisar a mi familiar por WhatsApp', 'Abisatu nire senideari WhatsApp bidez')}</a><a class="btn g" target="_blank" rel="noopener" href="https://wa.me/34644270017?text=${m}">📍 ${_('Enviar alerta urgente con mi dirección', 'Bidali larrialdi-alerta nire helbidearekin')}</a></div><p class="mut">📍 ${esc(db.u.addr || 'Bilbao')}</p>`;
   } else if (md == 'story_up') {
     const r = db.reqs.find(x => String(x.id) === String(storyReqId));
@@ -706,9 +707,10 @@ function modal() {
   return `<div class="ov"><div class="mo" role="dialog" aria-modal="true">${b}<button class="btn g" style="margin-top:1rem;width:100%" data-a="close">✕ ${_('Cerrar', 'Itxi')}</button></div></div>`;
 }
 
-const saved = () => db.reqs.reduce((s, r) => s + (r.base - r.tot), 0) + db.plans.filter(p => p.prop && p.prop.st == 'accepted' && p.m.includes(fn())).reduce((s, p) => s + (21 - 16) * p.h, 0);
+const saved = () => myReqs().reduce((s, r) => s + (r.base - r.tot), 0) + db.plans.filter(p => p.prop && p.prop.st == 'accepted' && p.m.includes(fn())).reduce((s, p) => s + (21 - 16) * p.h, 0);
 function pextra() {
-  const sv = `${_('Has ahorrado', 'Aurreztu duzu')} ${fmt(saved())}`, bo = db.reqs.find(r => r.bono && !arch(r));
+  const mine = myReqs();
+  const sv = `${_('Has ahorrado', 'Aurreztu duzu')} ${fmt(saved())}`, bo = mine.find(r => r.bono && !arch(r));
   let b = "";
   if (bo) {
     const tot = bo.hTot, con = bo.ses.filter(x => end(x.d, x.t, x.h) < Date.now()).reduce((s, x) => s + x.h, 0), sch = sesH(bo.ses), tx = `${_('Bono', 'Bonoa')} ${tot} h: ${con} h ${_('consumidas', 'kontsumituta')} · ${sch - con} h ${_('programadas', 'programatuta')} · ${tot - sch} h ${_('disponibles', 'eskuragarri')}`;
@@ -904,197 +906,4 @@ function act(el) {
       const p = db.plans.find(x => String(x.id) == v); if (!p) break;
       p.int = p.int || [];
       if (p.int.includes(sbUid)) p.int = p.int.filter(x => x != sbUid);
-      else { p.int.push(sbUid); toast(_('¡Aviso enviado! Le llegará una notificación al creador del plan.', 'Abisua bidalita! Jakinarazpena iritsiko zaio planaren sortzaileari.')); }
-      sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => syncCloud()); break;
-    }
-    case 'pacc': {
-      const [pid, uid] = v.split(':'), p = db.plans.find(x => String(x.id) == pid); if (!p) break;
-      const peer = usersList.find(x => x.id == uid) || { name: _('Vecino', 'Bizilaguna') };
-      p.int = (p.int || []).filter(x => x != uid); p.accU = uid; p.m = [p.ownerName || db.u.name, peer.name];
-      p.prop = { st: 'draft', acc: [] }; p.msgs = p.msgs || [];
-      p.msgs.push({ n: 'Hurbil', t: _('🤝 Plan conjunto creado entre ', '🤝 Plan bateratua sortuta: ') + p.m[0] + ' & ' + p.m[1] + _('. Ambos debéis pulsar Aceptar plan aquí abajo.', '. Biok behean Plana onartu sakatu behar duzue.') });
-      sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => {
-        sb.from('direct_messages').insert({ sender_id: sbUid, receiver_id: uid, text: '🤝 ' + _('He aceptado tu interés en el plan: ', 'Zure interesa onartu dut planean: ') + (p.t[L()] || p.t.es), plan_id: String(p.id) }).then(() => syncCloud());
-      });
-      toast(_('¡Plan aceptado! Ya puedes pulsar Abrir chat con ', 'Plana onartuta! Orain sakatu dezakezu Ireki txata: ') + peer.name); break;
-    }
-    case 'prej': {
-      const [pid, uid] = v.split(':'), p = db.plans.find(x => String(x.id) == pid); if (!p) break;
-      p.int = (p.int || []).filter(x => x != uid);
-      sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => syncCloud());
-      toast(_('Solicitud rechazada', 'Eskaera baztertuta')); break;
-    }
-    case 'ok': {
-      if (sendingReq) return; sendingReq = true; setTimeout(() => sendingReq = false, 2000);
-      const est = estCalc(), sesList = w.plan == 'normal' ? [{ d: w.sd, t: w.st, h: Math.max(1, +w.sh || 1) }] : [...w.ses], s0 = sesList[0], hTot = w.plan == 'normal' ? s0.h : Math.max(w.plan == 'bono' ? 5 : 12, sesH(sesList)), extraTxt = [w.rDo, w.rNotes].filter(Boolean).join('. '), fullTxt = [w.txt, extraTxt].filter(Boolean).join(' · ');
-      db.reqs.unshift({ id: Date.now(), c: w.cat, o: w.opt, t: fullTxt, ses: sesList, hTot, bono: w.plan != 'normal' ? 1 : 0, date: s0.d, time: s0.t, h: s0.h, addr: w.rAddr, cli: w.rName || db.u.name, phone: w.rPhone, who: w.who, pay: w.pay, ppl: 1, base: 21 * hTot, tot: est.tot, st: 'pending', w: "" });
-      if (!db.u.addr) db.u.addr = w.rAddr;
-      if (sbUid) sb.from('requests').insert({ user_id: sbUid, data: db.reqs[0] }).then(() => syncCloud());
-      if (w.share && sbUid) {
-        const pid = String(Date.now() + 1), np = { id: pid, ownerId: sbUid, ownerName: db.u.name, t: { es: svc(db.reqs[0]), eu: svc(db.reqs[0]) }, w: sesList.map(sl).join(' | ') + ' · ' + w.rAddr, h: hTot, m: [db.u.name], int: [], accU: null, prop: null, msgs: [] };
-        db.plans.unshift(np); sb.from('plans').upsert({ id: pid, data: np }).then(() => syncCloud());
-      }
-      Object.assign(w, W0()); toast(_('¡Solicitud enviada! Te avisaremos cuando Hurbil la acepte.', 'Eskaera bidalita! Hurbilek onartzen duenean abisatuko dizugu.')); go('reqs'); break;
-    }
-    case 'jp': {
-      const p = db.plans.find(x => String(x.id) == v), k = el.dataset.k;
-      p.prop.st = k;
-      p.msgs.push({ n: 'Hurbil', t: k == 'accepted' ? _('✅ Hurbil ha aceptado vuestro plan conjunto.', '✅ Hurbilek zuen plan bateratua onartu du.') : _('❌ Hurbil no puede aceptar este plan. Os propondremos otra fecha.', '❌ Hurbilek ezin du plan hau onartu. Beste data bat proposatuko dizuegu.') });
-      sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => {}); break;
-    }
-    case 'delreq_ask': { askDelReq = el.dataset.id; break; }
-    case 'delreq_no': { askDelReq = null; break; }
-    case 'delreq_yes': { const rid = String(el.dataset.id); askDelReq = null; db.delReqs = [...(db.delReqs || []), rid]; db.reqs = db.reqs.filter(x => String(x.id) !== rid); save(); sb.from('requests').delete().eq('id', rid).then(() => {}); sb.from('requests').delete().eq('id', +rid).then(() => {}); toast(_('Solicitud eliminada', 'Eskaera ezabatuta')); break; }
-    case 'delplan_ask': { askDelPlan = v; break; }
-    case 'delplan_no': { askDelPlan = null; break; }
-    case 'delplan_yes': { const pid = String(v); askDelPlan = null; db.delPlans = [...(db.delPlans || []), pid]; db.plans = db.plans.filter(x => String(x.id) !== pid); save(); sb.from('plans').delete().eq('id', pid).then(() => {}); if (!isNaN(+pid)) sb.from('plans').delete().eq('id', +pid).then(() => {}); toast(_('Plan eliminado definitivamente', 'Plana behin betiko ezabatuta')); break; }
-    case 'delacc': { usersList = usersList.filter(x => x.id != v); sb.from('follows').delete().or(`follower_id.eq.${v},following_id.eq.${v}`).then(() => {}); sb.from('direct_messages').delete().or(`sender_id.eq.${v},receiver_id.eq.${v}`).then(() => {}); sb.from('profiles').delete().eq('id', v).then(() => syncCloud()); toast(_('Cuenta eliminada', 'Kontua ezabatuta')); break; }
-    case 'nx': w.s++; break;
-    case 'pv': w.s--; break;
-    case 'wa': {
-      const p = phone(db.u.fam);
-      if (!p) { toast(_('Añade el teléfono de tu familiar en el perfil.', 'Gehitu zure senidearen telefonoa profilean.')); go('prof'); render(); return; }
-      open(`https://wa.me/${p}?text=${encodeURIComponent(`Hola, te aviso de mi cita con Hurbil: ${svc(r)}. ${r.ses.map(sl).join('; ')}, en ${r.addr}. Estado: ${ST[r.st][0]}. Hurbil: 644 270 017`)}`, '_blank', 'noopener'); return;
-    }
-    case 'star': tr[id] = { ...tr[id], s: +v }; break;
-    case 'rate': {
-      const x = tr[id]; if (!x?.s) { toast(_('Elige de 1 a 5 estrellas.', 'Aukeratu 1 eta 5 izar artean.')); return; }
-      if (dl(r) <= 0) { toast(_('El plazo de 24 horas ha terminado.', '24 orduko epea amaitu da.')); break; }
-      r.rate = { s: x.s, c: x.c || "" }; break;
-    }
-    case 'facc': { const row = folRows.find(x => x.follower_id == v && x.following_id == sbUid); if (row) row.status = 'accepted'; sb.from('follows').update({ status: 'accepted' }).eq('follower_id', v).eq('following_id', sbUid).then(() => syncCloud()); toast(_('Solicitud aceptada', 'Eskaera onartuta')); break; }
-    case 'frej': { folRows = folRows.filter(x => !(x.follower_id == v && x.following_id == sbUid)); sb.from('follows').delete().eq('follower_id', v).eq('following_id', sbUid).then(() => syncCloud()); toast(_('Solicitud rechazada', 'Eskaera baztertuta')); break; }
-    case 'uprof': { viewU = viewU == v ? null : v; break; }
-    case 'dm': { md = null; dmUser = v; draftChat = ""; go('chat'); if (dmList.length) { lastSeenDm = Math.max(...dmList.map(x => x.id || 0)); localStorage.setItem('hurbil_seen_dm', String(lastSeenDm)); } syncCloud(); break; }
-    case 'tab': ct = v; break;
-    case 'flt': fl = !fl; break;
-    case 'join': {
-      const p = db.plans.find(x => x.id == +v), n = fn();
-      if (p.m.includes(n)) { p.m = p.m.filter(x => x != n); p.prop = null; }
-      else {
-        p.m.push(n);
-        if (p.m.length == 2) {
-          p.prop = { st: 'draft', acc: [] };
-          p.msgs.push({ n: p.m[0], t: _('¡Genial, ya somos dos! Vamos a por este plan.', 'Bikaina, bi gara! Egin dezagun plan hau.') }, { n: 'Hurbil', t: _('🤝 Propuesta de plan conjunto creada para 2 personas (16,00 €/h por persona). Aceptadla los dos y la enviamos a Hurbil.', '🤝 2 pertsonentzako plan bateratuaren proposamena sortu da (16,00 €/h pertsonako). Biok onartu eta Hurbili bidaliko diogu.') });
-          oc = p.id;
-        }
-      }
-      sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => {}); break;
-    }
-    case 'acc': {
-      const p = db.plans.find(x => String(x.id) == v), n = el.dataset.n;
-      if (p && p.prop && !p.prop.acc.includes(n)) {
-        p.prop.acc.push(n);
-        if (p.prop.acc.length >= 2) {
-          p.prop.st = 'sent';
-          p.msgs.push({ n: 'Hurbil', t: _('📤 Plan conjunto enviado a Hurbil para confirmación.', '📤 Plan bateratua Hurbilera bidalita baieztatzeko.') });
-          toast(_('¡Los dos habéis aceptado! Plan enviado a Hurbil.', 'Biok onartu duzue! Plana Hurbilera bidalita.'));
-        } else {
-          toast(_('Has aceptado el plan. Falta la otra persona.', 'Plana onartu duzu. Beste pertsona falta da.'));
-        }
-        sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => syncCloud());
-      }
-      break;
-    }
-    case 'pchat': oc = oc == +v ? null : +v; draftChat = ""; break;
-    case 'gop': md = null; ct = 'plans'; oc = +v; go('comm'); break;
-    case 'send': {
-      const inp = el.parentElement.querySelector('input'), t = inp.value.trim(); if (!t) return;
-      inp.value = ""; draftChat = ""; fo = true;
-      if (v == 'team') {
-        if (sbUid) {
-          dmList.push({ sender_id: sbUid, receiver_id: TEAM_ID, text: t });
-          teamMsgs.push({ sender_id: sbUid, receiver_id: TEAM_ID, text: t });
-          sb.from('direct_messages').insert({ sender_id: sbUid, receiver_id: TEAM_ID, text: t }).then(() => syncCloud());
-        } else {
-          db.team.push({ f: 'u', t });
-          toast(_('Inicia sesión para que el equipo de Hurbil pueda responderte aquí.', 'Hasi saioa Hurbil taldeak hemen erantzun ahal izateko.'));
-        }
-      } else if (v.startsWith('admteam:')) {
-        const to = v.slice(8);
-        teamMsgs.push({ sender_id: TEAM_ID, receiver_id: to, text: t });
-        sb.from('direct_messages').insert({ sender_id: TEAM_ID, receiver_id: to, text: t }).then(() => syncCloud());
-        toast(_('Respuesta enviada al usuario', 'Erantzuna erabiltzaileari bidalita'));
-      } else if (v.startsWith('dm:')) {
-        const to = v.slice(3);
-        dmList.push({ sender_id: sbUid, receiver_id: to, text: t });
-        sb.from('direct_messages').insert({ sender_id: sbUid, receiver_id: to, text: t }).then(() => syncCloud());
-      } else {
-        const p = db.plans.find(x => x.id == +v.slice(1));
-        p.msgs.push({ n: fn(), t });
-        sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => {});
-      }
-      break;
-    }
-    case 'pw': sp = !sp; break;
-    case 'mode': pm = v; break;
-    case 'prof': { editProf = false; toast(_('Datos guardados.', 'Datuak gordeta.')); break; }
-    case 'auth': {
-      if (v == 'c') {
-        if (!db.u.user || !db.u.pass || !db.u.name || !db.u.contact) { toast(_('Rellena nombre, usuario, correo y contraseña.', 'Bete izena, erabiltzailea, posta eta pasahitza.')); return; }
-        const email = db.u.contact.includes('@') ? db.u.contact.trim() : db.u.user.replace('@', "") + '@hurbil.eus';
-        sb.auth.signUp({ email, password: db.u.pass }).then(async ({ data, error }) => {
-          if (error) { toast(error.message); return; }
-          sbUid = data.user.id; db.u.on = 1; save(); await syncCloud(); toast(_('¡Cuenta creada!', 'Kontua sortuta!'));
-        }); return;
-      } else {
-        const email = lg.u.includes('@') ? lg.u.trim() : lg.u.replace('@', "") + '@hurbil.eus';
-        sb.auth.signInWithPassword({ email, password: lg.p }).then(async ({ data, error }) => {
-          if (error) { toast(_('Correo o contraseña incorrectos.', 'Posta edo pasahitz okerra.')); return; }
-          sbUid = data.user.id; db.u.on = 1; await syncCloud(); toast(_('¡Bienvenido de nuevo!', 'Ongi etorri berriro!'));
-        }); return;
-      }
-    }
-    case 'out': sb.auth.signOut(); sbUid = null; db.u.on = 0; editProf = false; break;
-    case 'adm': {
-      const k = el.dataset.k; r[k] = el.value;
-      if (k == 'w' && r.w && r.st == 'pending') r.st = 'assigned';
-      if (k == 'st' && r.st == 'done' && !r.doneAt) r.doneAt = Date.now();
-      if (r.st != 'pending' && !r.pin) { let n; do n = String(1000 + Math.floor(Math.random() * 9000)); while (db.reqs.some(x => x.pin == n)); r.pin = n; }
-      sb.from('requests').update({ data: r }).eq('id', r.id).then(() => {}); break;
-    }
-    case 'rst': db = seed(); break;
-  }
-  save(); render();
-}
-
-document.addEventListener('click', e => {
-  const el = e.target.closest('[data-a]');
-  if (e.target.classList.contains('ov')) { stopSay(); md = null; draftChat = ""; render(); return; }
-  if (el && !['SELECT', 'INPUT'].includes(el.tagName)) { if (el.dataset.a == 'go') e.preventDefault(); act(el); }
-});
-document.addEventListener('change', e => {
-  if ((e.target.tagName == 'SELECT' || e.target.type == 'date' || e.target.type == 'checkbox') && e.target.dataset.a) act(e.target);
-});
-document.addEventListener('input', e => {
-  const f = e.target.dataset.f; if (!f) return;
-  const k = f.split('.'); let o = X[k[0]];
-  for (const p of k.slice(1, -1)) o = o[p] ??= {};
-  o[k[k.length - 1]] = e.target.value; save();
-  if (k[0] == 'w') {
-    if (w.s == 4) {
-      const eb = document.querySelector('.est-box');
-      if (eb) { const c = estCalc(); eb.innerHTML = `<small class="mut">${c.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado', 'Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(c.tot)}</div>`; }
-    }
-    const n = $('#nx'); if (n) n.disabled = !ok();
-  }
-});
-document.addEventListener('keydown', e => {
-  if (e.key == 'Escape') {
-    stopSay();
-    if (route === 'story') { askDelStory = false; go(prevRoute || 'home'); render(); return; }
-    if (md) { md = null; draftChat = ""; render(); }
-  }
-  if (e.key == 'Enter' && e.target.closest('.send,.ig-bar') && e.target.tagName == 'INPUT') e.target.parentElement.querySelector('button').click();
-});
-addEventListener('hashchange', () => { stopSay(); route = location.hash.slice(1) || 'home'; scrollTo(0, 0); render(); });
-render();
-syncCloud();
-setInterval(() => { if (sbUid || admOk) syncCloud(true); }, 6000);
-if ('serviceWorker' in navigator) {
-  addEventListener('load', () => { navigator.serviceWorker.register('/Hurbil/sw.js', { scope: '/Hurbil/' }).then(reg => reg.update()).catch(() => {}); });
-}
-</script>
-</body>
-</html>
-```[cite: 9]
+      else { p.int.push(sbUid); toast(_('¡Aviso enviado! Le llegará una notificación al creador del plan.', 'Abisua bidalita! Jakinarazpena iritsiko zaio planaren sortzaileari
