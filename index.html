@@ -224,7 +224,7 @@
     employees: [],
     notifications: [],
     route: 'auth',
-    authMode: 'register',
+    authMode: 'login',
     planType: 'single_hour',
     benId: '',
     serviceDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
@@ -240,7 +240,7 @@
     const el = document.getElementById('toast');
     el.textContent = msg;
     el.style.display = 'block';
-    setTimeout(() => el.style.display = 'none', 3200);
+    setTimeout(() => el.style.display = 'none', 3500);
   }
 
   function setLang(l) {
@@ -283,14 +283,33 @@
 
   async function syncAll() {
     if (!st.user) return;
-    const { data: prof } = await sb.from('hurbil_profiles').select('*').eq('id', st.user.id).single();
-    st.profile = prof;
+    let { data: prof, error: profErr } = await sb.from('hurbil_profiles').select('*').eq('id', st.user.id).maybeSingle();
 
-    if (!prof) {
-      st.route = 'auth';
+    if (profErr) {
+      toast('Error leyendo perfil: ' + profErr.message);
       render();
       return;
     }
+
+    if (!prof) {
+      const { data: created, error: insErr } = await sb.from('hurbil_profiles').insert({
+        id: st.user.id,
+        role: 'family',
+        full_name: st.user.email.split('@')[0],
+        email: st.user.email,
+        accepted_non_medical_terms: true,
+        bonus_hours: 0
+      }).select().single();
+
+      if (insErr) {
+        toast('No se pudo crear perfil: ' + insErr.message);
+        render();
+        return;
+      }
+      prof = created;
+    }
+
+    st.profile = prof;
 
     const { data: notifs } = await sb.from('hurbil_notifications')
       .select('*').eq('user_id', st.user.id).order('created_at', { ascending: false }).limit(5);
@@ -306,7 +325,7 @@
         .eq('family_id', st.user.id)
         .order('service_date', { ascending: false });
       st.bookings = bks || [];
-      if (st.route === 'auth') st.route = 'family_home';
+      st.route = 'family_home';
     }
 
     if (prof.role === 'admin') {
@@ -317,7 +336,7 @@
         .select('*, hurbil_beneficiaries(full_name, neighborhood, exact_address, phone), hurbil_profiles!hurbil_bookings_family_id_fkey(full_name, phone)')
         .order('created_at', { ascending: false });
       st.bookings = bks || [];
-      if (st.route === 'auth') st.route = 'admin_dash';
+      st.route = 'admin_dash';
     }
 
     if (prof.role === 'employee') {
@@ -326,7 +345,7 @@
         .eq('employee_id', st.user.id)
         .order('service_date', { ascending: true });
       st.bookings = bks || [];
-      if (st.route === 'auth') st.route = 'emp_dash';
+      st.route = 'emp_dash';
     }
 
     render();
@@ -353,7 +372,7 @@
     }
 
     const uid = data.user.id;
-    const { error: profErr } = await sb.from('hurbil_profiles').insert({
+    const { error: profErr } = await sb.from('hurbil_profiles').upsert({
       id: uid,
       role: 'family',
       full_name: fullName,
@@ -387,7 +406,7 @@
       email: fd.get('email').trim(),
       password: fd.get('password')
     });
-    if (error) return toast(_('Credenciales incorrectas o email sin confirmar', 'Datu okerrak'));
+    if (error) return toast('Error al entrar: ' + error.message);
     st.user = data.user;
     await syncAll();
   }
@@ -587,11 +606,11 @@
     return `
       <div class="card">
         <div style="display:flex;gap:8px;margin-bottom:16px;">
-          <button class="${st.authMode === 'register' ? 'primary' : ''}" onclick="st.authMode='register';render()">
-            ${_('Crear cuenta familiar', 'Sortu familia kontua')}
-          </button>
           <button class="${st.authMode === 'login' ? 'primary' : ''}" onclick="st.authMode='login';render()">
             ${_('Ya tengo cuenta / Personal', 'Sartu kontura / Langileak')}
+          </button>
+          <button class="${st.authMode === 'register' ? 'primary' : ''}" onclick="st.authMode='register';render()">
+            ${_('Crear cuenta familiar', 'Sortu familia kontua')}
           </button>
         </div>
 
@@ -828,6 +847,7 @@
       <div class="card">
         <h2>🛠️ Panel de Coordinación Hurbil Bilbao (Admin)</h2>
         <h3>1. Asignar empleados internos a reservas</h3>
+        ${!st.bookings.length ? '<p style="color:var(--muted);">Aún no hay reservas registradas.</p>' : ''}
         ${st.bookings.map(bk => `
           <div style="border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;">
             <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
