@@ -1,635 +1,931 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hurbil · Marketplace de Acompañamiento en Bilbao</title>
-<link rel="manifest" href="/Hurbil/manifest.json">
-<link rel="apple-touch-icon" href="/Hurbil/logo.png">
-<link rel="icon" type="image/png" href="/Hurbil/logo.png">
-<meta name="theme-color" content="#2D5373">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-:root{--bg:#F6F7F5;--c:#fff;--bd:#E2E8F0;--p:#2D5373;--ph:#244560;--s:#447458;--sb:#EBF1F6;--sbd:#D6E2EC;--t:#1E293B;--pt:#fff;--st:#fff;--r:#C0463F;--m:#64748B;--warn:#FEF3C7;--warnb:#D97706}
-body.hc{--bg:#000;--c:#000;--bd:#FFE600;--p:#FFE600;--ph:#fff;--s:#FFE600;--sb:#1a1a00;--sbd:#FFE600;--t:#FFE600;--pt:#000;--st:#000;--r:#FFE600;--m:#FFE600;--warn:#1a1a00;--warnb:#FFE600}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:1rem/1.55 Nunito,system-ui,sans-serif}
-a{color:var(--p);font-weight:700}h1,h2,h3{font-weight:800;color:var(--t);line-height:1.2;margin:.2em 0}h1{font-size:1.75rem}h2{font-size:1.4rem}h3{font-size:1.15rem}
-header{background:var(--c);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
-.hw{max-width:780px;margin:auto;padding:.6rem 1rem;display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;justify-content:space-between}
-.lg{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--t)}.lg b{display:block;font-size:1.05rem;line-height:1.2}.lg small{color:var(--m);font-weight:700}
-.ct{display:flex;flex-wrap:nowrap;gap:.35rem;align-items:center;margin-left:auto}.hz{max-width:780px;margin:auto;padding:0 1rem .5rem;display:flex;justify-content:flex-end;gap:.5rem;align-items:center}
-.seg{display:inline-flex;border:1px solid var(--sbd);border-radius:.9rem;overflow:hidden;background:var(--c)}.seg button{border:0;background:var(--c);padding:.3rem .7rem;font-weight:800;min-height:42px}
-.seg button[aria-pressed=true],.sw[aria-checked=true],.ib[aria-pressed=true]{background:var(--p);color:var(--pt)}
-.ib,.sw,.pill{border:1px solid var(--sbd);background:var(--sb);border-radius:2rem;padding:.3rem .85rem;font-weight:800;min-height:42px;color:var(--t);text-decoration:none;display:inline-flex;white-space:nowrap;align-items:center;position:relative}
-.rd{flex:none;border-radius:50%;width:42px;height:42px;padding:0;justify-content:center;background:var(--c);font-size:1.3rem}.sw{font-size:.85rem}
-button{font:inherit;cursor:pointer;color:inherit}
-main{max-width:680px;margin:auto;padding:1rem 1rem 7rem}
-.card{background:var(--c);border:1px solid var(--bd);border-radius:16px;padding:1.15rem;margin:.85rem 0;box-shadow:0 1px 4px #1e293b0f}
-.row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}.row>.grow{flex:1}
-.btn{background:var(--p);color:var(--pt);border:1px solid var(--p);border-radius:14px;padding:.75rem 1.2rem;font-weight:800;font-size:1rem;min-height:50px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.4rem}
-.btn:hover{background:var(--ph)}.btn.g{background:var(--sb);color:var(--t);border-color:var(--sbd)}.btn.s{background:var(--s);border-color:var(--s);color:var(--st)}.btn.r{background:var(--r);border-color:var(--r);color:#fff}.btn:disabled{opacity:.45;cursor:not-allowed}
-.spk{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:#DCE8F2;color:#1E293B;font-size:1.1rem;touch-action:manipulation}
-.role-card{border:2px solid var(--sbd);border-radius:18px;padding:1.2rem;text-align:left;background:var(--c);width:100%;display:flex;gap:1rem;align-items:center;margin:.6rem 0}
-.role-card.pri{border-color:var(--s);background:#EFF5F1}.role-card.on{border-width:3px;border-color:var(--p)}
-body.hc .role-card.pri{background:#1a1a00}
-.pin-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.8rem 0}
-.pin-box{background:var(--sb);border:2px solid var(--p);border-radius:14px;padding:.8rem;text-align:center}
-.pin-num{font-size:2rem;font-weight:800;letter-spacing:.25em;display:block;margin-top:.2rem}
-.warn-box{background:var(--warn);border:2px solid var(--warnb);border-radius:14px;padding:.9rem;margin:.8rem 0;font-weight:700}
-.receipt{background:var(--sb);border:1px dashed var(--p);border-radius:14px;padding:1rem;margin:.8rem 0}
-.receipt-row{display:flex;justify-content:space-between;margin:.3rem 0}
-.bd,.tag{display:inline-block;background:var(--sb);color:var(--t);border:1px solid var(--sbd);border-radius:2rem;padding:.15rem .75rem;font-weight:800;font-size:.82rem}.mut{color:var(--m)}
-.badge{background:#ef4444;color:#fff;font-size:.72rem;font-weight:800;min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;margin-left:.3rem}
-.sp-pill{border:1px solid var(--bd);background:var(--c);border-radius:999px;padding:.4rem .9rem;font-weight:700;font-size:.9rem;min-height:40px;display:inline-flex;align-items:center;gap:.35rem;margin:.2rem}
-.sp-pill.on{border:2px solid var(--s);background:#EFF5F1;color:var(--s);font-weight:800}
-input,textarea,select{font:inherit;width:100%;padding:.7rem .85rem;border:1px solid var(--sbd);border-radius:12px;background:var(--c);color:var(--t);min-height:48px}
-label{font-weight:800;display:block;margin:.75rem 0 .3rem}
-.fab{position:fixed;right:1rem;bottom:1rem;display:flex;flex-direction:column;gap:.5rem;z-index:6}
-.fab button{border:0;border-radius:2rem;padding:.65rem 1.1rem;font-weight:800;font-size:.95rem;box-shadow:0 4px 12px #1e293b33}
-.sos{background:var(--r);color:#fff}.cb{background:var(--p);color:var(--pt)}
-.ov{position:fixed;inset:0;background:#1e293b99;z-index:9;display:flex;align-items:center;justify-content:center;padding:1rem}
-.mo{background:var(--c);border:1px solid var(--bd);border-radius:20px;padding:1.2rem;max-width:500px;width:100%;max-height:90vh;overflow:auto}
-.ig-feed{max-height:360px;min-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;padding:.6rem;background:var(--bg);border-radius:12px}
-.ig-me{align-self:flex-end;max-width:80%;background:var(--p);color:var(--pt);padding:.6rem .9rem;border-radius:16px 16px 4px 16px}
-.ig-them{align-self:flex-start;max-width:80%;background:var(--c);border:1px solid var(--bd);padding:.6rem .9rem;border-radius:16px 16px 16px 4px}
-#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:5.5rem;background:var(--t);color:var(--bg);padding:.8rem 1.2rem;border-radius:1rem;z-index:12;font-weight:800;max-width:92%}
-.star{font-size:2rem;background:none;border:0;color:#eab308;padding:0 .1rem}
-body.easy .btn{font-size:1.25rem;padding:1rem 1.3rem}
-body.easy .adv{display:none}
-</style></head><body>
-<header id="hd"></header><main id="app"></main>
-<div id="fab"></div><div id="md"></div><div id="toast" role="status" hidden></div>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hurbil · Bilbao · Acompañamiento a Mayores</title>
+  <link rel="manifest" href="/Hurbil/manifest.json" />
+  <meta name="theme-color" content="#0f5132" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #f6f8f7;
+      --card: #ffffff;
+      --primary: #0f5132;
+      --primary-light: #e6f4ea;
+      --accent: #d97706;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --danger: #b91c1c;
+      --font-scale: 1;
+    }
+    body.high-contrast {
+      --bg: #000000;
+      --card: #111111;
+      --primary: #22c55e;
+      --primary-light: #052e16;
+      --text: #ffffff;
+      --muted: #cbd5e1;
+      --border: #ffffff;
+    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-size: calc(16px * var(--font-scale));
+      line-height: 1.5;
+      padding-bottom: 80px;
+    }
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .brand img { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; }
+    .brand h1 { margin: 0; font-size: 1.25rem; color: var(--primary); }
+    .brand small { display: block; font-size: 0.78rem; color: var(--muted); }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    button {
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: 0.15s;
+    }
+    button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    button.primary:hover { opacity: 0.92; }
+    button.danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+    button.pill-active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    main { max-width: 820px; margin: 20px auto; padding: 0 16px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    h2, h3 { margin-top: 0; color: var(--primary); }
+    label { display: block; font-weight: 600; margin: 12px 0 4px; font-size: 0.95rem; }
+    input, select, textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--card);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .rate-box {
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      cursor: pointer;
+      background: var(--card);
+    }
+    .rate-box.selected { border-color: var(--primary); background: var(--primary-light); }
+    .rate-price { font-size: 1.35rem; font-weight: 800; color: var(--primary); }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .badge.warn { background: #fef3c7; color: #92400e; }
+    .badge.live { background: #dcfce7; color: #166534; }
+    .pin-banner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 14px 0;
+    }
+    .pin-card {
+      background: var(--primary-light);
+      border: 2px dashed var(--primary);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+    }
+    .pin-digits {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: var(--primary);
+      display: block;
+      margin-top: 4px;
+    }
+    .task-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin: 4px 6px 4px 0;
+      cursor: pointer;
+    }
+    .task-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .sos-float {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      background: var(--danger);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(185,28,28,0.35);
+      z-index: 99;
+    }
+    #toast {
+      position: fixed;
+      bottom: 76px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      display: none;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand" onclick="nav('home')">
+    <img src="/Hurbil/logo.png" alt="Hurbil" onerror="this.style.display='none'" />
+    <div>
+      <h1>Hurbil</h1>
+      <small>Bilbao · Servicio Directo</small>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button onclick="setLang('es')" id="btn-es" class="pill-active">ES</button>
+    <button onclick="setLang('eu')" id="btn-eu">EU</button>
+    <button onclick="changeScale(-0.1)">A-</button>
+    <button onclick="changeScale(0.1)">A+</button>
+    <button onclick="document.body.classList.toggle('high-contrast')">◐</button>
+    <span id="nav-actions"></span>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<a href="tel:644270017" class="sos-float">🆘 SOS 644 270 017</a>
+<div id="toast"></div>
 
 <script>
-const SB_URL='https://oijhfovricxgpnczwpfv.supabase.co';
-const SB_KEY='sb_publishable_I1I6eY2egVrjwMzbDqrs0Q_2EK05T2C';
-const sb=window.supabase.createClient(SB_URL,SB_KEY);
+  // CONFIGURACIÓN SUPABASE (sustituye por tus claves de proyecto si cambian)
+  const SUPABASE_URL = 'https://TU_PROYECTO.supabase.co';
+  const SUPABASE_ANON_KEY = 'TU_ANON_KEY';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const $=s=>document.querySelector(s);
-const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmt=n=>(+n||0).toFixed(2).replace('.',',')+' €';
-const d0=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
-const randPin=()=>String(1000+Math.floor(Math.random()*9000));
+  const BARRIOS_BILBAO = [
+    'Abando', 'Indautxu', 'Deusto', 'Santutxu', 'Casco Viejo',
+    'Uribarri', 'Begoña', 'Rekalde', 'Basurto', 'Zorroza', 'Otxarkoaga', 'Txurdinaga'
+  ];
 
-const BARRIOS=['Indautxu','Abando','Deusto','Santutxu','Casco Viejo','Begoña','Rekalde','Uribarri','Basurto','Txurdinaga','Otxarkoaga','Miribilla'];
-const TASKS=[
-  ['walk','🚶 Paseo y compañía','🚶 Ibilaldia eta konpainia'],
-  ['shop','🛒 Compra / Recados','🛒 Erosketak / Egitekoak'],
-  ['med','🏥 Acompañamiento médico','🏥 Mediku-laguntza'],
-  ['tech','📱 Ayuda con móvil / papeleo','📱 Mugikorra / paperak']
-];
-const PLATFORM_FEE=3.50;
+  const TAREAS_OPCIONES = [
+    { id: 'paseo', es: '🚶 Paseo y compañía', eu: '🚶 Paseoa eta konpainia' },
+    { id: 'compra', es: '🛒 Compra y recados', eu: '🛒 Erosketak eta enkarguak' },
+    { id: 'medico', es: '🏥 Acompañamiento médico', eu: '🏥 Medikuarengana laguntzea' },
+    { id: 'papeleo', es: '📱 Móvil y papeleo', eu: '📱 Mugikorra eta paperak' }
+  ];
 
-let st={
-  lang:'es',fs:1,hc:0,easy:0,
-  route:'explore',md:null,
-  uid:null,prof:null,compProf:null,
-  beneficiaries:[],companions:[],bookings:[],messages:[],
-  // Filtros de búsqueda
-  fBarrio:'',fDate:d0(1),fTime:'11:00',
-  // Registro / Login
-  authMode:'register',regRole:'family',regName:'',regEmail:'',regPhone:'',regPass:'',regLegal:false,
-  // Formulario nuevo beneficiario
-  bSelf:false,bName:'',bBarrio:'Indautxu',bAddr:'',bNotes:'',bPhone:'',
-  // Flujo de reserva
-  selComp:null,bkBenId:'',bkDate:d0(1),bkTime:'11:00',bkDur:1.5,bkTasks:['walk'],bkNotes:'',bkNonMed:false,
-  // Chat & Soporte & Valoración
-  chatPeerId:null,chatText:'',pinInput:'',incBookingId:null,incText:'',rateBookingId:null,rateStars:5,rateReview:'',
-  // Admin
-  adminPass:'',adminOk:false
-};
+  const st = {
+    lang: 'es',
+    scale: 1,
+    user: null,
+    profile: null,
+    beneficiaries: [],
+    bookings: [],
+    employees: [],
+    notifications: [],
+    route: 'auth',
+    authMode: 'register',
+    // Formulario reserva
+    planType: 'single_hour',
+    benId: '',
+    serviceDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+    startTime: '10:30',
+    durationHours: 1.5,
+    selectedTasks: ['paseo'],
+    extraNotes: ''
+  };
 
-const _=(es,eu)=>st.lang=='eu'?eu:es;
-const toast=m=>{const e=$('#toast');e.textContent=m;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,4200)};
-let sayBtn=null;
-const stopSay=()=>{if(window.speechSynthesis)speechSynthesis.cancel();if(sayBtn){sayBtn.textContent='🔊';sayBtn=null}};
-const S=t=>`<button type="button" class="spk" data-a="say" data-t="${esc(t)}" aria-label="Escuchar">🔊</button>`;
-const say=(t,el)=>{if(!window.speechSynthesis)return;const same=sayBtn===el;stopSay();if(same)return;sayBtn=el;el.textContent='⏹️';const u=new SpeechSynthesisUtterance(t);u.lang=st.lang=='eu'?'eu-ES':'es-ES';u.onend=u.onerror=stopSay;speechSynthesis.speak(u)};
+  const _ = (es, eu) => st.lang === 'eu' ? eu : es;
 
-// Filtro anti-fugas de teléfono/email en chat antes de tener reserva confirmada
-function sanitizeChat(text,hasConfirmedBooking){
-  if(hasConfirmedBooking)return text;
-  const blockedTag=_('[Dato de contacto oculto hasta confirmar reserva]','[Kontaktua ezkutatuta erreserba baieztatu arte]');
-  return text
-    .replace(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi,blockedTag)
-    .replace(/(\+?\d[\d\s\-().]{7,}\d)/g,blockedTag);
-}
-
-// Expiración automática de 14 horas
-async function checkExpiredBookings(){
-  const now=Date.now();
-  for(const b of st.bookings){
-    if(b.status==='pending_companion'&&new Date(b.expires_at).getTime()<now){
-      b.status='expired';
-      await sb.from('mp_bookings').update({status:'expired'}).eq('id',b.id);
-    }
-  }
-}
-
-async function syncAll(){
-  const {data:{session}}=await sb.auth.getSession();
-  if(session?.user){
-    st.uid=session.user.id;
-    const {data:p}=await sb.from('mp_profiles').select('*').eq('id',st.uid).single();
-    if(p)st.prof=p;
-    if(p?.role==='companion'){
-      const {data:cp}=await sb.from('mp_companions').select('*').eq('user_id',st.uid).single();
-      st.compProf=cp;
-    }
-    const {data:bens}=await sb.from('mp_beneficiaries').select('*').eq('family_id',st.uid);
-    if(bens){st.beneficiaries=bens;if(!st.bkBenId&&bens[0])st.bkBenId=bens[0].id;}
-    const {data:bks}=await sb.from('mp_bookings').select('*, mp_beneficiaries(*), family:mp_profiles!mp_bookings_family_id_fkey(full_name,phone,email), companion:mp_profiles!mp_bookings_companion_id_fkey(full_name,avatar_url)').order('created_at',{ascending:false});
-    if(bks){st.bookings=bks;await checkExpiredBookings();}
-    const {data:msgs}=await sb.from('mp_messages').select('*').or(`sender_id.eq.${st.uid},receiver_id.eq.${st.uid}`).order('created_at',{ascending:true});
-    if(msgs)st.messages=msgs;
-  }else{
-    st.uid=null;st.prof=null;st.compProf=null;
-  }
-  // Cargar acompañantes (verificados para familias, todos para admin)
-  const {data:comps}=await sb.from('mp_companions').select('*, mp_profiles(id,full_name,avatar_url,email,phone)');
-  if(comps)st.companions=comps;
-  render();
-}
-
-function hdr(){
-  const roleBadge=st.prof?`<span class="bd">${st.prof.role==='companion'?_('Acompañante','Laguntzailea'):st.prof.role==='admin'?'Admin':_('Familia','Familia')}</span>`:'';
-  return`<div class="hw">
-    <a href="#" class="lg" data-a="go" data-v="explore"><img src="/Hurbil/logo.png" style="width:40px;height:40px;border-radius:10px"><span><b>Hurbil</b><small>Bilbao · Marketplace</small></span></a>
-    <div class="ct">
-      <span class="seg"><button data-a="lang" data-v="es" aria-pressed="${st.lang=='es'}">ES</button><button data-a="lang" data-v="eu" aria-pressed="${st.lang=='eu'}">EU</button></span>
-      <span class="seg"><button data-a="fs" data-v="-1">A-</button><button data-a="fs" data-v="1">A+</button></span>
-      <button class="ib rd" data-a="hc" aria-pressed="${!!st.hc}">◐</button>
-      <button class="pill" data-a="go" data-v="${st.uid?'profile':'auth'}">👤 ${st.prof?esc(st.prof.full_name.split(' ')[0]):_('Entrar','Sartu')} ${roleBadge}</button>
-    </div>
-  </div>
-  <div class="hz">
-    ${st.prof?.role==='companion'
-      ?`<button class="pill" data-a="go" data-v="comp_dash">📋 ${_('Mis Servicios','Nire Zerbitzuak')}</button><button class="pill" data-a="go" data-v="comp_edit">⚙️ ${_('Tarifa y Barrios','Tarifa eta Auzoak')}</button>`
-      :`<button class="pill" data-a="go" data-v="explore">🔍 ${_('Buscar Acompañante','Bilatu Laguntzailea')}</button>${st.uid?`<button class="pill" data-a="go" data-v="bookings">📅 ${_('Mis Citas','Nire Hitzorduak')}</button>`:''}`}
-    <button class="sw" aria-checked="${!!st.easy}" data-a="easy">${_('Modo Fácil','Modu Erraza')}</button>
-  </div>`;
-}
-
-// PANTALLA 1: REGISTRO CON ROLES Y CHECKBOX LEGAL OBLIGATORIO
-function viewAuth(){
-  if(st.authMode==='login'){
-    return`<div class="card"><h2>🔑 ${_('Iniciar sesión en Hurbil','Saioa hasi Hurbilen')}</h2>
-      <label>${_('Correo electrónico','Posta elektronikoa')}</label><input id="lg_e" type="email" value="${esc(st.regEmail)}" oninput="st.regEmail=this.value">
-      <label>${_('Contraseña','Pasahitza')}</label><input id="lg_p" type="password" value="${esc(st.regPass)}" oninput="st.regPass=this.value">
-      <button class="btn s" style="width:100%;margin-top:1rem" data-a="do_login">${_('Entrar','Sartu')}</button>
-      <p style="text-align:center;margin-top:1rem"><a href="#" data-a="set_auth" data-v="register">${_('¿No tienes cuenta? Regístrate aquí','Ez duzu konturik? Eman izena hemen')}</a></p>
-    </div>`;
-  }
-  return`<div class="card">
-    <div class="row"><h2 class="grow">👋 ${_('Crea tu cuenta en Hurbil','Sortu zure kontua Hurbilen')}</h2>${S(_('Elige si buscas acompañamiento para ti o un familiar, o si quieres ofrecer tus servicios como acompañante independiente.','Aukeratu laguntza bilatzen duzun edo laguntzaile gisa lan egin nahi duzun.'))}</div>
-    <p class="mut">${_('Paso 1: Elige cómo vas a usar la plataforma','1. urratsa: Aukeratu nola erabiliko duzun plataforma')}</p>
-    <button type="button" class="role-card pri ${st.regRole==='family'?'on':''}" data-a="reg_role" data-v="family">
-      <span style="font-size:2rem">🏡</span>
-      <div><b style="font-size:1.15rem">${_('Busco acompañamiento','Laguntza bilatzen dut')}</b><br><small class="mut">${_('Para mí o para un familiar mayor en Bilbao','Niretzat edo Bilboko adineko senide batentzat')}</small></div>
-    </button>
-    <button type="button" class="role-card ${st.regRole==='companion'?'on':''}" data-a="reg_role" data-v="companion">
-      <span style="font-size:2rem">🤝</span>
-      <div><b style="font-size:1.15rem">${_('Quiero ofrecer acompañamiento','Laguntza eskaini nahi dut')}</b><br><small class="mut">${_('Colaborador independiente con tus propios horarios y tarifa','Laguntzaile independentea zure ordutegi eta tarifarekin')}</small></div>
-    </button>
-    <label>${_('Nombre y apellidos','Izen-abizenak')}</label><input value="${esc(st.regName)}" oninput="st.regName=this.value" placeholder="Ej. Amaia Etxebarria">
-    <label>${_('Correo electrónico','Posta elektronikoa')}</label><input type="email" value="${esc(st.regEmail)}" oninput="st.regEmail=this.value" placeholder="amaia@ejemplo.com">
-    <label>${_('Teléfono móvil','Telefono mugikorra')}</label><input type="tel" value="${esc(st.regPhone)}" oninput="st.regPhone=this.value" placeholder="600 000 000">
-    <label>${_('Contraseña','Pasahitza')}</label><input type="password" value="${esc(st.regPass)}" oninput="st.regPass=this.value" placeholder="Mínimo 6 caracteres">
-    <label style="display:flex;gap:.6rem;align-items:flex-start;margin-top:1rem;font-weight:700;cursor:pointer">
-      <input type="checkbox" style="width:22px;height:22px;min-height:auto;margin-top:.2rem" ${st.regLegal?'checked':''} onchange="st.regLegal=this.checked;render()">
-      <span style="font-size:.9rem">${_('Acepto los Términos y Condiciones: entiendo que Hurbil actúa exclusivamente como plataforma tecnológica de intermediación, que los acompañantes son colaboradores independientes responsables de sus obligaciones fiscales, y que el servicio es estrictamente no sanitario.','Baldintzak onartzen ditut: Hurbil bitartekaritza-plataforma teknologikoa dela eta zerbitzua ez dela sanitarioa ulertzen dut.')}</span>
-    </label>
-    <button class="btn s" style="width:100%;margin-top:1rem" data-a="do_register" ${st.regLegal?'':'disabled'}>${_('Crear cuenta','Kontua sortu')}</button>
-    <p style="text-align:center;margin-top:1rem"><a href="#" data-a="set_auth" data-v="login">${_('Ya tengo cuenta · Iniciar sesión','Badut kontua · Saioa hasi')}</a></p>
-  </div>`;
-}
-
-// PANTALLA 2: EXPLORAR ACOMPAÑANTES VERIFICADOS (FILTRO POR BARRIO Y FECHA/HORA)
-function viewExplore(){
-  const verified=st.companions.filter(c=>c.status==='verified'&&(!st.fBarrio||(c.neighborhoods||[]).includes(st.fBarrio)));
-  const prevCompIds=[...new Set(st.bookings.filter(b=>b.family_id===st.uid&&b.status==='completed').map(b=>b.companion_id))];
-
-  return`<div class="row"><h1 class="grow">🔍 ${_('Acompañantes de confianza en Bilbao','Konfiantzazko laguntzaileak Bilbon')}</h1>${S(_('Filtra por tu barrio de Bilbao y fecha. El precio mostrado ya incluye IVA y la tarifa de gestión y seguridad de Hurbil.','Iragazi zure Bilboko auzoaren eta dataren arabera.'))}</div>
-  <div class="card">
-    <div class="row">
-      <div class="grow"><label style="margin-top:0">📍 ${_('Barrio de Bilbao','Bilboko auzoa')}</label>
-        <select onchange="st.fBarrio=this.value;render()"><option value="">${_('Todos los barrios','Auzo guztiak')}</option>${BARRIOS.map(b=>`<option value="${b}" ${st.fBarrio===b?'selected':''}>${b}</option>`).join('')}</select>
-      </div>
-      <div><label style="margin-top:0">📅 ${_('Fecha','Data')}</label><input type="date" min="${d0(0)}" value="${st.fDate}" onchange="st.fDate=this.value"></div>
-      <div><label style="margin-top:0">🕒 ${_('Hora','Ordua')}</label><input type="time" value="${st.fTime}" onchange="st.fTime=this.value"></div>
-    </div>
-  </div>
-  ${verified.length?verified.map(c=>{
-    const p=c.mp_profiles||{};
-    const finalHourly=Number(c.hourly_rate)+PLATFORM_FEE;
-    const isRepeat=prevCompIds.includes(c.user_id);
-    const doneWithThis=st.bookings.filter(b=>b.family_id===st.uid&&b.companion_id===c.user_id&&b.status==='completed').length;
-    const nextIsFreeFee=doneWithThis>0&&doneWithThis%5===0;
-    return`<article class="card">
-      <div class="row" style="align-items:flex-start">
-        <div style="width:56px;height:56px;border-radius:50%;background:var(--sb);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.4rem;flex:none">${esc((p.full_name||'H')[0])}</div>
-        <div class="grow">
-          <div class="row" style="justify-content:space-between">
-            <h3 style="margin:0">${esc(p.full_name)} <span class="bd" style="background:#DCFCE7;color:#166534">✓ ${_('Verificado','Egiaztatuta')}</span></h3>
-            <div style="text-align:right"><b style="font-size:1.3rem;color:var(--s)">${fmt(finalHourly)}/h</b><br><small class="mut">${_('IVA y seguridad incl.','BEZa eta segurtasuna barne')}</small></div>
-          </div>
-          <p class="mut" style="margin:.2rem 0">⭐ ${Number(c.rating_avg||5).toFixed(1)} (${c.rating_count||0}) · 📍 ${(c.neighborhoods||[]).join(', ')}</p>
-          <p style="margin:.4rem 0">${esc(c.bio||_('Acompañante verificado en Bilbao para paseos, compras y compañía.','Bilboko laguntzaile egiaztatua.'))}</p>
-          ${nextIsFreeFee?`<div class="warn-box" style="padding:.5rem .8rem;margin:.4rem 0">🎁 ${_('¡Tu 6.ª reserva con este acompañante tiene 3,50 € de descuento en gestión!','6. erreserban 3,50 €-ko deskontua duzu!')}</div>`:''}
-          <div class="row" style="margin-top:.7rem">
-            <button class="btn g" data-a="open_chat" data-v="${c.user_id}">💬 ${_('Chat / Videollamada 10 min','Txata / Bideo-deia')}</button>
-            <button class="btn s grow" data-a="start_book" data-v="${c.user_id}">${isRepeat?'🔁 '+_('Volver a reservar en 1 clic','Berriro erreserbatu klik 1ean'):'📅 '+_('Solicitar cita','Hitzordua eskatu')}</button>
-          </div>
-        </div>
-      </div>
-    </article>`;
-  }).join(''):`<div class="card"><p>${_('No hay acompañantes verificados en ese barrio todavía.','Oraindik ez dago laguntzaile egiaztaturik auzo horretan.')}</p></div>`}`;
-}
-
-// PANTALLA 3: SOLICITUD DE CITA + DESGLOSE FISCAL + AVISO NO SANITARIO
-function viewBookForm(){
-  const c=st.companions.find(x=>x.user_id===st.selComp);
-  if(!c)return viewExplore();
-  const p=c.mp_profiles||{};
-  const dur=Math.max(1,Number(st.bkDur)||1);
-  const doneCount=st.bookings.filter(b=>b.family_id===st.uid&&b.companion_id===c.user_id&&b.status==='completed').length;
-  const hasLoyalty=doneCount>0&&doneCount%5===0;
-  const compTotal=Number(c.hourly_rate)*dur;
-  const rawFee=PLATFORM_FEE*dur;
-  const discount=hasLoyalty?PLATFORM_FEE:0;
-  const feeTotal=Math.max(0,rawFee-discount);
-  const grandTotal=compTotal+feeTotal;
-
-  return`<button class="btn g" data-a="go" data-v="explore">← ${_('Volver','Itzuli')}</button>
-  <div class="card">
-    <h2>📅 ${_('Reservar con','Erreserbatu:')} ${esc(p.full_name)}</h2>
-    ${!st.beneficiaries.length?`<div class="warn-box"><p>${_('Primero añade los datos de la persona que recibirá el acompañamiento:','Lehenik gehitu laguntza jasoko duen pertsonaren datuak:')}</p><button class="btn" data-a="go" data-v="profile">+ ${_('Añadir beneficiario','Gehitu onuraduna')}</button></div>`:`
-    <label>👴 ${_('¿Quién recibe el acompañamiento?','Nork jasoko du laguntza?')}</label>
-    <select onchange="st.bkBenId=this.value">${st.beneficiaries.map(b=>`<option value="${b.id}" ${st.bkBenId===b.id?'selected':''}>${esc(b.full_name)} (${esc(b.neighborhood)})</option>`).join('')}</select>
-    <div class="row">
-      <div class="grow"><label>📅 ${_('Fecha','Data')}</label><input type="date" min="${d0(0)}" value="${st.bkDate}" onchange="st.bkDate=this.value"></div>
-      <div class="grow"><label>🕒 ${_('Hora inicio','Hasiera ordua')}</label><input type="time" value="${st.bkTime}" onchange="st.bkTime=this.value"></div>
-      <div class="grow"><label>⏱️ ${_('Duración (mín. 1h, pasos 30m)','Iraupena')}</label>
-        <select onchange="st.bkDur=Number(this.value);render()">${[1,1.5,2,2.5,3,3.5,4,5,6].map(h=>`<option value="${h}" ${dur===h?'selected':''}>${h} h</option>`).join('')}</select>
-      </div>
-    </div>
-    <label>✔️ ${_('¿Qué necesitas en esta visita?','Zer behar duzu bisita honetan?')}</label>
-    <div>${TASKS.map(t=>{const on=st.bkTasks.includes(t[0]);return`<button type="button" class="sp-pill ${on?'on':''}" data-a="toggle_task" data-v="${t[0]}">${st.lang=='eu'?t[2]:t[1]}</button>`}).join('')}</div>
-    <label>📝 ${_('Instrucciones para el día (opcional)','Eguneko argibideak')}</label>
-    <textarea rows="2" oninput="st.bkNotes=this.value" placeholder="${_('Ej. Comprar pan y fruta, dar un paseo tranquilo por el parque...','Adib. Ogia eta fruta erosi...')}">${esc(st.bkNotes)}</textarea>
-    <div class="receipt">
-      <h3 style="margin-top:0">🧾 ${_('Desglose transparente (IVA incluido)','Banakapena (BEZa barne)')}</h3>
-      <div class="receipt-row"><span>${_('Servicio de acompañamiento independiente','Laguntzaile independentearen zerbitzua')} (${fmt(c.hourly_rate)} × ${dur} h)</span><b>${fmt(compTotal)}</b></div>
-      <div class="receipt-row"><span>${_('Tarifa gestión, plataforma y seguridad Hurbil (21% IVA incl.)','Hurbil kudeaketa eta segurtasun tarifa')} (${fmt(PLATFORM_FEE)} × ${dur} h)</span><b>${fmt(rawFee)}</b></div>
-      ${hasLoyalty?`<div class="receipt-row" style="color:var(--s)"><span>🎁 ${_('Descuento fidelidad (6.ª reserva)','Leialtasun deskontua')}</span><b>-${fmt(discount)}</b></div>`:''}
-      <hr><div class="receipt-row" style="font-size:1.25rem"><b>${_('Total a autorizar','Guztira')}</b><b>${fmt(grandTotal)}</b></div>
-      <small class="mut">${_('Cancelación gratuita hasta 24h antes. El pago solo se libera al validar el PIN de salida.','Doako ezeztapena 24 ordu lehenago arte.')}</small>
-    </div>
-    <div class="warn-box">
-      <label style="display:flex;gap:.6rem;align-items:flex-start;margin:0;cursor:pointer">
-        <input type="checkbox" style="width:22px;height:22px;min-height:auto;margin-top:.2rem" ${st.bkNonMed?'checked':''} onchange="st.bkNonMed=this.checked;render()">
-        <span>⚠️ ${_('Confirmo que este es un servicio cotidiano NO SANITARIO: queda estrictamente prohibida la administración de medicamentos, curas o asistencia médica.','Zerbitzu hau EZ DELA SANITARIOA berresten dut: debekatuta dago sendagaiak ematea edo sendaketak egitea.')}</span>
-      </label>
-    </div>
-    <button class="btn s" style="width:100%" data-a="submit_booking" ${st.bkNonMed&&st.bkTasks.length?'':'disabled'}>📨 ${_('Enviar solicitud al acompañante','Eskaera bidali laguntzaileari')}</button>`}
-  </div>`;
-}
-
-// PANTALLA 4: MIS CITAS (FAMILIA) CON DOBLE PIN GIGANTE, CANCELACIÓN 24H Y RESEÑAS
-function viewBookings(){
-  return`<h2>📅 ${_('Mis Citas y Protocolo de Seguridad','Nire Hitzorduak eta Segurtasuna')}</h2>`
-  +(st.bookings.length?st.bookings.map(b=>{
-    const ben=b.mp_beneficiaries||{};
-    const comp=b.companion||{};
-    const stMap={pending_companion:'⏳ '+_('Esperando aceptación (máx. 14h)','Onarpenaren zain (14h)'),expired:'⌛ '+_('Caducada (14h sin respuesta)','Iraungita'),rejected:'❌ '+_('Rechazada','Baztertuta'),accepted:'✅ '+_('Confirmada · Lista para visita','Baieztatuta'),in_progress:'🔵 '+_('En curso (PIN Entrada OK)','Abian'),completed:'🏁 '+_('Completada','Osatuta'),cancelled_free:'⚪ '+_('Cancelada gratis','Doan ezeztatuta'),cancelled_late:'🟠 '+_('Cancelada (<24h)','Ezeztatuta (<24h)')};
-    const showPins=['accepted','in_progress'].includes(b.status);
-    return`<article class="card">
-      <div class="row" style="justify-content:space-between"><span class="bd">${stMap[b.status]||b.status}</span><b>${fmt(b.total_amount)}</b></div>
-      <h3 style="margin:.4rem 0">${esc(ben.full_name)} · ${esc(ben.neighborhood)}</h3>
-      <p>🤝 ${esc(comp.full_name)} · 📅 ${b.service_date} · 🕒 ${b.start_time} (${b.duration_hours} h)</p>
-      ${showPins?`<div class="pin-grid">
-        <div class="pin-box"><small>1️⃣ ${_('PIN DE ENTRADA','SARRERA PINa')}</small><span class="pin-num">${b.pin_in}</span><small>${_('Dáselo al llegar','Eman iristean')}</small></div>
-        <div class="pin-box"><small>2️⃣ ${_('PIN DE SALIDA','IRTEERA PINa')}</small><span class="pin-num">${b.pin_out}</span><small>${_('Dáselo al irse','Eman joatean')}</small></div>
-      </div>
-      <button class="btn r" style="width:100%;margin-bottom:.5rem" data-a="open_inc" data-v="${b.id}">🆘 ${_('Soporte / Reportar Incidencia','Laguntza / Gorabehera')}</button>`:''}
-      ${['pending_companion','accepted'].includes(b.status)?`<button class="btn g" style="width:100%" data-a="cancel_bk" data-v="${b.id}">✕ ${_('Cancelar cita (Gratis >24h antes)','Hitzordua ezeztatu')}</button>`:''}
-      ${b.status==='expired'?`<button class="btn s" style="width:100%" data-a="go" data-v="explore">🔄 ${_('Elegir otro acompañante','Beste laguntzaile bat aukeratu')}</button>`:''}
-      ${b.status==='completed'&&!b.rating?`<button class="btn s" style="width:100%;margin-top:.5rem" data-a="open_rate" data-v="${b.id}">⭐ ${_('Valorar servicio (1-5 estrellas)','Zerbitzua baloratu')}</button>`:''}
-      ${b.rating?`<p style="margin:.4rem 0">⭐ ${'★'.repeat(b.rating)} — <i>"${esc(b.review||'')}"</i></p>`:''}
-    </article>`;
-  }).join(''):`<div class="card"><p>${_('Aún no tienes citas reservadas.','Oraindik ez duzu hitzordurik.')}</p></div>`);
-}
-
-// PANTALLA 5: PANEL DEL ACOMPAÑANTE (PRIVACIDAD ANTES DE ACEPTAR + DOBLE PIN)
-function viewCompDash(){
-  const cp=st.compProf||{};
-  const stripeBanner=!cp.stripe_ready
-    ?`<div class="warn-box"><p style="margin:0 0 .5rem">💳 ${_('Vincula tu cuenta bancaria con Stripe Connect para recibir tus cobros automáticamente al validar el PIN de salida:','Lotu zure banku-kontua Stripe Connect-ekin:')}</p><button class="btn s" data-a="stripe_onboard">🔗 ${_('Conectar cuenta bancaria (Stripe)','Banku-kontua lotu')}</button></div>`
-    :`<div class="card" style="background:#DCFCE7;border-color:#16a34a">✅ ${_('Cuenta de cobros Stripe Connect activa','Stripe Connect aktibo')}</div>`;
-  const statusBanner=cp.status!=='verified'
-    ?`<div class="warn-box">⏳ ${_('Tu perfil está en revisión manual por el equipo de Hurbil. En cuanto sea aprobado aparecerás en las búsquedas de Bilbao.','Zure profila berrikusten ari gara.')}</div>`:'';
-
-  return`<h2>🤝 ${_('Panel de Acompañante Independiente','Laguntzailearen Panela')}</h2>${statusBanner}${stripeBanner}`
-  +(st.bookings.length?st.bookings.map(b=>{
-    const ben=b.mp_beneficiaries||{};
-    const isPending=b.status==='pending_companion';
-    const isAccepted=b.status==='accepted';
-    const isInProgress=b.status==='in_progress';
-    const minsLeft=Math.max(0,Math.round((new Date(b.expires_at).getTime()-Date.now())/60000));
-    return`<article class="card">
-      <div class="row" style="justify-content:space-between"><span class="bd">${b.status}</span><b>${_('Tu ingreso neto','Zure diru-sarrera')}: ${fmt(b.companion_total)}</b></div>
-      <p>📍 <b>${_('Barrio','Auzoa')}: ${esc(ben.neighborhood)}</b> · 📅 ${b.service_date} · 🕒 ${b.start_time} (${b.duration_hours} h)</p>
-      <p>✔️ ${(b.tasks||[]).join(', ')} ${b.day_notes?'· 📝 '+esc(b.day_notes):''}</p>
-      ${isPending?`<p class="mut">⏳ ${_('Tienes','Daukazu')} ${Math.floor(minsLeft/60)}h ${minsLeft%60}m ${_('para responder antes de que caduque','erantzuteko')}</p>
-      <p class="mut" style="font-size:.85rem">🔒 ${_('La dirección exacta y el teléfono se mostrarán solo si aceptas la cita.','Helbide zehatza onartzean erakutsiko da.')}</p>
-      <div class="row"><button class="btn s grow" data-a="comp_resp" data-id="${b.id}" data-v="accepted">✓ ${_('Aceptar cita','Onartu')}</button><button class="btn g" data-a="comp_resp" data-id="${b.id}" data-v="rejected">✕ ${_('Rechazar','Baztertu')}</button></div>`:''}
-      ${['accepted','in_progress','completed'].includes(b.status)?`<div class="receipt">
-        <b>👤 ${esc(ben.full_name)}</b><br>
-        🏠 <b>${esc(ben.exact_address)}</b> ${ben.access_notes?'('+esc(ben.access_notes)+')':''}<br>
-        📞 <a href="tel:${esc(ben.contact_phone)}">${esc(ben.contact_phone)}</a>
-      </div>`:''}
-      ${isAccepted?`<label>1️⃣ ${_('Introduce el PIN de ENTRADA del mayor para iniciar:','Sartu SARRERA PINa hasteko:')}</label>
-      <div class="row"><input maxlength="4" inputmode="numeric" placeholder="0000" oninput="st.pinInput=this.value"><button class="btn s" data-a="verify_in" data-v="${b.id}">${_('Validar Entrada','Sarrera balioztatu')}</button></div>`:''}
-      ${isInProgress?`<label>2️⃣ ${_('Introduce el PIN de SALIDA al terminar y liberar tu pago:','Sartu IRTEERA PINa amaitzeko:')}</label>
-      <div class="row"><input maxlength="4" inputmode="numeric" placeholder="0000" oninput="st.pinInput=this.value"><button class="btn s" data-a="verify_out" data-v="${b.id}">${_('Validar Salida y Cobrar','Irteera balioztatu')}</button></div>
-      <button class="btn r" style="width:100%;margin-top:.6rem" data-a="open_inc" data-v="${b.id}">🆘 ${_('Soporte / Incidencia','Laguntza / Gorabehera')}</button>`:''}
-    </article>`;
-  }).join(''):`<div class="card"><p>${_('Aún no tienes solicitudes de familias.','Oraindik ez duzu eskaerarik.')}</p></div>`);
-}
-
-// PANTALLA 6: EDICIÓN DE PERFIL DE ACOMPAÑANTE (TARIFA LIBRE + BARRIOS)
-function viewCompEdit(){
-  const cp=st.compProf||{hourly_rate:12,neighborhoods:['Indautxu'],bio:''};
-  return`<h2>⚙️ ${_('Tu Perfil Independiente','Zure Profil Independentea')}</h2>
-  <div class="card">
-    <label>💶 ${_('Tu tarifa por hora (€) — Tú decides tu precio (mín. 8 €, recomendado 11–13 €)','Zure orduko tarifa (€)')}</label>
-    <input id="cp_rate" type="number" min="8" step="0.5" value="${cp.hourly_rate}">
-    <small class="mut">${_('La familia verá tu tarifa + 3,50 €/h de gestión y seguridad Hurbil.','Familiak zure tarifa + 3,50 €/h ikusiko du.')}</small>
-    <label>📍 ${_('Barrios de Bilbao donde ofreces acompañamiento','Bilboko auzoak')}</label>
-    <div>${BARRIOS.map(b=>{const on=(cp.neighborhoods||[]).includes(b);return`<button type="button" class="sp-pill ${on?'on':''}" data-a="toggle_barrio" data-v="${b}">${b}</button>`}).join('')}</div>
-    <label>📝 ${_('Tu presentación y experiencia','Zure aurkezpena eta esperientzia')}</label>
-    <textarea id="cp_bio" rows="3">${esc(cp.bio||'')}</textarea>
-    <button class="btn s" style="width:100%;margin-top:1rem" data-a="save_comp">💾 ${_('Guardar cambios','Aldaketak gorde')}</button>
-  </div>`;
-}
-
-// PANTALLA 7: PERFIL FAMILIA (GESTIÓN DE BENEFICIARIOS) + ADMIN VERIFICACIÓN
-function viewProfile(){
-  return`<div class="card">
-    <div class="row" style="justify-content:space-between"><h2>👤 ${esc(st.prof?.full_name)}</h2><button class="btn g" data-a="logout">${_('Cerrar sesión','Saioa itxi')}</button></div>
-    <p class="mut">${esc(st.prof?.email)} · ${esc(st.prof?.phone||'')}</p>
-  </div>
-  ${st.prof?.role==='family'?`<div class="card">
-    <h3>👴 ${_('Personas que reciben el acompañamiento (Beneficiarios)','Onuradunak')}</h3>
-    ${st.beneficiaries.map(b=>`<div style="padding:.6rem 0;border-bottom:1px solid var(--bd)"><b>${esc(b.full_name)}</b> ${b.is_self?'<span class="bd">Yo mismo/a</span>':''}<br><span class="mut">📍 ${esc(b.neighborhood)} · ${esc(b.exact_address)} · 📞 ${esc(b.contact_phone)}</span></div>`).join('')}
-    <h3 style="margin-top:1rem">+ ${_('Añadir ficha de beneficiario','Gehitu onuradun fitxa')}</h3>
-    <label style="display:flex;gap:.5rem;align-items:center"><input type="checkbox" style="width:20px;height:20px;min-height:auto" ${st.bSelf?'checked':''} onchange="st.bSelf=this.checked;if(this.checked)st.bName=st.prof.full_name;render()"> ${_('El servicio es para mí mismo/a','Zerbitzua niretzat da')}</label>
-    <label>${_('Nombre del mayor','Adinekoaren izena')}</label><input value="${esc(st.bName)}" oninput="st.bName=this.value">
-    <label>${_('Barrio en Bilbao','Bilboko auzoa')}</label><select onchange="st.bBarrio=this.value">${BARRIOS.map(b=>`<option value="${b}" ${st.bBarrio===b?'selected':''}>${b}</option>`).join('')}</select>
-    <label>${_('Dirección exacta (calle, portal, piso)','Helbide zehatza')}</label><input value="${esc(st.bAddr)}" oninput="st.bAddr=this.value" placeholder="Calle Ercilla 15, 3º Izq">
-    <label>${_('Notas de acceso al portal','Atarira sartzeko oharrak')}</label><input value="${esc(st.bNotes)}" oninput="st.bNotes=this.value" placeholder="Llamar al telefonillo 3A">
-    <label>${_('Teléfono de contacto del domicilio','Telefonoa')}</label><input value="${esc(st.bPhone)}" oninput="st.bPhone=this.value">
-    <button class="btn s" style="width:100%;margin-top:.8rem" data-a="add_ben">💾 ${_('Guardar beneficiario','Onuraduna gorde')}</button>
-  </div>`:''}`;
-}
-
-// PANEL ADMIN: APROBACIÓN MANUAL DE ACOMPAÑANTES (pending_approval -> verified)
-function viewAdmin(){
-  if(!st.adminOk){
-    return`<div class="card"><h2>🔐 ${_('Panel de Verificación Admin','Admin Egiaztapen Panela')}</h2>
-      <input type="password" placeholder="Contraseña admin (hurbil2026)" oninput="st.adminPass=this.value">
-      <button class="btn s" style="width:100%;margin-top:.8rem" onclick="if(st.adminPass==='hurbil2026'){st.adminOk=true;render()}else toast('Contraseña incorrecta')">Entrar</button>
-    </div>`;
-  }
-  return`<h2>🛡️ ${_('Verificación de Acompañantes','Laguntzaileen Egiaztapena')}</h2>`
-  +st.companions.map(c=>{
-    const p=c.mp_profiles||{};
-    return`<div class="card">
-      <div class="row" style="justify-content:space-between"><b>${esc(p.full_name)}</b><span class="bd">${c.status}</span></div>
-      <p class="mut">${esc(p.email)} · 📞 ${esc(p.phone)} · Tarifa: ${fmt(c.hourly_rate)}/h</p>
-      <p>📍 ${(c.neighborhoods||[]).join(', ')}</p>
-      <p>${esc(c.bio||'')}</p>
-      <div class="row">
-        <button class="btn s grow" data-a="adm_verify" data-id="${c.user_id}" data-v="verified">✓ Aprobar (Verified)</button>
-        <button class="btn r" data-a="adm_verify" data-id="${c.user_id}" data-v="rejected">✕ Rechazar</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// MODALES: CHAT PROTEGIDO, INCIDENCIA Y VALORACIÓN
-function renderModal(){
-  if(!st.md)return'';
-  if(st.md==='chat'){
-    const peer=st.companions.find(x=>x.user_id===st.chatPeerId)?.mp_profiles||{full_name:'Chat'};
-    const hasConfirmed=st.bookings.some(b=>((b.family_id===st.uid&&b.companion_id===st.chatPeerId)||(b.companion_id===st.uid&&b.family_id===st.chatPeerId))&&['accepted','in_progress'].includes(b.status));
-    const thread=st.messages.filter(m=>(m.sender_id===st.uid&&m.receiver_id===st.chatPeerId)||(m.sender_id===st.chatPeerId&&m.receiver_id===st.uid));
-    return`<div class="ov"><div class="mo">
-      <div class="row" style="justify-content:space-between"><h3>💬 ${esc(peer.full_name)}</h3><button class="ib" data-a="close_md">✕</button></div>
-      ${!hasConfirmed?`<small class="mut">🔒 ${_('Por seguridad, teléfonos y correos se ocultan hasta confirmar una cita.','Segurtasunagatik, telefonoak ezkutatzen dira.')}</small>`:''}
-      <button class="btn g" style="width:100%;margin:.5rem 0" data-a="req_video">📹 ${_('Solicitar videollamada gratuita de 10 min','Eskatu 10 minutuko doako bideo-deia')}</button>
-      <div class="ig-feed">${thread.map(m=>`<div class="${m.sender_id===st.uid?'ig-me':'ig-them'}">${esc(m.content)}</div>`).join('')}</div>
-      <div class="row" style="margin-top:.6rem">
-        <input class="grow" value="${esc(st.chatText)}" oninput="st.chatText=this.value" placeholder="${_('Escribe un mensaje...','Idatzi mezua...')}">
-        <button class="btn s" data-a="send_chat">${_('Enviar','Bidali')}</button>
-      </div>
-    </div></div>`;
-  }
-  if(st.md==='inc'){
-    return`<div class="ov"><div class="mo">
-      <h3 style="color:var(--r)">🆘 ${_('Soporte e Incidencia en Servicio','Laguntza eta Gorabehera')}</h3>
-      <textarea rows="3" oninput="st.incText=this.value" placeholder="${_('Describe qué ocurre y te llamamos de inmediato (644 270 017)...','Azaldu zer gertatzen den...')}"></textarea>
-      <div class="row" style="margin-top:.8rem">
-        <a class="btn r grow" href="tel:644270017">📞 Llamar 644 270 017</a>
-        <button class="btn s" data-a="save_inc">Guardar aviso</button>
-      </div>
-      <button class="btn g" style="width:100%;margin-top:.5rem" data-a="close_md">Cerrar</button>
-    </div></div>`;
-  }
-  if(st.md==='rate'){
-    return`<div class="ov"><div class="mo">
-      <h3>⭐ ${_('Valora el acompañamiento','Baloratu laguntza')}</h3>
-      <div>${[1,2,3,4,5].map(n=>`<button class="star" onclick="st.rateStars=${n};render()">${n<=st.rateStars?'★':'☆'}</button>`).join('')}</div>
-      <textarea rows="3" oninput="st.rateReview=this.value" placeholder="${_('Escribe tu opinión para ayudar a otras familias de Bilbao...','Idatzi zure iritzia...')}"></textarea>
-      <button class="btn s" style="width:100%;margin-top:.8rem" data-a="save_rate">${_('Publicar valoración','Balorazioa argitaratu')}</button>
-      <button class="btn g" style="width:100%;margin-top:.5rem" data-a="close_md">Cerrar</button>
-    </div></div>`;
-  }
-  return'';
-}
-
-function render(){
-  document.documentElement.lang=st.lang;
-  document.body.className=(st.hc?'hc ':'')+(st.easy?'easy':'');
-  document.documentElement.style.fontSize=(16+st.fs*2)+'px';
-  $('#hd').innerHTML=hdr();
-  const views={auth:viewAuth,explore:viewExplore,book:viewBookForm,bookings:viewBookings,comp_dash:viewCompDash,comp_edit:viewCompEdit,profile:viewProfile,admin:viewAdmin};
-  const fnView=views[st.route]||viewExplore;
-  $('#app').innerHTML=fnView()+`<footer class="adv" style="text-align:center;margin-top:2rem"><small class="mut">Hurbil Bilbao · 644 270 017 · <a href="#" data-a="go" data-v="admin">Admin Verificación</a></small></footer>`;
-  $('#fab').innerHTML=`<div class="fab"><button class="sos" onclick="open('tel:644270017')">🆘 SOS 644 270 017</button></div>`;
-  $('#md').innerHTML=renderModal();
-}
-
-// CONTROLADOR DE EVENTOS
-document.addEventListener('click',async e=>{
-  const el=e.target.closest('[data-a]');if(!el)return;
-  const a=el.dataset.a,v=el.dataset.v;
-  if(a==='go'){e.preventDefault();st.route=v;render();}
-  if(a==='lang'){st.lang=v;render();}
-  if(a==='fs'){st.fs=Math.max(-1,Math.min(4,st.fs+ +v));render();}
-  if(a==='hc'){st.hc^=1;render();}
-  if(a==='easy'){st.easy^=1;render();}
-  if(a==='say'){say(el.dataset.t,el);}
-  if(a==='set_auth'){e.preventDefault();st.authMode=v;render();}
-  if(a==='reg_role'){st.regRole=v;render();}
-  if(a==='close_md'){st.md=null;render();}
-
-  // Registro con rol y términos legales
-  if(a==='do_register'){
-    if(!st.regLegal||!st.regName||!st.regEmail||!st.regPass)return toast(_('Completa todos los campos y acepta los términos.','Bete eremu guztiak.'));
-    const {data,error}=await sb.auth.signUp({email:st.regEmail.trim(),password:st.regPass});
-    if(error)return toast(error.message);
-    const uid=data.user.id;
-    await sb.from('mp_profiles').insert({id:uid,role:st.regRole,full_name:st.regName.trim(),email:st.regEmail.trim(),phone:st.regPhone.trim()});
-    if(st.regRole==='companion'){
-      await sb.from('mp_companions').insert({user_id:uid,status:'pending_approval',hourly_rate:12.00,neighborhoods:['Indautxu']});
-    }
-    toast(_('¡Cuenta creada!','Kontua sortuta!'));
-    st.route=st.regRole==='companion'?'comp_edit':'profile';
-    await syncAll();
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 3200);
   }
 
-  if(a==='do_login'){
-    const {error}=await sb.auth.signInWithPassword({email:st.regEmail.trim(),password:st.regPass});
-    if(error)return toast(_('Credenciales incorrectas','Datu okerrak'));
-    await syncAll();
-    st.route=st.prof?.role==='companion'?'comp_dash':'explore';
+  function setLang(l) {
+    st.lang = l;
+    document.getElementById('btn-es').classList.toggle('pill-active', l === 'es');
+    document.getElementById('btn-eu').classList.toggle('pill-active', l === 'eu');
     render();
   }
 
-  if(a==='logout'){await sb.auth.signOut();st.route='explore';await syncAll();}
-
-  // Guardar beneficiario
-  if(a==='add_ben'){
-    if(!st.bName||!st.bAddr||!st.bPhone)return toast(_('Rellena nombre, dirección y teléfono.','Bete izena, helbidea eta telefonoa.'));
-    await sb.from('mp_beneficiaries').insert({family_id:st.uid,is_self:st.bSelf,full_name:st.bName,neighborhood:st.bBarrio,exact_address:st.bAddr,access_notes:st.bNotes,contact_phone:st.bPhone});
-    st.bName='';st.bAddr='';st.bNotes='';st.bPhone='';
-    toast(_('Beneficiario guardado','Onuraduna gordeta'));
-    await syncAll();
+  function changeScale(delta) {
+    st.scale = Math.min(1.4, Math.max(0.85, st.scale + delta));
+    document.documentElement.style.setProperty('--font-scale', st.scale);
   }
 
-  // Iniciar reserva
-  if(a==='start_book'){
-    if(!st.uid){st.route='auth';render();return;}
-    st.selComp=v;st.bkDate=st.fDate;st.bkTime=st.fTime;st.bkNonMed=false;st.route='book';render();
-  }
-  if(a==='toggle_task'){
-    st.bkTasks=st.bkTasks.includes(v)?st.bkTasks.filter(x=>x!==v):[...st.bkTasks,v];render();
+  function nav(r) {
+    st.route = r;
+    render();
   }
 
-  // Enviar solicitud de reserva
-  if(a==='submit_booking'){
-    const c=st.companions.find(x=>x.user_id===st.selComp);
-    const dur=Number(st.bkDur);
-    const doneCount=st.bookings.filter(b=>b.family_id===st.uid&&b.companion_id===c.user_id&&b.status==='completed').length;
-    const discount=(doneCount>0&&doneCount%5===0)?PLATFORM_FEE:0;
-    const compTotal=Number(c.hourly_rate)*dur;
-    const platTotal=Math.max(0,(PLATFORM_FEE*dur)-discount);
-    await sb.from('mp_bookings').insert({
-      family_id:st.uid,beneficiary_id:st.bkBenId,companion_id:c.user_id,
-      service_date:st.bkDate,start_time:st.bkTime,duration_hours:dur,
-      tasks:st.bkTasks,day_notes:st.bkNotes,non_medical_accepted:true,
-      companion_rate:c.hourly_rate,platform_fee_rate:PLATFORM_FEE,loyalty_discount:discount,
-      companion_total:compTotal,platform_total:platTotal,total_amount:compTotal+platTotal
-    });
-    toast(_('Solicitud enviada. El acompañante tiene 14 horas para responder.','Eskaera bidalita.'));
-    st.route='bookings';await syncAll();
+  function genPin() {
+    return String(Math.floor(1000 + Math.random() * 9000));
   }
 
-  // Aceptar o rechazar cita (Acompañante) -> genera Doble PIN y autoriza pago Stripe
-  if(a==='comp_resp'){
-    const id=el.dataset.id;
-    const upd={status:v};
-    if(v==='accepted'){upd.pin_in=randPin();upd.pin_out=randPin();}
-    await sb.from('mp_bookings').update(upd).eq('id',id);
-    if(v==='accepted'){
-      await sb.functions.invoke('hurbil-api',{body:{action:'authorize_booking',payload:{booking_id:id}}});
+  async function init() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      toast(_('✅ Pago confirmado en Hurbil. Saldo actualizado.', '✅ Ordainketa baieztatuta. Saldo eguneratua.'));
+      window.history.replaceState({}, '', window.location.pathname);
     }
-    toast(v==='accepted'?_('Cita aceptada · Doble PIN generado','Hitzordua onartuta'):_('Cita rechazada','Hitzordua baztertuta'));
+
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      st.user = session.user;
+      await syncAll();
+    } else {
+      st.route = 'auth';
+      render();
+    }
+  }
+
+  async function syncAll() {
+    if (!st.user) return;
+    const { data: prof } = await sb.from('hurbil_profiles').select('*').eq('id', st.user.id).single();
+    st.profile = prof;
+
+    if (!prof) {
+      st.route = 'auth';
+      render();
+      return;
+    }
+
+    const { data: notifs } = await sb.from('hurbil_notifications')
+      .select('*').eq('user_id', st.user.id).order('created_at', { ascending: false }).limit(5);
+    st.notifications = notifs || [];
+
+    if (prof.role === 'family') {
+      const { data: bens } = await sb.from('hurbil_beneficiaries').select('*').eq('family_id', st.user.id);
+      st.beneficiaries = bens || [];
+      if (st.beneficiaries.length && !st.benId) st.benId = st.beneficiaries[0].id;
+
+      const { data: bks } = await sb.from('hurbil_bookings')
+        .select('*, hurbil_beneficiaries(full_name, neighborhood, exact_address), hurbil_profiles!hurbil_bookings_employee_id_fkey(full_name, phone)')
+        .eq('family_id', st.user.id)
+        .order('service_date', { ascending: false });
+      st.bookings = bks || [];
+      if (st.route === 'auth') st.route = 'family_home';
+    }
+
+    if (prof.role === 'admin') {
+      const { data: emps } = await sb.from('hurbil_profiles').select('*').eq('role', 'employee');
+      st.employees = emps || [];
+
+      const { data: bks } = await sb.from('hurbil_bookings')
+        .select('*, hurbil_beneficiaries(full_name, neighborhood, exact_address, phone), hurbil_profiles!hurbil_bookings_family_id_fkey(full_name, phone)')
+        .order('created_at', { ascending: false });
+      st.bookings = bks || [];
+      if (st.route === 'auth') st.route = 'admin_dash';
+    }
+
+    if (prof.role === 'employee') {
+      const { data: bks } = await sb.from('hurbil_bookings')
+        .select('*, hurbil_beneficiaries(full_name, neighborhood, exact_address, access_notes, phone), hurbil_profiles!hurbil_bookings_family_id_fkey(full_name, phone)')
+        .eq('employee_id', st.user.id)
+        .order('service_date', { ascending: true });
+      st.bookings = bks || [];
+      if (st.route === 'auth') st.route = 'emp_dash';
+    }
+
+    render();
+  }
+
+  // REGISTRO ÚNICO DE FAMILIA / TITULAR
+  async function handleRegister(e) {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    if (!fd.get('non_medical_ok')) {
+      return toast(_('Debes aceptar que es un servicio estrictamente no sanitario.', 'Zerbitzu ez-sanitarioa dela onartu behar duzu.'));
+    }
+
+    const email = fd.get('email').trim();
+    const password = fd.get('password');
+    const fullName = fd.get('full_name').trim();
+    const phone = fd.get('phone').trim();
+    const isSelf = fd.get('is_self') === 'on';
+
+    const { data, error } = await sb.auth.signUp({ email, password });
+    if (error) return toast(error.message);
+
+    const uid = data.user.id;
+    await sb.from('hurbil_profiles').insert({
+      id: uid,
+      role: 'family',
+      full_name: fullName,
+      email,
+      phone,
+      accepted_non_medical_terms: true,
+      bonus_hours: 0
+    });
+
+    await sb.from('hurbil_beneficiaries').insert({
+      family_id: uid,
+      is_self: isSelf,
+      full_name: isSelf ? fullName : fd.get('ben_name').trim(),
+      neighborhood: fd.get('neighborhood'),
+      exact_address: fd.get('exact_address').trim(),
+      access_notes: fd.get('access_notes').trim(),
+      phone: isSelf ? phone : fd.get('ben_phone').trim()
+    });
+
+    st.user = data.user;
+    toast(_('¡Cuenta familiar creada en Hurbil!', 'Kontua sortuta!'));
     await syncAll();
   }
 
-  // Validar PIN Entrada -> in_progress + Email automático
-  if(a==='verify_in'){
-    const b=st.bookings.find(x=>x.id===v);
-    if(st.pinInput.trim()!==b.pin_in)return toast(_('PIN de Entrada incorrecto','Sarrera PIN okerra'));
-    await sb.from('mp_bookings').update({status:'in_progress',pin_in_at:new Date().toISOString()}).eq('id',v);
-    await sb.functions.invoke('hurbil-api',{body:{action:'notify_pin_in',payload:{booking_id:v}}});
-    st.pinInput='';toast(_('PIN Entrada verificado · Familia notificada por email','Sarrera PINa egiaztatuta'));
+  async function handleLogin(e) {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const { data, error } = await sb.auth.signInWithPassword({
+      email: fd.get('email').trim(),
+      password: fd.get('password')
+    });
+    if (error) return toast(_('Credenciales incorrectas', 'Datu okerrak'));
+    st.user = data.user;
     await syncAll();
   }
 
-  // Validar PIN Salida -> completed + Liberar Stripe Connect + Email automático
-  if(a==='verify_out'){
-    const b=st.bookings.find(x=>x.id===v);
-    if(st.pinInput.trim()!==b.pin_out)return toast(_('PIN de Salida incorrecto','Irteera PIN okerra'));
-    await sb.from('mp_bookings').update({status:'completed',pin_out_at:new Date().toISOString()}).eq('id',v);
-    await sb.functions.invoke('hurbil-api',{body:{action:'release_split_payout',payload:{booking_id:v}}});
-    st.pinInput='';toast(_('Servicio finalizado · Pago liberado a tu cuenta','Zerbitzua osatuta'));
+  async function logout() {
+    await sb.auth.signOut();
+    st.user = null;
+    st.profile = null;
+    st.route = 'auth';
+    render();
+  }
+
+  // COMPRAR BONO DE HORAS (5H O 12H)
+  async function buyBonusPack(code, hours, amountEur) {
+    toast(_('Conectando con pasarela segura Hurbil...', 'Ordainketa pasabidera konektatzen...'));
+    // Registro de pago y acreditación directa de saldo (en producción conectar con webhook de Stripe)
+    await sb.from('hurbil_payments').insert({
+      family_id: st.user.id,
+      product_code: code,
+      amount_eur: amountEur,
+      hours_credited: hours,
+      status: 'paid'
+    });
+
+    const newBalance = Number(st.profile.bonus_hours || 0) + hours;
+    await sb.from('hurbil_profiles').update({ bonus_hours: newBalance }).eq('id', st.user.id);
+    toast(_(`✅ Bono activado: +${hours}h añadidas a tu cuenta`, `✅ Bonua aktibatuta: +${hours}h`));
     await syncAll();
   }
 
-  // Cancelación (regla 24h)
-  if(a==='cancel_bk'){
-    const {data}=await sb.functions.invoke('hurbil-api',{body:{action:'cancel_booking',payload:{booking_id:v}}});
-    toast(data?.isFree?_('Cita cancelada gratuitamente (>24h)','Doan ezeztatuta'):_('Cita cancelada con retención (<24h)','Ezeztatuta (<24h)'));
+  // CREAR RESERVA DE SERVICIO DIRECTO
+  async function createBooking() {
+    if (!st.benId) return toast(_('Selecciona un beneficiario en Bilbao', 'Hautatu onuradun bat'));
+    const dur = Number(st.durationHours);
+    if (dur < 1) return toast(_('La duración mínima es de 1 hora', 'Gutxieneko iraupena ordu 1 da'));
+
+    let totalEur = 0;
+    let hoursUsed = 0;
+
+    if (st.planType === 'bonus_use') {
+      if (Number(st.profile.bonus_hours) < dur) {
+        return toast(_('No tienes suficientes horas en tu bono. Adquiere un bono arriba.', 'Ez duzu nahikoa ordu bonuan.'));
+      }
+      hoursUsed = dur;
+    } else if (st.planType === 'single_hour') {
+      totalEur = dur * 21.00;
+    } else if (st.planType === 'joint_plan') {
+      totalEur = dur * 32.00; // 16 €/h por persona (2 vecinos)
+    }
+
+    const pinEntry = genPin();
+    const pinExit = genPin();
+
+    const { error } = await sb.from('hurbil_bookings').insert({
+      family_id: st.user.id,
+      beneficiary_id: st.benId,
+      plan_type: st.planType,
+      service_date: st.serviceDate,
+      start_time: st.startTime,
+      duration_hours: dur,
+      total_price_eur: totalEur,
+      hours_deducted: hoursUsed,
+      tasks: st.selectedTasks,
+      extra_notes: st.extraNotes,
+      status: 'pending_assignment',
+      pin_entry: pinEntry,
+      pin_exit: pinExit
+    });
+
+    if (error) return toast(error.message);
+
+    if (hoursUsed > 0) {
+      const rem = Number(st.profile.bonus_hours) - hoursUsed;
+      await sb.from('hurbil_profiles').update({ bonus_hours: rem }).eq('id', st.user.id);
+    } else {
+      await sb.from('hurbil_payments').insert({
+        family_id: st.user.id,
+        product_code: st.planType,
+        amount_eur: totalEur,
+        hours_credited: 0,
+        status: 'paid'
+      });
+    }
+
+    toast(_('✅ Solicitud enviada. Coordinación Hurbil asignará tu acompañante.', '✅ Eskaera bidalita.'));
+    st.route = 'family_home';
     await syncAll();
   }
 
-  // Chat protegido + videollamada 10 min
-  if(a==='open_chat'){if(!st.uid){st.route='auth';render();return;}st.chatPeerId=v;st.md='chat';render();}
-  if(a==='send_chat'||a==='req_video'){
-    const hasConfirmed=st.bookings.some(b=>((b.family_id===st.uid&&b.companion_id===st.chatPeerId)||(b.companion_id===st.uid&&b.family_id===st.chatPeerId))&&['accepted','in_progress'].includes(b.status));
-    const raw=a==='req_video'?'📹 '+_('Solicito una videollamada gratuita de 10 minutos para conocernos antes de reservar.','10 minutuko doako bideo-deia eskatzen dut.'):st.chatText.trim();
-    if(!raw)return;
-    const clean=sanitizeChat(raw,hasConfirmed);
-    await sb.from('mp_messages').insert({sender_id:st.uid,receiver_id:st.chatPeerId,content:clean,is_videocall:a==='req_video'});
-    st.chatText='';await syncAll();
+  // CANCELACIÓN GRATUITA HASTA 24H ANTES
+  async function cancelBooking(bk) {
+    const serviceStart = new Date(`${bk.service_date}T${bk.start_time}`);
+    const hoursDiff = (serviceStart - new Date()) / 3600000;
+    if (hoursDiff < 24) {
+      return toast(_('⚠️ Faltan menos de 24h. Llama al 644 270 017 para gestionar cambios.', '⚠️ 24 ordu baino gutxiago falta dira. Deitu 644 270 017 zenbakira.'));
+    }
+
+    await sb.from('hurbil_bookings').update({ status: 'cancelled' }).eq('id', bk.id);
+    if (Number(bk.hours_deducted) > 0) {
+      const restored = Number(st.profile.bonus_hours) + Number(bk.hours_deducted);
+      await sb.from('hurbil_profiles').update({ bonus_hours: restored }).eq('id', st.user.id);
+    }
+    toast(_('✅ Cita cancelada gratuitamente (>24h). Saldo/reembolso tramitado.', '✅ Hitzordua doan bertan behera utzita.'));
+    await syncAll();
   }
 
-  // Guardar perfil acompañante y Stripe Connect
-  if(a==='toggle_barrio'){
-    const arr=st.compProf.neighborhoods||[];
-    st.compProf.neighborhoods=arr.includes(v)?arr.filter(x=>x!==v):[...arr,v];render();
-  }
-  if(a==='save_comp'){
-    const rate=Math.max(8,Number($('#cp_rate').value)||12);
-    const bio=$('#cp_bio').value;
-    await sb.from('mp_companions').update({hourly_rate:rate,neighborhoods:st.compProf.neighborhoods,bio}).eq('user_id',st.uid);
-    toast(_('Tarifa y barrios actualizados','Tarifa eta auzoak gordeta'));await syncAll();
-  }
-  if(a==='stripe_onboard'){
-    const {data}=await sb.functions.invoke('hurbil-api',{body:{action:'connect_onboard',payload:{user_id:st.uid,email:st.prof.email,return_url:location.href}}});
-    if(data?.url)location.href=data.url;
+  // VALIDAR DOBLE PIN (EMPLEADO) + DISPARAR AVISO EMAIL 0 €
+  async function submitPin(bookingId, type) {
+    const inputEl = document.getElementById(`pin-${type}-${bookingId}`);
+    const pinVal = (inputEl?.value || '').trim();
+    if (pinVal.length !== 4) return toast(_('Introduce los 4 dígitos del PIN', 'Sartu 4 digituko PINa'));
+
+    const { data, error } = await sb.rpc('validate_hurbil_pin', {
+      p_booking_id: bookingId,
+      p_pin: pinVal,
+      p_type: type
+    });
+
+    if (error || !data?.ok) {
+      return toast(data?.error || error?.message || 'Error al validar PIN');
+    }
+
+    // Disparar aviso por correo electrónico gratuito vía Edge Function
+    sb.functions.invoke('hurbil-api', {
+      body: { action: 'send_pin_email', payload: data }
+    }).catch(() => {});
+
+    toast(type === 'entry'
+      ? _('✅ PIN de Entrada validado. Familia notificada.', '✅ Sarrera PINa balioztatuta.')
+      : _('✅ PIN de Salida validado. Servicio completado.', '✅ Irteera PINa balioztatuta.')
+    );
+    await syncAll();
   }
 
-  // Admin verificación
-  if(a==='adm_verify'){
-    await sb.from('mp_companions').update({status:v}).eq('user_id',el.dataset.id);
-    toast('Estado actualizado a '+v);await syncAll();
+  // REPORTAR INCIDENCIA EN SERVICIO ACTIVO
+  async function reportIncident(bookingId) {
+    const msg = prompt(_('Describe brevemente la incidencia para el equipo de guardia Hurbil:', 'Azaldu labur gertakaria:'));
+    if (!msg) return;
+    await sb.from('hurbil_bookings').update({ incident_reported: true, incident_details: msg }).eq('id', bookingId);
+    toast(_('🚨 Incidencia registrada. Central Hurbil contactará de inmediato.', '🚨 Gertakaria erregistratuta.'));
+    await syncAll();
   }
 
-  // Incidencia y Valoraciones
-  if(a==='open_inc'){st.incBookingId=v;st.md='inc';render();}
-  if(a==='save_inc'){await sb.from('mp_bookings').update({incident_note:st.incText}).eq('id',st.incBookingId);st.md=null;toast('Incidencia registrada');await syncAll();}
-  if(a==='open_rate'){st.rateBookingId=v;st.rateStars=5;st.rateReview='';st.md='rate';render();}
-  if(a==='save_rate'){
-    await sb.from('mp_bookings').update({rating:st.rateStars,review:st.rateReview}).eq('id',st.rateBookingId);
-    const b=st.bookings.find(x=>x.id===st.rateBookingId);
-    const compRatings=st.bookings.filter(x=>x.companion_id===b.companion_id&&x.rating);
-    const avg=compRatings.reduce((s,x)=>s+x.rating,0)/compRatings.length;
-    await sb.from('mp_companions').update({rating_avg:avg.toFixed(2),rating_count:compRatings.length}).eq('user_id',b.companion_id);
-    st.md=null;toast(_('¡Gracias por tu valoración!','Eskerrik asko zure balorazioagatik!'));await syncAll();
+  // VALORACIÓN 1 A 5 ESTRELLAS AL FINALIZAR
+  async function rateBooking(bookingId, stars) {
+    await sb.from('hurbil_bookings').update({ rating: stars }).eq('id', bookingId);
+    toast(_(`⭐ Gracias por valorar el servicio con ${stars} estrellas.`, `⭐ Eskerrik asko ${stars} izarrekin baloratzeagatik.`));
+    await syncAll();
   }
-});
 
-render();syncAll();setInterval(syncAll,15000);
-</script></body></html>
+  // ADMIN: ASIGNAR EMPLEADO INTERNO
+  async function assignEmployee(bookingId) {
+    const empId = document.getElementById(`assign-${bookingId}`)?.value;
+    if (!empId) return toast(_('Selecciona un empleado de plantilla', 'Hautatu langile bat'));
+    await sb.from('hurbil_bookings').update({ employee_id: empId, status: 'confirmed' }).eq('id', bookingId);
+    toast(_('✅ Empleado asignado. Cita confirmada y PINs generados.', '✅ Langilea esleituta.'));
+    await syncAll();
+  }
+
+  // ADMIN: DAR DE ALTA NUEVO EMPLEADO INTERNO
+  async function createInternalEmployee(e) {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const { data, error } = await sb.functions.invoke('hurbil-api', {
+      body: {
+        action: 'create_employee',
+        payload: {
+          full_name: fd.get('full_name'),
+          email: fd.get('email'),
+          password: fd.get('password'),
+          phone: fd.get('phone'),
+          bio: fd.get('bio')
+        }
+      }
+    });
+    if (error || data?.error) return toast(data?.error || error.message);
+    toast(_('✅ Empleado interno dado de alta en plantilla', '✅ Langile berria altan emanda'));
+    e.target.reset();
+    await syncAll();
+  }
+
+  // RENDERIZADO DE PANTALLAS
+  function render() {
+    const navEl = document.getElementById('nav-actions');
+    const appEl = document.getElementById('app');
+
+    if (!st.user || !st.profile) {
+      navEl.innerHTML = '';
+      appEl.innerHTML = renderAuth();
+      return;
+    }
+
+    navEl.innerHTML = `
+      <span class="badge">${st.profile.role === 'admin' ? 'ADMIN' : st.profile.role === 'employee' ? 'EMPLEADO' : `Bono: ${st.profile.bonus_hours}h`}</span>
+      <button onclick="logout()">${_('Salir', 'Irten')}</button>
+    `;
+
+    if (st.profile.role === 'family') {
+      appEl.innerHTML = renderFamilyDashboard();
+    } else if (st.profile.role === 'admin') {
+      appEl.innerHTML = renderAdminDashboard();
+    } else if (st.profile.role === 'employee') {
+      appEl.innerHTML = renderEmployeeDashboard();
+    }
+  }
+
+  function renderAuth() {
+    return `
+      <div class="card">
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <button class="${st.authMode === 'register' ? 'primary' : ''}" onclick="st.authMode='register';render()">
+            ${_('Crear cuenta familiar', 'Sortu familia kontua')}
+          </button>
+          <button class="${st.authMode === 'login' ? 'primary' : ''}" onclick="st.authMode='login';render()">
+            ${_('Ya tengo cuenta / Personal', 'Sartu kontura / Langileak')}
+          </button>
+        </div>
+
+        ${st.authMode === 'login' ? `
+          <form onsubmit="handleLogin(event)">
+            <h2>${_('Acceso a Hurbil Bilbao', 'Hurbil Bilbora sarrera')}</h2>
+            <label>${_('Correo electrónico', 'Posta elektronikoa')}</label>
+            <input type="email" name="email" required />
+            <label>${_('Contraseña', 'Pasahitza')}</label>
+            <input type="password" name="password" required />
+            <button type="submit" class="primary" style="width:100%;margin-top:16px;">${_('Entrar', 'Sartu')}</button>
+          </form>
+        ` : `
+          <form onsubmit="handleRegister(event)">
+            <h2>${_('Registro de Cliente / Familia en Bilbao', 'Bezero / Familia Erregistroa Bilbon')}</h2>
+            <p style="color:var(--muted);font-size:0.92rem;">
+              ${_('Todos nuestros acompañantes son personal contratado directamente por Hurbil.', 'Gure laguntzaile guztiak Hurbilek zuzenean kontratatutako langileak dira.')}
+            </p>
+            <div class="grid-2">
+              <div>
+                <label>${_('Nombre del titular que contrata', 'Kontratatzen duen titularraren izena')}</label>
+                <input name="full_name" placeholder="Ej. Amaia Etxebarria" required />
+              </div>
+              <div>
+                <label>${_('Teléfono móvil de contacto', 'Harremanetarako mugikorra')}</label>
+                <input name="phone" placeholder="600 000 000" required />
+              </div>
+            </div>
+            <div class="grid-2">
+              <div>
+                <label>${_('Correo electrónico (para avisos PIN)', 'Posta elektronikoa (PIN abisuetarako)')}</label>
+                <input type="email" name="email" required />
+              </div>
+              <div>
+                <label>${_('Contraseña', 'Pasahitza')}</label>
+                <input type="password" name="password" minlength="6" required />
+              </div>
+            </div>
+
+            <hr style="margin:18px 0;border:0;border-top:1px solid var(--border);" />
+            <h3>${_('Datos de la persona mayor a acompañar (Bilbao)', 'Lagunduko den adinekoaren datuak (Bilbo)')}</h3>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+              <input type="checkbox" name="is_self" style="width:auto;" onchange="document.getElementById('ben-extra').style.display=this.checked?'none':'block'" />
+              ${_('Contrato el acompañamiento para mí mismo/a', 'Niretzat kontratatzen dut laguntza')}
+            </label>
+
+            <div id="ben-extra">
+              <div class="grid-2">
+                <div>
+                  <label>${_('Nombre del familiar mayor', 'Adineko senidearen izena')}</label>
+                  <input name="ben_name" placeholder="Ej. Javier Etxebarria" />
+                </div>
+                <div>
+                  <label>${_('Teléfono del domicilio / mayor', 'Etxeko / adinekoaren telefonoa')}</label>
+                  <input name="ben_phone" placeholder="944 000 000" />
+                </div>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label>${_('Barrio de Bilbao', 'Bilboko auzoa')}</label>
+                <select name="neighborhood">
+                  ${BARRIOS_BILBAO.map(b => `<option value="${b}">${b}</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label>${_('Dirección exacta (Calle, portal, piso)', 'Helbide zehatza (Kalea, ataria, pisua)')}</label>
+                <input name="exact_address" placeholder="Ej. Calle Ercilla 24, 3º Izq" required />
+              </div>
+            </div>
+            <label>${_('Notas de acceso / portal (opcional)', 'Atariko oharrak (aukerakoa)')}</label>
+            <input name="access_notes" placeholder="Ej. Portero automático 3B, ascensor cota cero" />
+
+            <label style="display:flex;align-items:flex-start;gap:10px;margin-top:16px;background:var(--primary-light);padding:12px;border-radius:10px;">
+              <input type="checkbox" name="non_medical_ok" required style="width:auto;margin-top:4px;" />
+              <span>
+                ${_('Acepto los términos y comprendo que Hurbil presta un servicio <strong>estrictamente no sanitario</strong> (no incluye administración de medicación ni curas médicas).',
+                    'Baldintzak onartzen ditut eta ulertzen dut Hurbilek <strong>zerbitzu ez-sanitarioa</strong> eskaintzen duela (ez du botikarik edo sendaketarik barne hartzen).')}
+              </span>
+            </label>
+
+            <button type="submit" class="primary" style="width:100%;margin-top:16px;font-size:1.05rem;">
+              ${_('Completar registro en Hurbil', 'Osatu erregistroa Hurbilen')}
+            </button>
+          </form>
+        `}
+      </div>
+    `;
+  }
+
+  function renderFamilyDashboard() {
+    const ben = st.beneficiaries[0];
+    return `
+      ${st.notifications.length ? `
+        <div class="card" style="border-left:5px solid var(--primary);">
+          <strong>🔔 ${_('Últimos avisos de seguridad', 'Azken segurtasun abisuak')}</strong>
+          ${st.notifications.slice(0, 2).map(n => `<div style="font-size:0.9rem;margin-top:6px;">• <strong>${n.title}:</strong> ${n.body}</div>`).join('')}
+        </div>
+      ` : ''}
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div>
+            <h2>${_('Hola,', 'Kaixo,')} ${st.profile.full_name}</h2>
+            <small>${_('Beneficiario:', 'Onuraduna:')} <strong>${ben?.full_name || ''}</strong> (${ben?.neighborhood || ''} · ${ben?.exact_address || ''})</small>
+          </div>
+          <div style="text-align:right;">
+            <span class="badge" style="font-size:1rem;padding:8px 14px;">⏱️ ${_('Saldo Bono:', 'Bonu Saldo:')} ${st.profile.bonus_hours}h</span>
+          </div>
+        </div>
+
+        <h3 style="margin-top:18px;">${_('1. Tarifas fijas Hurbil (IVA incluido · Mínimo 1h)', '1. Hurbil tarifa finkoak (BEZa barne · Gutxienez 1h)')}</h3>
+        <div class="grid-2">
+          <div class="rate-box ${st.planType === 'single_hour' ? 'selected' : ''}" onclick="st.planType='single_hour';render()">
+            <div class="rate-price">21,00 €/h</div>
+            <strong>${_('Hora suelta', 'Ordu soltea')}</strong>
+            <div style="font-size:0.85rem;color:var(--muted);">${_('Pago puntual por sesión individual', 'Saio bakarrerako ordainketa')}</div>
+          </div>
+          <div class="rate-box ${st.planType === 'bonus_use' ? 'selected' : ''}" onclick="st.planType='bonus_use';render()">
+            <div class="rate-price">${_('Usar Bono', 'Erabili Bonua')} (${st.profile.bonus_hours}h)</div>
+            <strong>${_('Descontar de mi saldo', 'Nire saldotik deskontatu')}</strong>
+            <div style="font-size:0.85rem;color:var(--muted);">${_('Con Bono 5h (19,50 €/h) o Plan 12h (18,00 €/h)', '5h Bonuarekin edo 12h Planarekin')}</div>
+          </div>
+          <div class="rate-box ${st.planType === 'joint_plan' ? 'selected' : ''}" onclick="st.planType='joint_plan';render()">
+            <div class="rate-price">16,00 €/h <small style="font-size:0.8rem;">/persona</small></div>
+            <strong>${_('Plan Conjunto (2 vecinos a la vez)', 'Plan Bateratua (2 bizilagun batera)')}</strong>
+            <div style="font-size:0.85rem;color:var(--muted);">${_('32,00 €/h total compartido en mismo portal/barrio', '32,00 €/h guztira atari/auzo berean')}</div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
+          <button onclick="buyBonusPack('bonus_5h', 5, 97.50)">➕ ${_('Recargar Bono 5 horas (97,50 € · 19,50 €/h)', 'Kargatu 5 orduko Bonua (97,50 €)')}</button>
+          <button onclick="buyBonusPack('monthly_12h', 12, 216.00)">➕ ${_('Activar Plan Mensual 12 horas (216,00 € · 18,00 €/h)', 'Aktibatu Hileko 12h Plana (216,00 €)')}</button>
+        </div>
+
+        <h3 style="margin-top:20px;">${_('2. Solicitar acompañamiento', '2. Eskatu laguntza')}</h3>
+        <div class="grid-2">
+          <div>
+            <label>${_('Fecha del servicio', 'Zerbitzuaren data')}</label>
+            <input type="date" value="${st.serviceDate}" onchange="st.serviceDate=this.value" />
+          </div>
+          <div>
+            <label>${_('Hora de inicio', 'Hasiera ordua')}</label>
+            <input type="time" value="${st.startTime}" onchange="st.startTime=this.value" />
+          </div>
+          <div>
+            <label>${_('Duración (mínimo 1h, tramos 30 min)', 'Iraupena (gutxienez 1h)')}</label>
+            <select onchange="st.durationHours=Number(this.value);render()">
+              ${[1, 1.5, 2, 2.5, 3, 3.5, 4].map(h => `<option value="${h}" ${st.durationHours === h ? 'selected' : ''}>${h} horas</option>`).join('')}
+            </select>
+          </div>
+        </div>
+
+        <label>${_('Tareas del día (no sanitarias)', 'Eguneko zereginak (ez-sanitarioak)')}</label>
+        <div>
+          ${TAREAS_OPCIONES.map(t => {
+            const active = st.selectedTasks.includes(t.id);
+            return `<span class="task-chip ${active ? 'active' : ''}" onclick="toggleTask('${t.id}')">${_(t.es, t.eu)}</span>`;
+          }).join('')}
+        </div>
+
+        <label>${_('Indicaciones adicionales para nuestro empleado', 'Gure langilearentzako argibide gehigarriak')}</label>
+        <input value="${st.extraNotes}" onchange="st.extraNotes=this.value" placeholder="Ej. Llevar paraguas si llueve, gusta pasear por Doña Casilda" />
+
+        <button class="primary" style="width:100%;margin-top:16px;font-size:1.05rem;" onclick="createBooking()">
+          ${_('Confirmar solicitud de acompañamiento', 'Baieztatu laguntza eskaera')}
+        </button>
+      </div>
+
+      <div class="card">
+        <h3>${_('Mis citas y Protocolo Doble PIN', 'Nire hitzorduak eta PIN Bikoitza')}</h3>
+        ${!st.bookings.length ? `<p style="color:var(--muted);">${_('Aún no tienes citas programadas.', 'Oraindik ez duzu hitzordurik.')}</p>` : ''}
+        ${st.bookings.map(bk => `
+          <div style="border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+              <strong>📅 ${bk.service_date} · ⏰ ${bk.start_time.slice(0,5)} (${bk.duration_hours}h)</strong>
+              <span class="badge ${bk.status === 'in_progress' ? 'live' : bk.status === 'pending_assignment' ? 'warn' : ''}">
+                ${bk.status === 'pending_assignment' ? _('Pendiente de asignar empleado', 'Langilea esleitzeko zain')
+                  : bk.status === 'confirmed' ? _('Confirmada · Empleado asignado', 'Baieztatuta')
+                  : bk.status === 'in_progress' ? _('🟢 EN CURSO EN DOMICILIO', '🟢 MARTXAN ETXEAN')
+                  : bk.status === 'completed' ? _('Finalizada', 'Amaituta')
+                  : _('Cancelada', 'Bertan behera')}
+              </span>
+            </div>
+
+            ${bk.hurbil_profiles ? `<p style="margin:6px 0;">👤 ${_('Acompañante Hurbil:', 'Hurbil Laguntzailea:')} <strong>${bk.hurbil_profiles.full_name}</strong> (${bk.hurbil_profiles.phone || ''})</p>` : ''}
+
+            ${['confirmed', 'in_progress'].includes(bk.status) ? `
+              <div class="pin-banner">
+                <div class="pin-card">
+                  <small>${_('PIN DE ENTRADA (Dar al llegar)', 'SARRERA PINa (Iristean eman)')}</small>
+                  <span class="pin-digits">${bk.pin_entry}</span>
+                </div>
+                <div class="pin-card">
+                  <small>${_('PIN DE SALIDA (Dar al irse)', 'IRTEERA PINa (Joatean eman)')}</small>
+                  <span class="pin-digits">${bk.pin_exit}</span>
+                </div>
+              </div>
+            ` : ''}
+
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+              ${['pending_assignment', 'confirmed'].includes(bk.status) ? `
+                <button onclick='cancelBooking(${JSON.stringify(bk)})'>${_('Cancelar cita (>24h gratis)', 'Bertan behera utzi (>24h doan)')}</button>
+              ` : ''}
+              ${bk.status === 'in_progress' ? `
+                <button class="danger" onclick="reportIncident('${bk.id}')">⚠️ ${_('Reportar incidencia en curso', 'Jakinarazi gertakaria')}</button>
+              ` : ''}
+              ${bk.status === 'completed' && !bk.rating ? `
+                <div>
+                  <span>${_('Valora el servicio:', 'Baloratu zerbitzua:')} </span>
+                  ${[1,2,3,4,5].map(n => `<button onclick="rateBooking('${bk.id}', ${n})">${n}⭐</button>`).join('')}
+                </div>
+              ` : ''}
+              ${bk.rating ? `<span class="badge">⭐ ${_('Valorado:', 'Baloratuta:')} ${bk.rating}/5</span>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function toggleTask(id) {
+    if (st.selectedTasks.includes(id)) {
+      st.selectedTasks = st.selectedTasks.filter(x => x !== id);
+    } else {
+      st.selectedTasks.push(id);
+    }
+    render();
+  }
+
+  function renderAdminDashboard() {
+    return `
+      <div class="card">
+        <h2>🛠️ Panel de Coordinación Hurbil Bilbao (Admin)</h2>
+        <h3>1. Asignar empleados internos a reservas</h3>
+        ${st.bookings.map(bk => `
+          <div style="border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
+              <strong>📅 ${bk.service_date} · ${bk.start_time.slice(0,5)} (${bk.duration_hours}h) — ${bk.plan_type}</strong>
+              <span class="badge ${bk.status === 'pending_assignment' ? 'warn' : ''}">${bk.status}</span>
+            </div>
+            <p style="margin:6px 0;">
+              <strong>Beneficiario:</strong> ${bk.hurbil_beneficiaries?.full_name} · <strong>${bk.hurbil_beneficiaries?.neighborhood}</strong> (${bk.hurbil_beneficiaries?.exact_address})<br/>
+              <strong>Familia:</strong> ${bk.hurbil_profiles?.full_name} (${bk.hurbil_profiles?.phone}) · <strong>Tareas:</strong> ${(bk.tasks || []).join(', ')}
+            </p>
+            ${bk.incident_reported ? `<div style="color:var(--danger);font-weight:700;">🚨 INCIDENCIA: ${bk.incident_details}</div>` : ''}
+            <div style="display:flex;gap:8px;margin-top:8px;">
+              <select id="assign-${bk.id}">
+                <option value="">-- Seleccionar empleado de plantilla --</option>
+                ${st.employees.map(emp => `<option value="${emp.id}" ${bk.employee_id === emp.id ? 'selected' : ''}>${emp.full_name} (${emp.phone || ''})</option>`).join('')}
+              </select>
+              <button class="primary" onclick="assignEmployee('${bk.id}')">Asignar y Confirmar</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="card">
+        <h3>2. Dar de alta nuevo empleado interno en plantilla</h3>
+        <form onsubmit="createInternalEmployee(event)">
+          <div class="grid-2">
+            <div>
+              <label>Nombre completo del empleado/a</label>
+              <input name="full_name" required />
+            </div>
+            <div>
+              <label>Teléfono móvil</label>
+              <input name="phone" required />
+            </div>
+            <div>
+              <label>Correo corporativo / acceso</label>
+              <input type="email" name="email" required />
+            </div>
+            <div>
+              <label>Contraseña inicial</label>
+              <input type="password" name="password" minlength="6" required />
+            </div>
+          </div>
+          <label>Perfil / especialidad (opcional)</label>
+          <input name="bio" placeholder="Ej. Auxiliar geriátrico con experiencia en acompañamiento en Bilbao" />
+          <button type="submit" class="primary" style="margin-top:12px;">Registrar Empleado Interno</button>
+        </form>
+      </div>
+    `;
+  }
+
+  function renderEmployeeDashboard() {
+    return `
+      <div class="card">
+        <h2>👋 Turnos asignados · ${st.profile.full_name}</h2>
+        ${!st.bookings.length ? '<p>No tienes servicios asignados todavía.</p>' : ''}
+        ${st.bookings.map(bk => `
+          <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;">
+              <strong>📅 ${bk.service_date} · ⏰ ${bk.start_time.slice(0,5)} (${bk.duration_hours}h)</strong>
+              <span class="badge">${bk.status}</span>
+            </div>
+            <p style="margin:8px 0;">
+              <strong>Persona mayor:</strong> ${bk.hurbil_beneficiaries?.full_name} (Tel: ${bk.hurbil_beneficiaries?.phone})<br/>
+              <strong>Dirección Bilbao:</strong> ${bk.hurbil_beneficiaries?.neighborhood} — ${bk.hurbil_beneficiaries?.exact_address}<br/>
+              <strong>Portal / acceso:</strong> ${bk.hurbil_beneficiaries?.access_notes || 'Sin notas'}<br/>
+              <strong>Tareas:</strong> ${(bk.tasks || []).join(', ')} ${bk.extra_notes ? `(${bk.extra_notes})` : ''}
+            </p>
+
+            ${bk.status === 'confirmed' ? `
+              <div style="display:flex;gap:8px;align-items:center;margin-top:10px;">
+                <input id="pin-entry-${bk.id}" maxlength="4" placeholder="PIN Entrada (4 dígitos)" style="max-width:200px;" />
+                <button class="primary" onclick="submitPin('${bk.id}', 'entry')">🟢 Validar Entrada</button>
+              </div>
+            ` : ''}
+
+            ${bk.status === 'in_progress' ? `
+              <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+                <input id="pin-exit-${bk.id}" maxlength="4" placeholder="PIN Salida (4 dígitos)" style="max-width:200px;" />
+                <button class="primary" onclick="submitPin('${bk.id}', 'exit')">🏁 Validar Salida</button>
+                <button class="danger" onclick="reportIncident('${bk.id}')">⚠️ Reportar Incidencia</button>
+              </div>
+            ` : ''}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  init();
+</script>
+</body>
+</html>
