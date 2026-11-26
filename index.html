@@ -484,7 +484,7 @@ function help() {
       ['bono', '🎟️', _('Recurrente Bono 5 horas', 'Errepikakorra 5 orduko bonoa'), _('97,50 € base (5 h a 19,50 €/h) + 19,50 € por hora extra', '97,50 € oinarria (5 h 19,50 €/orduko) + 19,50 € ordu gehigarriko')],
       ['month', '📅', _('Plan Mensual Hurbil', 'Hurbil Hileko Plana'), '216,00 € / ' + _('mes', 'hileko') + ' (12 h · 18,00 €/h)']
     ];
-    h = head('💶 ' + _('Modalidad y tarifas', 'Modalitatea eta tarifak'), _('Modalidad y tarifas', 'Modalitatea eta tarifak')) + modes.map(m => `<div style="margin:.55rem 0"><button class="opt ${w.plan == m[0] ? 'on' : ""}" style="width:100%" data-a="wplan" data-v="${m[0]}"><span class="ic">${m[1]}</span><div><div style="font-weight:800;font-size:1.05rem">${m[2]}</div><small class="mut" style="font-weight:600">${m[3]}</small></div></button></div>`).join("")
+    h = head('💶 ' + _('Modalidad y tarifas', 'Modalitatea eta tarifak'), _('Modalidad y tarifas', 'Modalidad y tarifas')) + modes.map(m => `<div style="margin:.55rem 0"><button class="opt ${w.plan == m[0] ? 'on' : ""}" style="width:100%" data-a="wplan" data-v="${m[0]}"><span class="ic">${m[1]}</span><div><div style="font-weight:800;font-size:1.05rem">${m[2]}</div><small class="mut" style="font-weight:600">${m[3]}</small></div></button></div>`).join("")
       + `<div class="est-box"><small class="mut">${est.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado', 'Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(est.tot)}</div></div>`;
   }
   if (w.s == 3) {
@@ -1106,7 +1106,7 @@ render();
 syncCloud();
 setInterval(() => { if (sbUid || admOk) syncCloud(true); }, 6000);
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister())).catch(() => {});
+  navigator.serviceWorker.register('/Hurbil/sw.js').catch(() => {});
 }
 </script>
 </body>
