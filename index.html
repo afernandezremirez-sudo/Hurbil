@@ -198,9 +198,8 @@
 <div id="toast"></div>
 
 <script>
-  // CONFIGURACIÓN SUPABASE (sustituye por tus claves de proyecto si cambian)
-  const SUPABASE_URL = 'https://TU_PROYECTO.supabase.co';
-  const SUPABASE_ANON_KEY = 'TU_ANON_KEY';
+  const SUPABASE_URL = 'https://oijhfovricxgpnczwpfv.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_I1I6eY2egVrjwMzbDqrs0Q_2EK05T2C';
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const BARRIOS_BILBAO = [
@@ -226,7 +225,6 @@
     notifications: [],
     route: 'auth',
     authMode: 'register',
-    // Formulario reserva
     planType: 'single_hour',
     benId: '',
     serviceDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
@@ -334,7 +332,6 @@
     render();
   }
 
-  // REGISTRO ÚNICO DE FAMILIA / TITULAR
   async function handleRegister(e) {
     e.preventDefault();
     const fd = new FormData(e.target);
@@ -351,8 +348,12 @@
     const { data, error } = await sb.auth.signUp({ email, password });
     if (error) return toast(error.message);
 
+    if (!data?.user) {
+      return toast(_('Revisa tu correo para confirmar la cuenta y luego inicia sesión.', 'Begiratu posta kontua baieztatzeko.'));
+    }
+
     const uid = data.user.id;
-    await sb.from('hurbil_profiles').insert({
+    const { error: profErr } = await sb.from('hurbil_profiles').insert({
       id: uid,
       role: 'family',
       full_name: fullName,
@@ -361,8 +362,9 @@
       accepted_non_medical_terms: true,
       bonus_hours: 0
     });
+    if (profErr) return toast(profErr.message);
 
-    await sb.from('hurbil_beneficiaries').insert({
+    const { error: benErr } = await sb.from('hurbil_beneficiaries').insert({
       family_id: uid,
       is_self: isSelf,
       full_name: isSelf ? fullName : fd.get('ben_name').trim(),
@@ -371,6 +373,7 @@
       access_notes: fd.get('access_notes').trim(),
       phone: isSelf ? phone : fd.get('ben_phone').trim()
     });
+    if (benErr) return toast(benErr.message);
 
     st.user = data.user;
     toast(_('¡Cuenta familiar creada en Hurbil!', 'Kontua sortuta!'));
@@ -384,7 +387,7 @@
       email: fd.get('email').trim(),
       password: fd.get('password')
     });
-    if (error) return toast(_('Credenciales incorrectas', 'Datu okerrak'));
+    if (error) return toast(_('Credenciales incorrectas o email sin confirmar', 'Datu okerrak'));
     st.user = data.user;
     await syncAll();
   }
@@ -397,10 +400,8 @@
     render();
   }
 
-  // COMPRAR BONO DE HORAS (5H O 12H)
   async function buyBonusPack(code, hours, amountEur) {
-    toast(_('Conectando con pasarela segura Hurbil...', 'Ordainketa pasabidera konektatzen...'));
-    // Registro de pago y acreditación directa de saldo (en producción conectar con webhook de Stripe)
+    toast(_('Activando bono en tu cuenta Hurbil...', 'Bonua aktibatzen...'));
     await sb.from('hurbil_payments').insert({
       family_id: st.user.id,
       product_code: code,
@@ -415,7 +416,6 @@
     await syncAll();
   }
 
-  // CREAR RESERVA DE SERVICIO DIRECTO
   async function createBooking() {
     if (!st.benId) return toast(_('Selecciona un beneficiario en Bilbao', 'Hautatu onuradun bat'));
     const dur = Number(st.durationHours);
@@ -432,7 +432,7 @@
     } else if (st.planType === 'single_hour') {
       totalEur = dur * 21.00;
     } else if (st.planType === 'joint_plan') {
-      totalEur = dur * 32.00; // 16 €/h por persona (2 vecinos)
+      totalEur = dur * 32.00;
     }
 
     const pinEntry = genPin();
@@ -474,7 +474,6 @@
     await syncAll();
   }
 
-  // CANCELACIÓN GRATUITA HASTA 24H ANTES
   async function cancelBooking(bk) {
     const serviceStart = new Date(`${bk.service_date}T${bk.start_time}`);
     const hoursDiff = (serviceStart - new Date()) / 3600000;
@@ -491,7 +490,6 @@
     await syncAll();
   }
 
-  // VALIDAR DOBLE PIN (EMPLEADO) + DISPARAR AVISO EMAIL 0 €
   async function submitPin(bookingId, type) {
     const inputEl = document.getElementById(`pin-${type}-${bookingId}`);
     const pinVal = (inputEl?.value || '').trim();
@@ -507,7 +505,6 @@
       return toast(data?.error || error?.message || 'Error al validar PIN');
     }
 
-    // Disparar aviso por correo electrónico gratuito vía Edge Function
     sb.functions.invoke('hurbil-api', {
       body: { action: 'send_pin_email', payload: data }
     }).catch(() => {});
@@ -519,7 +516,6 @@
     await syncAll();
   }
 
-  // REPORTAR INCIDENCIA EN SERVICIO ACTIVO
   async function reportIncident(bookingId) {
     const msg = prompt(_('Describe brevemente la incidencia para el equipo de guardia Hurbil:', 'Azaldu labur gertakaria:'));
     if (!msg) return;
@@ -528,14 +524,12 @@
     await syncAll();
   }
 
-  // VALORACIÓN 1 A 5 ESTRELLAS AL FINALIZAR
   async function rateBooking(bookingId, stars) {
     await sb.from('hurbil_bookings').update({ rating: stars }).eq('id', bookingId);
     toast(_(`⭐ Gracias por valorar el servicio con ${stars} estrellas.`, `⭐ Eskerrik asko ${stars} izarrekin baloratzeagatik.`));
     await syncAll();
   }
 
-  // ADMIN: ASIGNAR EMPLEADO INTERNO
   async function assignEmployee(bookingId) {
     const empId = document.getElementById(`assign-${bookingId}`)?.value;
     if (!empId) return toast(_('Selecciona un empleado de plantilla', 'Hautatu langile bat'));
@@ -544,7 +538,6 @@
     await syncAll();
   }
 
-  // ADMIN: DAR DE ALTA NUEVO EMPLEADO INTERNO
   async function createInternalEmployee(e) {
     e.preventDefault();
     const fd = new FormData(e.target);
@@ -566,7 +559,6 @@
     await syncAll();
   }
 
-  // RENDERIZADO DE PANTALLAS
   function render() {
     const navEl = document.getElementById('nav-actions');
     const appEl = document.getElementById('app');
