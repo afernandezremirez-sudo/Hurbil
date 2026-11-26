@@ -1,5 +1,5 @@
 {
-  "name": "Hurbil · Siempre cerca de ti",
+  "name": "Hurbil Siempre cerca de ti",
   "short_name": "Hurbil",
   "start_url": "/Hurbil/",
   "scope": "/Hurbil/",
@@ -8,10 +8,16 @@
   "theme_color": "#2D5373",
   "icons": [
     {
-      "src": "/Hurbil/icon-512.png",
+      "src": "/Hurbil/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/Hurbil/logo.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
