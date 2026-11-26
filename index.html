@@ -1,943 +1,1100 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hurbil · Bilbao · Acompañamiento a Mayores</title>
-  <link rel="manifest" href="/Hurbil/manifest.json" />
-  <meta name="theme-color" content="#0f5132" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hurbil Siempre cerca de ti</title>
+  <link rel="manifest" href="/Hurbil/manifest.json">
+  <link rel="apple-touch-icon" href="/Hurbil/logo.png">
+  <link rel="icon" type="image/png" href="/Hurbil/logo.png">
+  <meta name="theme-color" content="#2D5373">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root {
-      --bg: #f6f8f7;
-      --card: #ffffff;
-      --primary: #0f5132;
-      --primary-light: #e6f4ea;
-      --accent: #d97706;
-      --text: #1e293b;
-      --muted: #64748b;
-      --border: #cbd5e1;
-      --danger: #b91c1c;
-      --font-scale: 1;
-    }
-    body.high-contrast {
-      --bg: #000000;
-      --card: #111111;
-      --primary: #22c55e;
-      --primary-light: #052e16;
-      --text: #ffffff;
-      --muted: #cbd5e1;
-      --border: #ffffff;
-    }
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-size: calc(16px * var(--font-scale));
-      line-height: 1.5;
-      padding-bottom: 80px;
-    }
-    header {
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .brand { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    .brand img { width: 42px; height: 42px; border-radius: 10px; object-fit: cover; }
-    .brand h1 { margin: 0; font-size: 1.25rem; color: var(--primary); }
-    .brand small { display: block; font-size: 0.78rem; color: var(--muted); }
-    .toolbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-    button {
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      padding: 8px 14px;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.92rem;
-      transition: 0.15s;
-    }
-    button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
-    button.primary:hover { opacity: 0.92; }
-    button.danger { background: var(--danger); color: #fff; border-color: var(--danger); }
-    button.pill-active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    main { max-width: 820px; margin: 20px auto; padding: 0 16px; }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 18px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    }
-    h2, h3 { margin-top: 0; color: var(--primary); }
-    label { display: block; font-weight: 600; margin: 12px 0 4px; font-size: 0.95rem; }
-    input, select, textarea {
-      width: 100%;
-      padding: 11px 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--card);
-      color: var(--text);
-      font-size: 1rem;
-    }
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
-    .rate-box {
-      border: 2px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      cursor: pointer;
-      background: var(--card);
-    }
-    .rate-box.selected { border-color: var(--primary); background: var(--primary-light); }
-    .rate-price { font-size: 1.35rem; font-weight: 800; color: var(--primary); }
-    .badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      background: var(--primary-light);
-      color: var(--primary);
-    }
-    .badge.warn { background: #fef3c7; color: #92400e; }
-    .badge.live { background: #dcfce7; color: #166534; }
-    .pin-banner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin: 14px 0;
-    }
-    .pin-card {
-      background: var(--primary-light);
-      border: 2px dashed var(--primary);
-      border-radius: 14px;
-      padding: 14px;
-      text-align: center;
-    }
-    .pin-digits {
-      font-size: 2rem;
-      font-weight: 900;
-      letter-spacing: 6px;
-      color: var(--primary);
-      display: block;
-      margin-top: 4px;
-    }
-    .task-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      margin: 4px 6px 4px 0;
-      cursor: pointer;
-    }
-    .task-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .sos-float {
-      position: fixed;
-      bottom: 18px;
-      right: 18px;
-      background: var(--danger);
-      color: #fff;
-      padding: 12px 18px;
-      border-radius: 999px;
-      font-weight: 800;
-      text-decoration: none;
-      box-shadow: 0 4px 14px rgba(185,28,28,0.35);
-      z-index: 99;
-    }
-    #toast {
-      position: fixed;
-      bottom: 76px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #0f172a;
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-weight: 600;
-      display: none;
-      z-index: 100;
-    }
+    :root{--bg:#F6F7F5;--c:#fff;--bd:#E2E8F0;--p:#2D5373;--ph:#244560;--s:#447458;--sb:#EBF1F6;--sbd:#D6E2EC;--t:#1E293B;--pt:#fff;--st:#fff;--r:#C0463F;--m:#64748B}
+    body.hc{--bg:#000;--c:#000;--bd:#FFE600;--p:#FFE600;--ph:#fff;--s:#FFE600;--sb:#1a1a00;--sbd:#FFE600;--t:#FFE600;--pt:#000;--st:#000;--r:#FFE600;--m:#FFE600}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--t);font:1rem/1.55 Nunito,system-ui,sans-serif}
+    a{color:var(--p);font-weight:700}
+    h1,h2,h3{font-weight:800;color:var(--t);line-height:1.2;margin:.2em 0}
+    h1{font-size:1.9rem}h2{font-size:1.5rem}h3{font-size:1.2rem}
+    header{background:var(--c);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
+    .hw{max-width:760px;margin:auto;padding:.6rem 1rem;display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;justify-content:space-between}
+    .lg{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--t)}
+    .lg b{display:block;font-size:1.05rem;line-height:1.2}
+    .lg span{min-width:0;flex:1}
+    .lg small{color:var(--m);font-weight:700}
+    .ct{display:flex;flex-wrap:nowrap;gap:.35rem;align-items:center;margin-left:auto}
+    .hz{max-width:760px;margin:auto;padding:0 1rem .5rem;display:flex;justify-content:flex-end;gap:.5rem;align-items:center}
+    .seg{display:inline-flex;border:1px solid var(--sbd);border-radius:.9rem;overflow:hidden;background:var(--c)}
+    .seg button{border:0;background:var(--c);padding:.3rem .7rem;font-weight:800;min-height:42px}
+    .seg button[aria-pressed=true],.sw[aria-checked=true],.ib[aria-pressed=true]{background:var(--p);color:var(--pt)}
+    .ib,.sw,.pill{border:1px solid var(--sbd);background:var(--sb);border-radius:2rem;padding:.3rem .85rem;font-weight:800;min-height:42px;color:var(--t);text-decoration:none;display:inline-flex;white-space:nowrap;align-items:center;position:relative}
+    .rd{flex:none;border-radius:50%;width:42px;min-width:42px;height:42px;padding:0;justify-content:center;background:var(--c);font-size:1.3rem;line-height:1}
+    .sw{font-size:.85rem}
+    button{font:inherit;cursor:pointer;color:inherit}
+    main{max-width:640px;margin:auto;padding:1rem 1rem 7rem}
+    .card{background:var(--c);border:1px solid var(--bd);border-radius:16px;padding:1.1rem;margin:.8rem 0;box-shadow:0 1px 4px #1e293b0f}
+    .live-story-hero{background:linear-gradient(135deg,#fdf2f8 0%,#eef2ff 100%);border:2px solid #f472b6;border-radius:18px;padding:1rem 1.1rem;margin:.4rem 0 .9rem;box-shadow:0 4px 14px rgba(219,39,119,.12)}
+    body.hc .live-story-hero{background:#000;border:2px solid #FFE600}
+    .row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+    .row>.grow{flex:1}
+    .btn{background:var(--p);color:var(--pt);border:1px solid var(--p);border-radius:16px;padding:.8rem 1.3rem;font-weight:800;font-size:1.05rem;min-height:52px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;position:relative}
+    .btn:hover{background:var(--ph)}
+    .btn.g{background:var(--sb);color:var(--t);border-color:var(--sbd)}
+    .btn.s{background:var(--s);border-color:var(--s);color:var(--st)}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .spk{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#DCE8F2;color:#1E293B;font-size:1.15rem;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+    body.hc .spk{background:#1a1a00;border:2px solid #FFE600}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:.7rem}
+    .mw{position:relative;margin:.7rem 0}
+    .mb{display:flex;align-items:center;justify-content:center;width:100%;min-height:66px;border-radius:16px;padding:.9rem 3.6rem;font-size:1.25rem;font-weight:800;text-decoration:none;text-align:center}
+    .mb.pri{background:var(--s);color:var(--st)}
+    .mb.soft{background:var(--sb);color:var(--t);border:1px solid var(--sbd)}
+    .mw .spk{position:absolute;right:.7rem;top:50%;transform:translateY(-50%)}
+    .opt{display:flex;gap:.8rem;align-items:center;text-align:left;flex:1;border:1px solid var(--sbd);background:var(--c);border-radius:16px;padding:.9rem 1.1rem;font-weight:700;min-height:64px}
+    .opt.on{border:2px solid var(--s);background:#EFF5F1}
+    .opt .ic{font-size:1.85rem;line-height:1;flex:none}
+    .subpills{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 .9rem .2rem}
+    .sp-pill{border:1px solid var(--bd);background:var(--c);border-radius:999px;padding:.45rem 1rem;font-weight:700;font-size:.95rem;min-height:42px;display:inline-flex;align-items:center;gap:.35rem}
+    .sp-pill.on{border:2px solid var(--s);background:#EFF5F1;color:var(--s);font-weight:800}
+    .est-box{background:var(--sb);border-radius:16px;padding:1rem 1.2rem;margin:1rem 0}
+    .est-val{font-size:1.75rem;font-weight:800;color:var(--s);line-height:1.15;margin-top:.15rem}
+    .confirm-box{background:#FEF2F2;border:2px solid var(--r);border-radius:14px;padding:.85rem;margin-top:.7rem}
+    body.hc .confirm-box{background:#1a1a00}
+    .bd,.tag{display:inline-block;background:var(--sb);color:var(--t);border:1px solid var(--sbd);border-radius:2rem;padding:.15rem .75rem;font-weight:800;font-size:.85rem}
+    .mut{color:var(--m)}
+    .badge{background:#ef4444;color:#fff;font-size:.72rem;font-weight:800;min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;margin-left:.3rem}
+    .bar{display:flex;height:10px;background:var(--bd);border-radius:9px;overflow:hidden}
+    .bar i.f{background:var(--p)}
+    .bar i{display:block;height:100%;background:var(--s)}
+    input,textarea,select{font:inherit;width:100%;padding:.75rem .9rem;border:1px solid var(--sbd);border-radius:14px;background:var(--c);color:var(--t);min-height:50px}
+    input:focus,textarea:focus,button:focus-visible,a:focus-visible,select:focus{outline:3px solid var(--p);outline-offset:2px}
+    label{font-weight:800;display:block;margin:.75rem 0 .3rem}
+    .fab{position:fixed;right:1rem;bottom:1rem;display:flex;flex-direction:column;gap:.5rem;z-index:6}
+    .fab button{border:0;border-radius:2rem;padding:.65rem 1.1rem;font-weight:800;font-size:.95rem;box-shadow:0 4px 12px #1e293b33;display:inline-flex;align-items:center;justify-content:center}
+    .sos{background:var(--r);color:#fff}
+    body.hc .sos{color:#000}
+    .cb{background:var(--p);color:var(--pt)}
+    .ov{position:fixed;inset:0;background:#1e293b99;z-index:9;display:flex;align-items:center;justify-content:center;padding:1rem}
+    .mo{background:var(--c);border:1px solid var(--bd);border-radius:22px;padding:1.1rem;max-width:480px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 20px 50px rgba(15,23,42,.25)}
+    .msgs{max-height:340px;overflow:auto;border:1px solid var(--bd);border-radius:12px;padding:.5rem;margin:.5rem 0}
+    .m{display:flex;gap:.4rem;align-items:center;margin:.3rem 0}
+    .m div{background:var(--sb);color:var(--t);border-radius:14px;padding:.4rem .8rem;flex:1}
+    .m.me div{background:var(--p);color:var(--pt)}
+    body.hc .m div{border:1px solid #FFE600}
+    .send{display:flex;gap:.5rem}
+    .tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
+    .star{font-size:2.2rem;background:none;border:0;color:var(--p);padding:0 .1rem}
+    #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:5.5rem;background:var(--t);color:var(--bg);padding:.8rem 1.2rem;border-radius:1rem;z-index:12;font-weight:800;max-width:90%;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+    .ig-ring{padding:2px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:inline-flex;flex-shrink:0}
+    .ig-ring>*{border:2px solid #fff !important}
+    .stories-bar{display:flex;gap:.85rem;overflow-x:auto;padding:.5rem .2rem .75rem;margin:.4rem 0;scrollbar-width:none}
+    .stories-bar::-webkit-scrollbar{display:none}
+    .st-item{display:flex;flex-direction:column;align-items:center;gap:.3rem;min-width:68px;cursor:pointer;text-align:center}
+    .st-item span{font-size:.78rem;font-weight:800;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .ig-story-full{position:fixed;inset:0;background:#09090b;color:#fff;z-index:20;display:flex;flex-direction:column;justify-content:space-between;user-select:none}
+    .ig-story-top{position:relative;z-index:3;padding:.75rem 1rem 1.2rem;background:linear-gradient(180deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,0) 100%)}
+    .ig-story-bars{display:flex;gap:4px;margin-bottom:.7rem}
+    .ig-story-bars span{flex:1;height:3px;border-radius:999px;background:rgba(255,255,255,.32);overflow:hidden;position:relative}
+    .ig-story-bars span.done{background:#fff}
+    .ig-story-bars span.cur::after{content:"";position:absolute;inset:0;background:#fff;transform-origin:left;animation:stfill 5s linear forwards}
+    @keyframes stfill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    .ig-story-media{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+    .ig-story-media img,.ig-story-media video{width:100%;height:100%;max-width:540px;object-fit:contain}
+    .ig-story-tap{position:absolute;inset:72px 0 80px;display:flex;z-index:2}
+    .ig-story-tap div{flex:1;cursor:pointer}
+    .ig-story-bot{position:relative;z-index:3;padding:1.5rem 1.1rem 1.3rem;background:linear-gradient(0deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,0) 100%);text-align:center}
+    .ig-feed{max-height:440px;min-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;padding:.6rem .3rem;background:#fff;border-radius:12px}
+    .ig-me{align-self:flex-end;max-width:78%;background:linear-gradient(135deg,#3797f0,#5851db);color:#fff;padding:.65rem .95rem;border-radius:20px 20px 4px 20px;font-size:.96rem;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+    .ig-them{align-self:flex-start;display:flex;align-items:flex-end;gap:.5rem;max-width:82%}
+    .ig-bubble{background:#efefef;color:#111827;padding:.65rem .95rem;border-radius:20px 20px 20px 4px;font-size:.96rem;line-height:1.35}
+    .ig-bar{display:flex;align-items:center;gap:.5rem;margin-top:.75rem;background:#fff;padding:.3rem .4rem .3rem 1rem;border-radius:999px;border:1px solid #dbdbdb}
+    .ig-bar input{border:none;background:transparent;flex:1;padding:.35rem 0;outline:none;font-size:.96rem;min-height:38px}
+    .ig-send{background:none;border:0;color:#0095f6;font-weight:800;font-size:.96rem;padding:.4rem .75rem;min-height:38px}
+    .ig-send:hover{color:#1877f2}
+    body.easy .btn,body.easy .opt{font-size:1.3rem;padding:1.1rem 1.4rem}
+    body.easy .adv{display:none}
+    @media(max-width:520px){.ct{flex-wrap:wrap;margin-left:0}.mb{padding:.9rem 3.2rem;font-size:1.1rem}h1{font-size:1.6rem}}
+    @media(prefers-reduced-motion:no-preference){.bar i{transition:width .3s}}
   </style>
 </head>
 <body>
-
-<header>
-  <div class="brand" onclick="nav('home')">
-    <img src="/Hurbil/logo.png" alt="Hurbil" onerror="this.style.display='none'" />
-    <div>
-      <h1>Hurbil</h1>
-      <small>Bilbao · Servicio Directo</small>
-    </div>
-  </div>
-  <div class="toolbar">
-    <button onclick="setLang('es')" id="btn-es" class="pill-active">ES</button>
-    <button onclick="setLang('eu')" id="btn-eu">EU</button>
-    <button onclick="changeScale(-0.1)">A-</button>
-    <button onclick="changeScale(0.1)">A+</button>
-    <button onclick="document.body.classList.toggle('high-contrast')">◐</button>
-    <span id="nav-actions"></span>
-  </div>
-</header>
-
+<header id="hd"></header>
 <main id="app"></main>
-
-<a href="tel:644270017" class="sos-float">🆘 SOS 644 270 017</a>
-<div id="toast"></div>
+<div id="fab"></div>
+<div id="md"></div>
+<div id="toast" role="status" hidden></div>
 
 <script>
-  const SUPABASE_URL = 'https://oijhfovricxgpnczwpfv.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_I1I6eY2egVrjwMzbDqrs0Q_2EK05T2C';
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $ = s => document.querySelector(s),
+      esc = s => String(s ?? "").replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
+const d0 = n => { const x = new Date(); x.setDate(x.getDate() + n); return x.toISOString().slice(0, 10); };
+const ADDR = 'Calle Ercilla 15, Indautxu, Bilbao';
 
-  const BARRIOS_BILBAO = [
-    'Abando', 'Indautxu', 'Deusto', 'Santutxu', 'Casco Viejo',
-    'Uribarri', 'Begoña', 'Rekalde', 'Basurto', 'Zorroza', 'Otxarkoaga', 'Txurdinaga'
-  ];
-
-  const TAREAS_OPCIONES = [
-    { id: 'paseo', es: '🚶 Paseo y compañía', eu: '🚶 Paseoa eta konpainia' },
-    { id: 'compra', es: '🛒 Compra y recados', eu: '🛒 Erosketak eta enkarguak' },
-    { id: 'medico', es: '🏥 Acompañamiento médico', eu: '🏥 Medikuarengana laguntzea' },
-    { id: 'papeleo', es: '📱 Móvil y papeleo', eu: '📱 Mugikorra eta paperak' }
-  ];
-
-  const st = {
-    lang: 'es',
-    scale: 1,
-    user: null,
-    profile: null,
-    beneficiaries: [],
-    bookings: [],
-    employees: [],
-    notifications: [],
-    route: 'auth',
-    authMode: 'login',
-    planType: 'single_hour',
-    benId: '',
-    serviceDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-    startTime: '10:30',
-    durationHours: 1.5,
-    selectedTasks: ['paseo'],
-    extraNotes: ''
+function seed() {
+  return {
+    lang: 'es', fs: 1, hc: 0, easy: 0, notif: 1, delPlans: [], delReqs: [], stories: [],
+    u: { name: 'Aimar Fernandez', user: '@aimar_bilbao', contact: 'aimar@hurbil.eus', pass: 'hurbil123', addr: ADDR, fam: '600123456', on: 1 },
+    reqs: [
+      { id: 1, c: 0, o: 1, t: "", ses: [{ d: d0(1), t: '11:00', h: 2 }], hTot: 5, bono: 1, date: d0(1), time: '11:00', h: 2, addr: ADDR, cli: 'Aimar Fernandez', ppl: 1, base: 105, tot: 97.50, st: 'assigned', w: 'Ander Herrera', pin: '4821' },
+      { id: 2, c: 1, o: 1, t: "", ses: [{ d: d0(-2), t: '17:00', h: 1 }], hTot: 1, bono: 0, date: d0(-2), time: '17:00', h: 1, addr: ADDR, cli: 'Aimar Fernandez', ppl: 1, base: 21, tot: 21, st: 'done', w: 'Eder Fernandez', pin: '7305', doneAt: Date.now() - 72e5 }
+    ],
+    occ: { [d0(1) + '|9']: 4, [d0(1) + '|10']: 4, [d0(2) + '|17']: 4, [d0(2) + '|18']: 4 },
+    fol: [],
+    plans: [
+      { id: 1, t: ['Paseo por Doña Casilda', 'Doña Casilda inguruko ibilaldia'], when: ['Mañana 11:00', 'Bihar 11:00'], h: 2, max: 3, m: ['Maite'], prop: null, msgs: [{ n: 'Maite', t: '¡Hola! Yo llevo un termo de café, ¿os apuntáis?' }] },
+      { id: 2, t: ['Café en Indautxu', 'Kafea Indautxun'], when: ['Jueves 17:00', 'Osteguna 17:00'], h: 1, max: 3, m: ['Arantxa'], prop: null, msgs: [{ n: 'Arantxa', t: 'Buenas tardes, ¿quién se anima a tomar un café?' }] }
+    ],
+    team: [{ f: 'h', t: '¡Hola, Aimar! Somos el equipo de Hurbil. ¿En qué te podemos ayudar?' }]
   };
+}
 
-  const _ = (es, eu) => st.lang === 'eu' ? eu : es;
+const SB_URL = 'https://oijhfovricxgpnczwpfv.supabase.co';
+const SB_KEY = 'sb_publishable_I1I6eY2egVrjwMzbDqrs0Q_2EK05T2C';
+const sb = window.supabase.createClient(SB_URL, SB_KEY);
+const TEAM_ID = 'hurbil_team';
 
-  function toast(msg) {
-    const el = document.getElementById('toast');
-    el.textContent = msg;
-    el.style.display = 'block';
-    setTimeout(() => el.style.display = 'none', 3500);
+let sbUid = null, usersList = [], lastSeenDm = +(localStorage.getItem('hurbil_seen_dm') || 0), firstSync = true, askDelPlan = null, askDelReq = null, askDelStory = false, draftChat = "", editProf = false, storyReqId = null, storyIdx = 0, storyUploading = false, prevRoute = 'home', storyTimer = null, sendingReq = false;
+let db;
+try { db = JSON.parse(localStorage.getItem('hurbil2')); } catch (e) {}
+db = db || seed();
+db.delPlans = db.delPlans || [];
+db.delReqs = db.delReqs || [];
+db.stories = db.stories || [];
+
+const isUserTyping = () => {
+  const ae = document.activeElement;
+  return ae && ['INPUT', 'TEXTAREA', 'SELECT'].includes(ae.tagName);
+};
+
+const save = () => {
+  try { localStorage.setItem('hurbil2', JSON.stringify(db)); } catch (e) {}
+  if (sbUid && db.u.on) {
+    sb.from('profiles').upsert({
+      id: sbUid,
+      username: db.u.user,
+      name: db.u.name,
+      contact: db.u.contact,
+      fam: db.u.fam,
+      addr: db.u.addr,
+      avatar: db.u.avatar || ""
+    }).then(() => {});
   }
+};
 
-  function setLang(l) {
-    st.lang = l;
-    document.getElementById('btn-es').classList.toggle('pill-active', l === 'es');
-    document.getElementById('btn-eu').classList.toggle('pill-active', l === 'eu');
-    render();
+let folRows = [], dmList = [], teamMsgs = [], dmUser = null;
+const avImg = (u, sz = 44) => u?.avatar
+  ? `<img src="${esc(u.avatar)}" style="width:${sz}px;height:${sz}px;border-radius:50%;object-fit:cover;border:2px solid var(--p);flex-shrink:0">`
+  : `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:var(--sb);color:var(--p);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:${Math.round(sz * .42)}px;flex-shrink:0">${esc((u?.name || '?')[0].toUpperCase())}</div>`;
+
+function notifyUser(title, body) {
+  if (db.notif === 0) return;
+  toast('🔔 ' + title + (body ? ': ' + body : ""));
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)(), o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine'; o.frequency.value = 880; g.gain.value = 0.05;
+    o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.12);
+  } catch (e) {}
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try { new Notification(title, { body, icon: '/Hurbil/logo.png' }); } catch (e) {}
   }
+}
 
-  function changeScale(delta) {
-    st.scale = Math.min(1.4, Math.max(0.85, st.scale + delta));
-    document.documentElement.style.setProperty('--font-scale', st.scale);
-  }
+const unreadDmCount = () => sbUid ? dmList.filter(m => m.receiver_id == sbUid && (m.id || 0) > lastSeenDm).length : 0;
+const pendingCommCount = () => {
+  if (!sbUid) return 0;
+  const fReq = folRows.filter(x => x.following_id == sbUid && x.status == 'pending').length;
+  const pInt = db.plans.filter(p => p.ownerId == sbUid && p.int && p.int.length).reduce((s, p) => s + p.int.length, 0);
+  return fReq + pInt;
+};
+const activeStories = () => {
+  const now = Date.now();
+  return (db.stories || []).filter(s => s && s.exp > now && !(db.delPlans || []).includes(String(s.id)));
+};
+const parseLocalTs = (dStr, tStr) => {
+  const [y, m, d] = String(dStr || "").split('-').map(Number);
+  const [hh, mm] = String(tStr || '00:00').split(':').map(Number);
+  if (!y || !m || !d) return NaN;
+  return new Date(y, m - 1, d, hh || 0, mm || 0, 0).getTime();
+};
+const canPostStory = r => {
+  if (!['accepted', 'assigned', 'ongoing'].includes(r.st)) return false;
+  const now = Date.now();
+  return (r.ses || []).some(s => {
+    const st = parseLocalTs(s.d, s.t);
+    if (isNaN(st)) return false;
+    const en = st + (+s.h || 1) * 36e5;
+    return now >= st && now <= en;
+  });
+};
 
-  function nav(r) {
-    st.route = r;
-    render();
-  }
-
-  function genPin() {
-    return String(Math.floor(1000 + Math.random() * 9000));
-  }
-
-  async function init() {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('payment') === 'success') {
-      toast(_('✅ Pago confirmado en Hurbil. Saldo actualizado.', '✅ Ordainketa baieztatuta. Saldo eguneratua.'));
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-
+async function syncCloud(fromTimer = false) {
+  if (fromTimer && isUserTyping()) return;
+  try {
     const { data: { session } } = await sb.auth.getSession();
     if (session?.user) {
-      st.user = session.user;
-      await syncAll();
-    } else {
-      st.route = 'auth';
-      render();
-    }
-  }
-
-  async function syncAll() {
-    if (!st.user) return;
-    let { data: prof, error: profErr } = await sb.from('hurbil_profiles').select('*').eq('id', st.user.id).maybeSingle();
-
-    if (profErr) {
-      toast('Error leyendo perfil: ' + profErr.message);
-      render();
-      return;
-    }
-
-    if (!prof) {
-      const { data: created, error: insErr } = await sb.from('hurbil_profiles').insert({
-        id: st.user.id,
-        role: 'family',
-        full_name: st.user.email.split('@')[0],
-        email: st.user.email,
-        accepted_non_medical_terms: true,
-        bonus_hours: 0
-      }).select().single();
-
-      if (insErr) {
-        toast('No se pudo crear perfil: ' + insErr.message);
-        render();
-        return;
+      sbUid = session.user.id;
+      const { data: p } = await sb.from('profiles').select('*').eq('id', sbUid).maybeSingle();
+      if (p && !editProf) db.u = { name: p.name || "", user: p.username || "", contact: p.contact || session.user.email, pass: "", addr: p.addr || "", fam: p.fam || "", avatar: p.avatar || "", on: 1 };
+      const { data: fls } = await sb.from('follows').select('*').or(`follower_id.eq.${sbUid},following_id.eq.${sbUid}`);
+      if (fls) {
+        if (!firstSync) {
+          const prevPending = folRows.filter(x => x.following_id == sbUid && x.status == 'pending').map(x => x.follower_id);
+          const newPending = fls.filter(x => x.following_id == sbUid && x.status == 'pending' && !prevPending.includes(x.follower_id));
+          newPending.forEach(req => {
+            const u = usersList.find(x => x.id == req.follower_id);
+            notifyUser(_('Nueva solicitud de seguimiento', 'Jarraipen eskaera berria'), u?.name || "");
+          });
+        }
+        folRows = fls;
+        db.fol = fls.filter(x => x.follower_id == sbUid && x.status == 'accepted').map(x => x.following_id);
       }
-      prof = created;
-    }
-
-    st.profile = prof;
-
-    const { data: notifs } = await sb.from('hurbil_notifications')
-      .select('*').eq('user_id', st.user.id).order('created_at', { ascending: false }).limit(5);
-    st.notifications = notifs || [];
-
-    if (prof.role === 'family') {
-      const { data: bens } = await sb.from('hurbil_beneficiaries').select('*').eq('family_id', st.user.id);
-      st.beneficiaries = bens || [];
-      if (st.beneficiaries.length && !st.benId) st.benId = st.beneficiaries[0].id;
-
-      const { data: bks } = await sb.from('hurbil_bookings')
-        .select('*, hurbil_beneficiaries(full_name, neighborhood, exact_address), hurbil_profiles!hurbil_bookings_employee_id_fkey(full_name, phone)')
-        .eq('family_id', st.user.id)
-        .order('service_date', { ascending: false });
-      st.bookings = bks || [];
-      st.route = 'family_home';
-    }
-
-    if (prof.role === 'admin') {
-      const { data: emps } = await sb.from('hurbil_profiles').select('*').eq('role', 'employee');
-      st.employees = emps || [];
-
-      const { data: bks } = await sb.from('hurbil_bookings')
-        .select('*, hurbil_beneficiaries(full_name, neighborhood, exact_address, phone), hurbil_profiles!hurbil_bookings_family_id_fkey(full_name, phone)')
-        .order('created_at', { ascending: false });
-      st.bookings = bks || [];
-      st.route = 'admin_dash';
-    }
-
-    if (prof.role === 'employee') {
-      const { data: bks } = await sb.from('hurbil_bookings')
-        .select('*, hurbil_beneficiaries(full_name, neighborhood, exact_address, access_notes, phone), hurbil_profiles!hurbil_bookings_family_id_fkey(full_name, phone)')
-        .eq('employee_id', st.user.id)
-        .order('service_date', { ascending: true });
-      st.bookings = bks || [];
-      st.route = 'emp_dash';
-    }
-
-    render();
-  }
-
-  async function handleRegister(e) {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    if (!fd.get('non_medical_ok')) {
-      return toast(_('Debes aceptar que es un servicio estrictamente no sanitario.', 'Zerbitzu ez-sanitarioa dela onartu behar duzu.'));
-    }
-
-    const email = fd.get('email').trim();
-    const password = fd.get('password');
-    const fullName = fd.get('full_name').trim();
-    const phone = fd.get('phone').trim();
-    const isSelf = fd.get('is_self') === 'on';
-
-    const { data, error } = await sb.auth.signUp({ email, password });
-    if (error) return toast(error.message);
-
-    if (!data?.user) {
-      return toast(_('Revisa tu correo para confirmar la cuenta y luego inicia sesión.', 'Begiratu posta kontua baieztatzeko.'));
-    }
-
-    const uid = data.user.id;
-    const { error: profErr } = await sb.from('hurbil_profiles').upsert({
-      id: uid,
-      role: 'family',
-      full_name: fullName,
-      email,
-      phone,
-      accepted_non_medical_terms: true,
-      bonus_hours: 0
-    });
-    if (profErr) return toast(profErr.message);
-
-    const { error: benErr } = await sb.from('hurbil_beneficiaries').insert({
-      family_id: uid,
-      is_self: isSelf,
-      full_name: isSelf ? fullName : fd.get('ben_name').trim(),
-      neighborhood: fd.get('neighborhood'),
-      exact_address: fd.get('exact_address').trim(),
-      access_notes: fd.get('access_notes').trim(),
-      phone: isSelf ? phone : fd.get('ben_phone').trim()
-    });
-    if (benErr) return toast(benErr.message);
-
-    st.user = data.user;
-    toast(_('¡Cuenta familiar creada en Hurbil!', 'Kontua sortuta!'));
-    await syncAll();
-  }
-
-  async function handleLogin(e) {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const { data, error } = await sb.auth.signInWithPassword({
-      email: fd.get('email').trim(),
-      password: fd.get('password')
-    });
-    if (error) return toast('Error al entrar: ' + error.message);
-    st.user = data.user;
-    await syncAll();
-  }
-
-  async function logout() {
-    await sb.auth.signOut();
-    st.user = null;
-    st.profile = null;
-    st.route = 'auth';
-    render();
-  }
-
-  async function buyBonusPack(code, hours, amountEur) {
-    toast(_('Activando bono en tu cuenta Hurbil...', 'Bonua aktibatzen...'));
-    await sb.from('hurbil_payments').insert({
-      family_id: st.user.id,
-      product_code: code,
-      amount_eur: amountEur,
-      hours_credited: hours,
-      status: 'paid'
-    });
-
-    const newBalance = Number(st.profile.bonus_hours || 0) + hours;
-    await sb.from('hurbil_profiles').update({ bonus_hours: newBalance }).eq('id', st.user.id);
-    toast(_(`✅ Bono activado: +${hours}h añadidas a tu cuenta`, `✅ Bonua aktibatuta: +${hours}h`));
-    await syncAll();
-  }
-
-  async function createBooking() {
-    if (!st.benId) return toast(_('Selecciona un beneficiario en Bilbao', 'Hautatu onuradun bat'));
-    const dur = Number(st.durationHours);
-    if (dur < 1) return toast(_('La duración mínima es de 1 hora', 'Gutxieneko iraupena ordu 1 da'));
-
-    let totalEur = 0;
-    let hoursUsed = 0;
-
-    if (st.planType === 'bonus_use') {
-      if (Number(st.profile.bonus_hours) < dur) {
-        return toast(_('No tienes suficientes horas en tu bono. Adquiere un bono arriba.', 'Ez duzu nahikoa ordu bonuan.'));
+      const { data: dms } = await sb.from('direct_messages').select('*').or(`sender_id.eq.${sbUid},receiver_id.eq.${sbUid}`).order('id', { ascending: true });
+      if (dms) {
+        if (!firstSync && dms.length > dmList.length) {
+          const newest = dms[dms.length - 1];
+          if (newest && newest.receiver_id == sbUid) {
+            const isTeam = newest.sender_id == TEAM_ID;
+            const inThatChat = (route == 'chat' && isTeam && mt == 'team') || (route == 'chat' && !isTeam && dmUser == newest.sender_id);
+            if (!inThatChat) {
+              const sender = isTeam ? { name: 'Equipo Hurbil' } : usersList.find(x => x.id == newest.sender_id);
+              notifyUser(sender?.name || _('Nuevo mensaje', 'Mezu berria'), newest.text);
+            }
+          }
+        }
+        if (route == 'chat' && (dmUser || mt == 'team') && dms.length) {
+          const maxId = Math.max(...dms.map(x => x.id || 0));
+          if (maxId > lastSeenDm) { lastSeenDm = maxId; localStorage.setItem('hurbil_seen_dm', String(lastSeenDm)); }
+        }
+        dmList = dms;
       }
-      hoursUsed = dur;
-    } else if (st.planType === 'single_hour') {
-      totalEur = dur * 21.00;
-    } else if (st.planType === 'joint_plan') {
-      totalEur = dur * 32.00;
     }
+    const { data: tMsgs } = await sb.from('direct_messages').select('*').or(`sender_id.eq.${TEAM_ID},receiver_id.eq.${TEAM_ID}`).order('id', { ascending: true });
+    if (tMsgs) teamMsgs = tMsgs;
+    const { data: allU } = await sb.from('profiles').select('id,name,username,addr,avatar');
+    if (allU) usersList = allU;
+    const { data: rList } = await sb.from('requests').select('*').order('id', { ascending: false });
+    if (rList && rList.length) db.reqs = rList.map(r => ({ ...r.data, id: r.id })).filter(r => !db.delReqs.includes(String(r.id)));
+    const { data: pList } = await sb.from('plans').select('*');
+    if (pList) {
+      const storyRows = pList.filter(p => String(p.id).startsWith('story_')).map(p => p.data);
+      if (storyRows.length) {
+        const now = Date.now();
+        const validCloud = storyRows.filter(s => s && s.exp > now && !(db.delPlans || []).includes(String(s.id)));
+        const localOnly = (db.stories || []).filter(s => s && s.exp > now && !(db.delPlans || []).includes(String(s.id)) && !validCloud.some(c => c.id === s.id));
+        db.stories = [...validCloud, ...localOnly];
+      }
+      const mapped = pList.filter(p => !String(p.id).startsWith('story_')).map(p => ({ ...p.data, id: isNaN(+p.id) ? p.id : +p.id })).filter(p => !db.delPlans.includes(String(p.id)));
+      if (!firstSync && sbUid) {
+        mapped.filter(p => p.ownerId == sbUid && p.int && p.int.length).forEach(p => {
+          const oldP = db.plans.find(x => String(x.id) == String(p.id));
+          const oldInt = oldP?.int || [];
+          p.int.filter(uid => !oldInt.includes(uid)).forEach(uid => {
+            const u = usersList.find(x => x.id == uid);
+            notifyUser(_('¡Alguien quiere unirse a tu plan!', 'Norbait zure planera batu nahi du!'), (u?.name || _('Un vecino', 'Bizilagun bat')) + ' → ' + (p.t[L()] || p.t.es));
+          });
+        });
+      }
+      if (mapped.length) db.plans = mapped;
+    }
+    db.plans = db.plans.filter(p => !db.delPlans.includes(String(p.id)));
+    db.reqs = db.reqs.filter(r => !db.delReqs.includes(String(r.id)));
+    firstSync = false;
+    save();
+    if (!isUserTyping() && route !== 'story' && !sayBtn) render();
+  } catch (e) {}
+}
 
-    const pinEntry = genPin();
-    const pinExit = genPin();
+const _ = (a, b) => db.lang == 'eu' ? b : a,
+      L = () => db.lang == 'eu' ? 1 : 0,
+      fn = () => db.u.name.split(' ')[0] || 'Aimar';
+const fmt = n => n.toFixed(2).replace('.', ',') + ' €';
+const W = ['Aimar Fernandez', 'Ander Herrera', 'Eder Fernandez', 'Eidan Irastorza'];
+const ST = {
+  pending: ['Pendiente de asignar', 'Esleitzeko zain'],
+  accepted: ['Aceptada', 'Onartua'],
+  rejected: ['Rechazada', 'Baztertua'],
+  assigned: ['Acompañante asignado', 'Laguntzailea esleituta'],
+  ongoing: ['En curso', 'Abian'],
+  done: ['Completada', 'Osatuta']
+};
+const C = [
+  ['💬', ['Compañía', 'Konpainia'], [['Charlar', 'Berriketan aritu'], ['Jugar a las cartas', 'Kartetan jolastu'], ['Leer juntos', 'Elkarrekin irakurri'], ['Ver una película', 'Pelikula bat ikusi']], ['charlar, jugar a las cartas, leer juntos', 'berriketan aritu, kartetan jolastu, elkarrekin irakurri']],
+  ['🏠', ['Tareas del hogar', 'Etxeko lanak'], [['Limpieza ligera', 'Garbiketa arina'], ['Doblar o recoger ropa', 'Arropa tolestu edo jaso'], ['Preparar comida sencilla', 'Janari sinplea prestatu'], ['Regar las plantas', 'Landareak ureztatu']], ['limpieza ligera, ropa, comida sencilla', 'garbiketa arina, janari sinplea']],
+  ['🛒', ['Compras y recados', 'Erosketak eta egitekoak'], [['Compra en supermercado', 'Erosketak supermerkatuan'], ['Ir a la farmacia', 'Farmaziara joan'], ['Recoger paquetes o correos', 'Paketeak edo posta jaso'], ['Gestiones en el barrio', 'Auzoko kudeaketak']], ['supermercado, farmacia, gestiones', 'supermerkatua, farmazia, kudeaketak']],
+  ['🚶', ['Paseo y acompañamiento', 'Ibilaldia eta laguntza'], [['Paseo por el barrio o parque', 'Auzoan edo parkean ibilaldia'], ['Acompañamiento a cita médica', 'Mediku-hitzordura laguntza'], ['Tomar un café fuera', 'Kanpoan kafe bat hartu'], ['Ir al centro de salud u hospital', 'Osasun-zentrora edo ospitalera joan']], ['salir a pasear o ir a una cita médica', 'paseatzera atera edo mediku-hitzordu batera joan']],
+  ['📱', ['Ayuda con el móvil y trámites', 'Mugikorrarekin eta izapideekin laguntza'], [['Configurar móvil o WhatsApp', 'Mugikorra edo WhatsApp konfiguratu'], ['Pedir cita médica / Osakidetza', 'Mediku-hitzordua / Osakidetza eskatu'], ['Trámites o papeles sencillos', 'Izapide edo paper sinpleak'], ['Videollamada con familiares', 'Bideo-deia senideekin']], ['móvil, citas médicas, videollamadas', 'mugikorra, mediku-hitzorduak, bideo-deiak']],
+  ['✨', ['Otro servicio', 'Beste zerbitzu bat'], [], ['cuéntanos qué necesitas', 'kontatu zer behar duzun']]
+];
+const PAY = [
+  ['bizum', '📲 Bizum', '📲 Bizum'],
+  ['card', '💳 Tarjeta de débito/crédito', '💳 Zordunketa/kreditu txartela'],
+  ['transfer', '🏦 Transferencia bancaria', '🏦 Banku-transferentzia'],
+  ['prepay', '💶 Prepago', '💶 Aurreordainketa']
+];
+const LOGO = '<img src="/Hurbil/logo.png" alt="Logo Hurbil" style="width:44px;height:44px;border-radius:10px;object-fit:contain;flex:none">';
+const W0 = () => ({ s: 1, cat: null, opt: null, txt: "", plan: 'normal', who: 'me', rName: db.u.name || "", rAddr: db.u.addr || "", rPhone: db.u.contact || "", rDo: "", rNotes: "", share: false, sd: d0(1), st: '11:00', sh: 1, ses: [], addTo: 0, pay: "" });
+const w = W0(), tr = {}, lg = { u: "", p: "" }, wl = { n: W[0], p: "" }, X = { get db() { return db; }, w, tr, lg, wl };
+let wk = null, route = location.hash.slice(1) || 'home', md = null, mt = 'friends', ct = 'neigh', fl = false, oc = null, sp = false, pm = 'create', fo = false, sayBtn = null, saySeq = 0;
 
-    const { error } = await sb.from('hurbil_bookings').insert({
-      family_id: st.user.id,
-      beneficiary_id: st.benId,
-      plan_type: st.planType,
-      service_date: st.serviceDate,
-      start_time: st.startTime,
-      duration_hours: dur,
-      total_price_eur: totalEur,
-      hours_deducted: hoursUsed,
-      tasks: st.selectedTasks,
-      extra_notes: st.extraNotes,
-      status: 'pending_assignment',
-      pin_entry: pinEntry,
-      pin_exit: pinExit
-    });
+const stopSay = () => {
+  saySeq++;
+  if (window.speechSynthesis) { try { speechSynthesis.pause(); speechSynthesis.cancel(); } catch (e) {} }
+  document.querySelectorAll('.spk').forEach(b => { b.textContent = '🔊'; b.dataset.on = ""; });
+  sayBtn = null;
+};
+const S = t => `<button type="button" class="spk" data-a="say" data-t="${esc(t)}" aria-label="${_('Escuchar', 'Entzun')}">🔊</button>`;
+const say = (t, el) => {
+  const wasOn = el && el.dataset.on === '1';
+  stopSay();
+  if (wasOn || !window.speechSynthesis) return;
+  const id = ++saySeq;
+  if (el) { sayBtn = el; el.dataset.on = '1'; el.textContent = '⏹️'; }
+  const u = new SpeechSynthesisUtterance(t);
+  u.lang = db.lang == 'eu' ? 'eu-ES' : 'es-ES';
+  u.rate = .9;
+  const done = () => { if (saySeq === id) stopSay(); };
+  u.onend = done; u.onerror = done;
+  setTimeout(() => { try { speechSynthesis.speak(u); } catch (e) { done(); } }, 40);
+};
+const go = r => {
+  stopSay(); clearTimeout(storyTimer); route = r;
+  try { history.replaceState(null, "", '#' + (r == 'home' ? "" : r)); } catch (e) {}
+  scrollTo(0, 0);
+};
+const toast = m => {
+  const e = $('#toast'); e.textContent = m; e.hidden = false;
+  clearTimeout(toast.t); toast.t = setTimeout(() => e.hidden = true, 4000);
+};
+const fd = d => d ? new Date(d + 'T12:00').toLocaleDateString(db.lang == 'eu' ? 'eu' : 'es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) : "";
+const sesH = a => a.reduce((s, x) => s + (+x.h || 0), 0);
 
-    if (error) return toast(error.message);
+// NUEVAS TARIFAS ACTUALIZADAS: Normal 21 €/h | Bono 5h: 97,50 € (19,50 €/h) | Plan Mensual 12h: 216 € (18 €/h) | Plan Conjunto: 16 €/h por persona
+const estCalc = () => {
+  const h = w.plan == 'normal' ? Math.max(1, +w.sh || 1) : Math.max(w.plan == 'bono' ? 5 : 12, sesH(w.ses));
+  if (w.plan == 'bono') {
+    return {
+      tot: 97.50 + Math.max(0, h - 5) * 19.50,
+      sub: h <= 5
+        ? _('Bono 5 h (5 h a 19,50 €/h)', '5 orduko bonoa (5 ordu 19,50 €/orduko)')
+        : `97,50 € ${_('base', 'oinarria')} (5 h) + ${h - 5} h × 19,50 €/h`
+    };
+  }
+  if (w.plan == 'month') {
+    return {
+      tot: 216 + Math.max(0, h - 12) * 18,
+      sub: h <= 12
+        ? _('Plan Mensual (12 h a 18 €/h)', 'Hileko Plana (12 ordu 18 €/orduko)')
+        : `216,00 € ${_('base', 'oinarria')} (12 h) + ${h - 12} h × 18,00 €/h`
+    };
+  }
+  return { tot: h * 21, sub: `${h} h × 21,00 €/h` };
+};
+const rate = h => h >= 12 ? 18 : h >= 5 ? 19.50 : 21;
+const pr = (h, p) => {
+  if (p >= 2) {
+    // Plan conjunto: 16 €/h por persona (32 €/h compartido)
+    const tot = 16 * h;
+    return { b: 21 * h, bn: (21 - 16) * h, g: 0, gx: 0, tot };
+  }
+  const b = 21 * h, r = rate(h) * h;
+  return { b, bn: b - r, g: 0, gx: 0, tot: r };
+};
 
-    if (hoursUsed > 0) {
-      const rem = Number(st.profile.bonus_hours) - hoursUsed;
-      await sb.from('hurbil_profiles').update({ bonus_hours: rem }).eq('id', st.user.id);
+const T = n => String(n).padStart(2, '0') + ':00', rng = x => x.t + ' (' + x.h + ' h)', sl = x => fd(x.d) + ' ' + rng(x);
+const end = (d, t, h) => new Date(d + 'T' + t).getTime() + h * 36e5, ended = r => Math.max(...r.ses.map(x => end(x.d, x.t, x.h))) < Date.now();
+const PS = {
+  draft: ['Esperando que ambos acepten', 'Biak onartzeko zain'],
+  sent: ['Enviado a Hurbil pendiente', 'Hurbili bidalita zain'],
+  accepted: ['Aceptado por Hurbil', 'Hurbilek onartu du'],
+  rejected: ['Rechazado por Hurbil', 'Hurbilek baztertu du']
+};
+const WP = { 'Aimar Fernandez': '8787', 'Ander Herrera': '0820', 'Eder Fernandez': '2008', 'Eidan Irastorza': '6334' };
+const stars = n => '★'.repeat(n) + '☆'.repeat(5 - n);
+const svc = r => { const c = C[r.c] || C[0], o = r.o == 'o' || !c[2].length ? r.t : c[2][r.o]?.[L()]; return c[1][L()] + (o ? ': ' + o : ""); };
+const phone = p => { p = String(p || "").replace(/\D/g, ""); return p.length == 9 ? '34' + p : p; };
+const dl = r => Math.max(0, Math.ceil((r.doneAt + 864e5 - Date.now()) / 36e5));
+const arch = r => ended(r) && !(r.st == 'done' && !r.rate && dl(r) > 0);
+const back = () => `<a class="btn g" href="#" data-a="go" data-v="home">← ${_('Volver al inicio', 'Hasierara itzuli')}</a>`;
+const head = (t, x) => `<div class="row"><h2 class="grow">${t}</h2>${S(x || t)}</div>`;
+
+function hdr() {
+  const bn = (v, t, l) => `<button data-a="fs" data-v="${v}" aria-label="${l}">${t}</button>`;
+  const notifOn = ('Notification' in window && Notification.permission === 'granted') && db.notif !== 0;
+  return `<div class="hw"><a href="#" class="lg" data-a="go" data-v="home" aria-label="Hurbil">${LOGO}<span><b>Hurbil Siempre cerca de ti</b><small>Bilbao</small></span></a>
+  <div class="ct"><span class="seg" role="group" aria-label="Idioma / Hizkuntza"><button data-a="lang" data-v="es" aria-pressed="${db.lang == 'es'}">ES</button><button data-a="lang" data-v="eu" aria-pressed="${db.lang == 'eu'}">EU</button></span>
+  <span class="seg">${bn(-1, 'A-', _('Letra más pequeña', 'Letra txikiagoa'))}${bn(1, 'A+', _('Letra más grande', 'Letra handiagoa'))}</span>
+  <button class="ib rd" data-a="hc" aria-pressed="${!!db.hc}" aria-label="${_('Alto contraste', 'Kontraste altua')}"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 2a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button>
+  <a class="pill" href="#prof" data-a="go" data-v="prof">👤 ${db.u.on ? esc(fn()) : _('Entrar', 'Sartu')}</a></div></div>
+  <div class="hz"><button class="sw" aria-pressed="${notifOn}" data-a="notif">${notifOn ? '🔔 ' + _('Avisos activos', 'Abisuak aktibo') : '🔕 ' + _('Activar avisos', 'Abisuak aktibatu')}</button><button class="sw" aria-checked="${!!db.easy}" data-a="easy">${_('Modo Fácil', 'Modu Erraza')}</button></div>`;
+}
+
+function home() {
+  const t = _('¿En qué podemos ayudarte hoy?', 'Zertan lagun dezakegu gaur?'),
+        sub = _('Pide a una persona de confianza que vaya a casa. Tú eliges qué necesitas y cuándo.', 'Eskatu konfiantzazko pertsona bati etxera joateko. Zuk aukeratzen duzu zer behar duzun eta noiz.');
+  const cc = pendingCommCount();
+  const liveReq = db.reqs.find(canPostStory);
+  const liveStories = liveReq ? activeStories().filter(st => String(st.reqId) === String(liveReq.id)) : [];
+  const liveBanner = liveReq ? `<div class="live-story-hero"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.3rem"><b>✨ ${_('Estás en horario de servicio', 'Zerbitzu-ordutegian zaude')}</b>${liveStories.length ? `<button class="pill" data-a="viewstory" data-v="${liveStories[0].id}">👁️ ${_('Ver', 'Ikusi')} (${liveStories.length})</button>` : ""}</div><p style="margin:.15rem 0 .2rem;font-weight:700">${svc(liveReq)}${liveReq.w ? ' · ' + esc(liveReq.w) : ""}</p><p class="mut" style="font-size:.86rem;margin:0 0 .65rem">${_('Comparte una foto o vídeo (máx. 20 s) visible 24 h para tus seguidores.', 'Partekatu argazki edo bideo bat (geh. 20 s), 24 orduz ikusgai zure jarraitzaileentzat.')}</p><button class="btn" style="width:100%;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);border:0;color:#fff" data-a="openstory" data-id="${liveReq.id}">📸 ${_('Subir historia del servicio', 'Zerbitzuaren historia igo')}</button></div>` : "";
+  const bt = (c, l, at, bdg = 0) => `<div class="mw"><a class="mb ${c}" ${at}>${l}${bdg ? `<span class="badge">${bdg}</span>` : ""}</a>${S(l.replace(/^\S+\s/, ""))}</div>`,
+        goAttr = v => `href="#${v}" data-a="go" data-v="${v}"`;
+  const ct = _('Presentamos a la persona que irá a casa antes de la primera visita. Nuestra oficina de Bilbao también atiende en persona y por teléfono.', 'Etxera joango den pertsona lehen bisitaren aurretik aurkeztuko dizugu. Gure Bilboko bulegoak ere aurrez aurre eta telefonoz artatzen du.'),
+        ht = _('🛡️ Siempre sabrás quién viene', '🛡️ Beti jakingo duzu nor datorren'),
+        tm = 'Aimar Fernandez, Ander Herrera, Eder Fernandez, Eidan Irastorza';
+  return `${liveBanner}<div class="row" style="align-items:flex-start"><div class="grow"><h1>${t}</h1><p class="mut" style="margin:.3rem 0 .8rem">${sub}</p></div>${S(t + '. ' + sub)}</div>
+  ${bt('pri', '🤝 ' + _('Pedir ayuda', 'Laguntza eskatu'), goAttr('help'))}
+  ${bt('soft', '📋 ' + _('Mis solicitudes', 'Nire eskaerak') + ` (${db.reqs.filter(r => !arch(r)).length})`, goAttr('reqs'))}
+  ${bt('soft', '👥 ' + _('Comunidad y planes', 'Komunitatea eta planak'), goAttr('comm'), cc)}
+  ${bt('soft', '👋 ' + _('Conoce a nuestro equipo', 'Ezagutu gure taldea'), goAttr('team'))}
+  ${bt('soft', '📞 ' + _('Llamar', 'Deitu') + ': 644 270 017', 'href="tel:644270017"')}
+  <div class="card"><div class="row"><h2 class="grow" style="font-size:1.3rem">${ht}</h2>${S(ht.slice(2) + '. ' + ct)}</div><p style="font-size:1.1rem">${ct}</p><p class="mut adv" style="font-size:.85rem;margin:.6rem 0 0">${_('Equipo fundador', 'Sortzaileen taldea')}: ${tm}</p></div>`;
+}
+
+function ok() {
+  const x = w.s;
+  return x == 1 ? (w.cat != null && (C[w.cat][2].length ? (w.opt != null && (w.opt != 'o' || w.txt.trim())) : w.txt.trim()))
+    : x == 2 ? !!w.plan
+    : x == 3 ? (!!w.rName.trim() && !!w.rAddr.trim() && !!w.rPhone.trim())
+    : x == 4 ? (w.plan == 'normal' ? (!!w.sd && !!w.st && (+w.sh >= 1)) : w.ses.length > 0)
+    : !!w.pay;
+}
+
+function help() {
+  let h = "";
+  const est = estCalc();
+  if (w.s == 1) {
+    h = head('🤝 ' + _('¿Qué necesitas?', 'Zer behar duzu?'), _('¿Qué necesitas?', 'Zer behar duzu?')) + C.map((c, i) => {
+      const on = w.cat == i;
+      let sub = "";
+      if (on) {
+        sub = '<div class="subpills">' + c[2].map((o, j) => `<button class="sp-pill ${w.opt === j ? 'on' : ""}" data-a="opt" data-v="${j}">${o[L()]}</button>`).join("")
+          + (c[2].length ? `<button class="sp-pill ${w.opt == 'o' ? 'on' : ""}" data-a="opt" data-v="o">✏️ ${_('Otra actividad', 'Beste jarduera bat')}</button>` : "") + '</div>';
+        if (!c[2].length || w.opt == 'o') sub += `<div style="margin:.4rem 0 .8rem"><textarea rows="2" data-f="w.txt" placeholder="${_('Cuéntanos qué necesitas', 'Kontatu zer behar duzun')}">${esc(w.txt)}</textarea></div>`;
+      }
+      return `<div style="margin:.55rem 0"><div class="row"><button class="opt ${on ? 'on' : ""}" data-a="cat" data-v="${i}" aria-pressed="${on}"><span class="ic">${c[0]}</span><div><div style="font-weight:800;font-size:1.05rem">${c[1][L()]}</div><small class="mut" style="font-weight:600">${c[3][L()]}</small></div></button>${S(c[1][L()] + '. ' + c[3][L()])}</div>${sub}</div>`;
+    }).join("");
+  }
+  if (w.s == 2) {
+    const modes = [
+      ['normal', '⏱️', _('Una sola vez (Normal)', 'Behin bakarrik (Normala)'), '21,00 € / ' + _('hora', 'ordua')],
+      ['bono', '🎟️', _('Recurrente Bono 5 horas', 'Errepikakorra 5 orduko bonoa'), _('97,50 € base (5 h a 19,50 €/h) + 19,50 € por hora extra', '97,50 € oinarria (5 h 19,50 €/orduko) + 19,50 € ordu gehigarriko')],
+      ['month', '📅', _('Plan Mensual Hurbil', 'Hurbil Hileko Plana'), '216,00 € / ' + _('mes', 'hileko') + ' (12 h · 18,00 €/h)']
+    ];
+    h = head('💶 ' + _('Modalidad y tarifas', 'Modalitatea eta tarifak'), _('Modalidad y tarifas', 'Modalitatea eta tarifak')) + modes.map(m => `<div style="margin:.55rem 0"><button class="opt ${w.plan == m[0] ? 'on' : ""}" style="width:100%" data-a="wplan" data-v="${m[0]}"><span class="ic">${m[1]}</span><div><div style="font-weight:800;font-size:1.05rem">${m[2]}</div><small class="mut" style="font-weight:600">${m[3]}</small></div></button></div>`).join("")
+      + `<div class="est-box"><small class="mut">${est.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado', 'Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(est.tot)}</div></div>`;
+  }
+  if (w.s == 3) {
+    h = head('📍 ' + _('¿Para quién y dónde?', 'Norentzat eta non?'), _('¿Para quién y dónde?', 'Norentzat eta non?'))
+      + `<div class="row" style="margin:.6rem 0"><button class="opt ${w.who == 'me' ? 'on' : ""}" style="justify-content:center" data-a="wwho" data-v="me">${_('Para mí', 'Niretzat')}</button><button class="opt ${w.who == 'fam' ? 'on' : ""}" style="justify-content:center" data-a="wwho" data-v="fam">${_('Para un familiar', 'Senide batentzat')}</button></div>`
+      + `<label for="rn">${_('Nombre', 'Izena')}</label><input id="rn" data-f="w.rName" value="${esc(w.rName)}">`
+      + `<label for="ra">${_('Dirección', 'Helbidea')}</label><input id="ra" data-f="w.rAddr" value="${esc(w.rAddr)}" placeholder="${_('Calle, nº, barrio', 'Kalea, zk., auzoa')}">`
+      + `<label for="rp">${_('Teléfono', 'Telefonoa')}</label><input id="rp" data-f="w.rPhone" value="${esc(w.rPhone)}" placeholder="600 000 000">`
+      + `<label for="rdo">${_('¿Qué te gustaría hacer?', 'Zer gustatuko litzaizuke egitea?')}</label><input id="rdo" data-f="w.rDo" value="${esc(w.rDo)}" placeholder="${_('Ej. paseo tranquilo, compra semanal...', 'Adib. ibilaldi lasaia, asteko erosketa...')}">`
+      + `<label for="rno">${_('Notas (opcional)', 'Oharrak (aukerakoa)')}</label><textarea id="rno" rows="3" data-f="w.rNotes">${esc(w.rNotes)}</textarea>`
+      + `<label style="display:flex;gap:.7rem;align-items:flex-start;margin-top:1rem;cursor:pointer;font-weight:700"><input type="checkbox" style="width:22px;height:22px;min-height:auto;margin-top:.2rem;flex:none" ${w.share ? 'checked' : ""} data-a="shw"><span>${_('Compartir este plan con mis seguidores (solo se mostrará tu nombre, tipo de servicio, fecha/hora y barrio, nunca tu teléfono ni dirección exacta)', 'Partekatu plan hau nire jarraitzaileekin (zure izena, zerbitzu mota, data/ordua eta auzoa bakarrik erakutsiko dira, inoiz ez zure telefonoa edo helbide zehatza)')}</span></label>`;
+  }
+  if (w.s == 4) {
+    const R0 = w.addTo ? db.reqs.find(x => x.id == w.addTo) : null;
+    if (w.plan == 'normal' && !R0) {
+      h = head('📅 ' + _('Fecha, horario y precio', 'Data, ordutegia eta prezioa'), _('Fecha, horario y precio', 'Data, ordutegia eta prezioa'))
+        + `<label for="sd">${_('Día', 'Eguna')}</label><input id="sd" type="date" min="${d0(0)}" data-f="w.sd" value="${esc(w.sd)}">`
+        + `<label for="st">${_('Hora', 'Ordua')}</label><input id="st" type="time" data-f="w.st" value="${esc(w.st)}">`
+        + `<label for="sh">${_('Duración (horas)', 'Iraupena (orduak)')}</label><input id="sh" type="number" min="1" max="24" data-f="w.sh" value="${esc(w.sh)}">`
+        + `<div class="est-box"><small class="mut">${est.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado', 'Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(est.tot)}</div></div>`;
     } else {
-      await sb.from('hurbil_payments').insert({
-        family_id: st.user.id,
-        product_code: st.planType,
-        amount_eur: totalEur,
-        hours_credited: 0,
-        status: 'paid'
+      const baseH = R0 ? R0.hTot : (w.plan == 'bono' ? 5 : 12), used = (R0 ? sesH(R0.ses) : 0) + sesH(w.ses), left = Math.max(0, baseH - used);
+      const px = _('Has repartido', 'Banatu dituzu') + ` <b>${used} h</b> ${_('de', '/')} <b>${baseH} h</b> ` + (left > 0 ? _('te quedan', 'geratzen zaizkizu') + ` <b>${left} h</b> ` + _('por repartir (puedes asignarlas ahora o más adelante)', 'banatzeko (orain edo geroago eslei ditzakezu)') : _('¡Bono completo! Si añades más horas se suman como extra.', 'Bonoa beteta! Ordu gehiago gehitzen badituzu, gehigarri gisa batuko dira.'));
+      h = head('📅 ' + _('Reparte tus horas en uno o varios días', 'Banatu zure orduak egun batean edo gehiagotan'), _('Reparte tus horas en uno o varios días', 'Banatu zure orduak egun batean edo gehiagotan'))
+        + `<div class="card"><p style="margin:0 0 .5rem">${px}</p><div class="bar"><i style="width:${Math.min(100, used / baseH * 100)}%"></i></div></div>`
+        + `<div class="card"><h3 style="margin-top:0">${_('Añadir día y horas', 'Gehitu eguna eta orduak')}</h3>`
+        + `<label for="sd">${_('Día', 'Eguna')}</label><input id="sd" type="date" min="${d0(0)}" data-f="w.sd" value="${esc(w.sd)}">`
+        + `<label for="st">${_('Hora de inicio', 'Hasiera-ordua')}</label><input id="st" type="time" data-f="w.st" value="${esc(w.st)}">`
+        + `<label for="sh">${_('Duración de este día (horas)', 'Egun honetako iraupena (orduak)')}</label><input id="sh" type="number" min="1" max="12" data-f="w.sh" value="${esc(w.sh)}">`
+        + `<button class="btn s" style="width:100%;margin-top:.9rem" data-a="adds" ${w.sd && w.st && (+w.sh >= 1) ? "" : 'disabled'}>+ ${_('Añadir esta cita al plan', 'Gehitu hitzordu hau planera')}</button></div>`
+        + (w.ses.length ? `<div class="card"><h3 style="margin-top:0">${_('Citas programadas', 'Programatutako hitzorduak')} (${w.ses.length})</h3>${w.ses.map((x, i) => `<div class="row" style="justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--bd)"><span>📅 <b>${fd(x.d)}</b> · ${esc(x.t)} · <b>${x.h} h</b></span><button class="btn g" style="min-height:40px;padding:.3rem .7rem" data-a="dels" data-v="${i}" aria-label="${_('Quitar cita', 'Kendu hitzordua')}">✕</button></div>`).join("")}</div>` : "")
+        + `<div class="est-box"><small class="mut">${R0 ? (used <= R0.hTot ? `${used}/${R0.hTot} h ${_('incluidas en tu bono', 'zure bonoan sartuta')}` : `${R0.hTot} h ${_('bono', 'bonoa')} + ${used - R0.hTot} h ${_('extra', 'gehigarri')} × ${R0.hTot >= 12 ? '18,00' : '19,50'} €/h`) : est.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado', 'Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(R0 ? (R0.tot + Math.max(0, used - R0.hTot) * (R0.hTot >= 12 ? 18 : 19.50)) : est.tot)}</div></div>`;
+    }
+  }
+  if (w.s == 5) {
+    const c = C[w.cat] || C[0], subTxt = w.opt == 'o' || !c[2].length ? w.txt : c[2][w.opt]?.[L()];
+    const planLbl = w.plan == 'bono' ? _('Recurrente Bono 5 horas', 'Errepikakorra 5 orduko bonoa') : w.plan == 'month' ? _('Plan Mensual Hurbil', 'Hurbil Hileko Plana') : _('Una sola vez', 'Behin bakarrik');
+    const sesList = w.plan == 'normal' ? [{ d: w.sd, t: w.st, h: Math.max(1, +w.sh || 1) }] : w.ses;
+    const totH = w.plan == 'normal' ? Math.max(1, +w.sh || 1) : Math.max(w.plan == 'bono' ? 5 : 12, sesH(w.ses));
+    const sm = `${c[1][L()]}. ${subTxt || ""}. ${planLbl}. ${sesList.map(sl).join(', ')}. ${_('Total', 'Guztira')} ${fmt(est.tot)}`;
+    h = head('✅ ' + _('Revisión y envío', 'Berrikuspena eta bidalketa'), _('Revisión y envío', 'Berrikuspena eta bidalketa'))
+      + `<div class="card"><div class="row" style="justify-content:flex-end">${S(sm)}</div>`
+      + `<p style="font-size:1.15rem;margin:.2rem 0"><b>${c[0]} ${c[1][L()]}</b></p>`
+      + (subTxt ? `<p style="margin:.2rem 0">${esc(subTxt)}</p>` : "")
+      + `<p class="mut" style="margin:.3rem 0">${planLbl} · ${totH} h</p>`
+      + `<p style="margin:.3rem 0">${_('Trabajador', 'Langilea')}: ${_('Asignación automática', 'Esleipen automatikoa')}</p>`
+      + `<p style="margin:.3rem 0">${w.who == 'fam' ? _('Para un familiar', 'Senide batentzat') : _('Para mí', 'Niretzat')}: ${esc(w.rName)} · ${esc(w.rPhone)}</p>`
+      + `<p style="margin:.3rem 0">📍 ${esc(w.rAddr)}</p>`
+      + (w.rDo ? `<p style="margin:.2rem 0">${esc(w.rDo)}</p>` : "")
+      + (w.rNotes ? `<p class="mut" style="margin:.2rem 0">${esc(w.rNotes)}</p>` : "")
+      + sesList.map(x => `<p style="margin:.3rem 0">📅 ${fd(x.d)} · ${esc(x.t)} (${x.h} h)</p>`).join("")
+      + `<p style="font-size:1.25rem;margin:.4rem 0"><b>${fmt(est.tot)}</b></p></div>`
+      + `<label for="pay">${_('Forma de pago', 'Ordaintzeko modua')}</label><select id="pay" data-a="wpay"><option value="">${_('Elige una...', 'Aukeratu bat...')}</option>${PAY.map(p => `<option value="${p[0]}" ${w.pay == p[0] ? 'selected' : ""}>${db.lang == 'eu' ? p[2] : p[1]}</option>`).join("")}</select>`
+      + (w.pay ? `<div class="est-box"><p style="margin:0">${_('No se realiza ningún cobro ahora. Una vez Hurbil acepte tu solicitud, recibirás las instrucciones para abonar el importe por el método elegido.', 'Orain ez da kobratzen. Hurbilek zure eskaera onartzen duenean, aukeratutako metodoaren bidez zenbatekoa ordaintzeko jarraibideak jasoko dituzu.')}</p></div>` : "");
+  }
+  const nav = w.addTo && w.s == 4
+    ? `<button class="btn g" style="flex:1" data-a="cx">${_('Cancelar', 'Utzi')}</button><button class="btn s" style="flex:1" data-a="svs" ${w.ses.length ? "" : 'disabled'}>${_('Guardar citas', 'Hitzorduak gorde')}</button>`
+    : (w.s > 1 ? `<button class="btn g" style="flex:1" data-a="pv">← ${_('Atrás', 'Atzera')}</button>` : '<span></span>')
+      + (w.s < 5 ? `<button class="btn s" style="flex:1" id="nx" data-a="nx" ${ok() ? "" : 'disabled'}>${_('Continuar', 'Jarraitu')} →</button>` : `<button class="btn s" style="flex:1" id="nx" data-a="ok" ${ok() && !sendingReq ? "" : 'disabled'}>${sendingReq ? _('Enviando...', 'Bidaltzen...') : _('Enviar solicitud', 'Eskaera bidali')}</button>`);
+  return `<div class="row" style="justify-content:space-between">${back()}<span></span></div><p style="margin:.6rem 0 .3rem;font-weight:700">${_('Paso', 'Urratsa')} ${w.s} ${_('de', '/')} 5</p><div class="bar" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="${w.s}" style="margin-bottom:.8rem"><i style="width:${w.s * 20}%"></i></div>${h}<div class="row" style="gap:.8rem;margin-top:1.2rem">${nav}</div>`;
+}
+
+function rcard(r) {
+  if (r.bono && sesH(r.ses) > r.hTot) {
+    const ex = sesH(r.ses) - r.hTot;
+    r.tot = +(r.tot + ex * (r.hTot >= 12 ? 18 : 19.50)).toFixed(2);
+    r.hTot = sesH(r.ses);
+    r.base = 21 * r.hTot;
+  }
+  const s = ST[r.st][L()], t = `${svc(r)}. ${r.ses.map(sl).join('. ')}. ${s}`, x = tr[r.id] || {}, left = r.hTot - sesH(r.ses);
+  let e = "";
+  if (r.st == 'done') {
+    if (r.rate) e = `<p><span class="star" style="cursor:default">${stars(r.rate.s)}</span> ${esc(r.rate.c)}</p>`;
+    else if (dl(r) <= 0) e = `<p class="mut">${_('El plazo de 24 horas para valorar ha terminado.', 'Baloratzeko 24 orduko epea amaitu da.')}</p>`;
+    else e = `<div class="card" style="background:var(--sb)"><div class="row"><b class="grow">${_('Valora a', 'Baloratu')} ${esc(r.w)} · ${_('te quedan', 'geratzen zaizkizu')} ${dl(r)} h</b>${S(_('Valora el servicio con estrellas', 'Balora ezazu zerbitzua izarrekin'))}</div>${[1, 2, 3, 4, 5].map(n => `<button class="star" data-a="star" data-id="${r.id}" data-v="${n}" aria-label="${n}">${n <= (x.s || 0) ? '★' : '☆'}</button>`).join("")}<textarea rows="2" data-f="tr.${r.id}.c" placeholder="${_('Escribe un comentario', 'Idatzi iruzkin bat')}">${esc(x.c || "")}</textarea><button class="btn" style="margin-top:.5rem" data-a="rate" data-id="${r.id}">${_('Enviar valoración', 'Balorazioa bidali')}</button></div>`;
+  }
+  const pin = r.pin ? `<div class="card" style="background:var(--sb)"><div class="row"><b class="grow">🔑 ${_('Tu PIN de seguridad', 'Zure segurtasun-PINa')}: <span style="font-size:1.7rem;letter-spacing:.2em">${r.pin}</span></b>${S(_('Tu PIN de seguridad es', 'Zure segurtasun-PINa') + ': ' + r.pin.split("").join(' '))}</div><small>${_('El acompañante te dirá este código al llegar. Si no lo sabe, no abras la puerta.', 'Laguntzaileak kode hau esango dizu iristean. Ez badaki, ez ireki atea.')}</small></div>` : "";
+  const canDel = r.st === 'pending';
+  const delUi = canDel ? (String(askDelReq) === String(r.id) ? `<div class="confirm-box"><p style="margin:0 0 .6rem;font-weight:800">${_('¿Estás seguro de que quieres eliminar esta solicitud?', 'Ziur zaude eskaera hau ezabatu nahi duzula?')}</p><div class="row" style="gap:.6rem"><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="delreq_yes" data-id="${r.id}">${_('Sí, eliminar', 'Bai, ezabatu')}</button><button class="btn g" style="flex:1" data-a="delreq_no">${_('No', 'Ez')}</button></div></div>` : `<button class="btn g" style="margin-top:.5rem;color:var(--r);border-color:var(--r)" data-a="delreq_ask" data-id="${r.id}">🗑️ ${_('Eliminar solicitud', 'Eskaera ezabatu')}</button>`) : "";
+  const liveStory = canPostStory(r);
+  const rStories = activeStories().filter(st => String(st.reqId) === String(r.id));
+  const storyUi = liveStory ? `<div style="margin:.6rem 0;padding:.75rem;border-radius:14px;background:linear-gradient(135deg,#fdf2f8,#eef2ff);border:1px solid #f9a8d4"><div class="row" style="justify-content:space-between"><b>✨ ${_('Servicio en curso · ¡Comparte tu historia!', 'Zerbitzuaren ordua · Partekatu zure historia!')}</b>${rStories.length ? `<button class="pill" data-a="viewstory" data-v="${rStories[0].id}">👁️ ${_('Ver', 'Ikusi')} (${rStories.length})</button>` : ""}</div><p class="mut" style="font-size:.86rem;margin:.25rem 0 .6rem">${_('Sube una foto o vídeo (máx. 20 s) visible 24 h para tus seguidores.', 'Igo argazki edo bideo bat (geh. 20 s), 24 orduz ikusgai zure jarraitzaileentzat.')}</p><button class="btn" style="width:100%;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);border:0;color:#fff" data-a="openstory" data-id="${r.id}">📸 ${_('Subir historia del servicio', 'Zerbitzuaren historia igo')}</button></div>` : (rStories.length ? `<div style="margin:.5rem 0"><button class="btn g" data-a="viewstory" data-v="${rStories[0].id}">👁️ ${_('Ver historia de este servicio', 'Ikusi zerbitzu honen historia')} (${rStories.length})</button></div>` : "");
+  return `<article class="card"><div class="row"><h3 class="grow">${r.bono ? '🎟️ ' : ""}${svc(r)}</h3>${S(t)}</div>${r.ses.map(q => `<p>📅 ${sl(q)}</p>`).join("")}<p>${sesH(r.ses)}/${r.hTot} h · ${fmt(r.tot)}</p><p>📍 ${esc(r.addr)}</p><p><span class="bd">${s}</span>${r.w ? ' · ' + esc(r.w) : ""}</p>${storyUi}${pin}${r.bono ? `${left > 0 ? `<p class="mut">${_('Te quedan', 'Geratzen zaizkizu')} ${left} h ${_('por asignar', 'esleitzeko')}</p>` : ""}<button class="btn g" data-a="addto" data-id="${r.id}">+ ${_('Añadir cita', 'Hitzordua gehitu')}</button>` : ""}<div><button class="btn s" style="margin-top:.5rem" data-a="wa" data-id="${r.id}">💬 ${_('Avisar a mi familiar por WhatsApp', 'Abisatu nire senideari WhatsApp bidez')}</button></div>${delUi}${e}</article>`;
+}
+
+const jcard = p => {
+  const q = PS[p.prop.st][L()];
+  return `<article class="card"><div class="row"><h3 class="grow">${p.t[L()] || p.t.es}</h3>${S((p.t[L()] || p.t.es) + '. ' + q)}</div><p>📅 ${p.when ? p.when[L()] : esc(p.w)} · ${p.h} h · ${fmt(pr(p.h, 2).tot)}/${_('persona', 'pertsona')}</p><p>${p.m.map(esc).join(' + ')}</p><p><span class="bd">${q}</span></p><button class="btn g" data-a="gop" data-v="${p.id}">💬 ${_('Abrir chat', 'Txata ireki')}</button></article>`;
+};
+
+function reqs() {
+  const vis = db.reqs.filter(r => !arch(r)), ar = db.reqs.filter(arch), jp = db.plans.filter(p => p.prop && p.m.includes(fn()));
+  return back() + head(_('Mis solicitudes', 'Nire eskaerak')) + (vis.length + jp.length ? vis.map(rcard).join("") + jp.map(jcard).join("") : `<div class="card"><p>${_('Aún no tienes solicitudes.', 'Oraindik ez duzu eskaerarik.')}</p><a class="btn" href="#help" data-a="go" data-v="help">${_('Pedir ayuda', 'Laguntza eskatu')}</a></div>`) + (ar.length ? `<details class="card"><summary><b>${_('Archivo de citas finalizadas', 'Amaitutako hitzorduen artxiboa')} (${ar.length})</b></summary>${ar.map(r => `<p class="mut">${svc(r)} · ${sl(r.ses[0])}</p>`).join("")}</details>` : "");
+}
+
+const msgs = (a, me) => `<div class="msgs">${a.map(m => `<div class="m ${m.n == me || m.f == 'u' ? 'me' : ""}"><div>${m.n ? `<b>${esc(m.n)}:</b> ` : ""}${esc(m.t)}</div>${S((m.n ? m.n + ': ' : "") + m.t)}</div>`).join("")}</div>`;
+const sendBox = v => `<div class="send"><input aria-label="${_('Escribe un mensaje', 'Idatzi mezu bat')}" placeholder="${_('Escribe un mensaje', 'Idatzi mezu bat')}" value="${esc(draftChat)}" oninput="draftChat=this.value"><button class="btn" data-a="send" data-v="${v}">${_('Enviar', 'Bidali')}</button></div>`;
+const propc = p => {
+  const q = p.prop, me = fn(), o = p.m.find(x => x != me) || p.m[0], t = `${_('Plan conjunto para 2 personas', '2 pertsonentzako plan bateratua')}. ${p.t[L()]}. ${p.when[L()]}. ${PS[q.st][L()]}`;
+  return `<div class="card" style="background:var(--sb)"><div class="row"><h3 class="grow">${_('Plan conjunto para 2 personas', '2 pertsonentzako plan bateratua')}</h3>${S(t)}</div><p>${p.t[L()]} · ${p.when[L()]} · ${p.h} h</p><p>${fmt(pr(p.h, 2).tot)}/${_('persona', 'pertsona')} <span class="bd">16,00 €/h</span></p><p>${[me, o].map(n => `${q.acc.includes(n) ? '✅' : '⏳'} ${esc(n)}`).join(' · ')}</p>${q.st == 'draft' ? [me, o].map(n => `<button class="btn ${q.acc.includes(n) ? 'g' : 's'}" style="margin:.2rem" data-a="acc" data-v="${p.id}" data-n="${esc(n)}" ${q.acc.includes(n) ? 'disabled' : ""}>${_('Aceptar', 'Onartu')} (${esc(n)})</button>`).join("") : ""}<p><span class="bd">${PS[q.st][L()]}</span></p></div>`;
+};
+
+function plan(p) {
+  const c = p.m.length, me = p.m.includes(fn()), lock = p.prop && p.prop.st != 'draft', full = (c >= p.max || !!p.prop) && !me, tt = p.t[L()], wh = p.when[L()];
+  return `<article class="card"><div class="row"><h3 class="grow">${tt}</h3>${S(`${tt}. ${wh}. ${c} ${_('de', '/')} ${p.max} ${_('plazas', 'leku')}`)}</div><p>📅 ${wh} · ${p.h} h</p><p>${c}/${p.max} · ${_('quedan', 'geratzen dira')} ${p.max - c}</p><p><span class="bd">16,00 €/h / ${_('persona', 'pertsona')}</span> · ${fmt(pr(p.h, 2).tot)}/${_('persona', 'pertsona')}</p><p class="mut">${_('Participan', 'Parte-hartzaileak')}: ${p.m.map(esc).join(', ')}</p>${p.prop ? `<p><span class="bd">${PS[p.prop.st][L()]}</span></p>` : ""}<div class="row"><button class="btn ${me ? 'g' : 's'}" data-a="join" data-v="${p.id}" ${full || (me && lock) ? 'disabled' : ""}>${me ? _('Salir del plan', 'Planetik atera') : full ? _('Completo', 'Beteta') : _('Unirme al plan', 'Planera batu')}</button><button class="btn g" data-a="pchat" data-v="${p.id}">💬 ${_('Chat de grupo', 'Talde-txata')}</button></div>${oc == p.id ? msgs(p.msgs, fn()) + (p.prop ? propc(p) : "") + sendBox('p' + p.id) : ""}</article>`;
+}
+
+let viewU = null;
+function comm() {
+  const fCnt = folRows.filter(x => x.following_id == sbUid && x.status == 'pending').length;
+  const pCnt = db.plans.filter(p => p.ownerId == sbUid && p.int && p.int.length).reduce((s, p) => s + p.int.length, 0);
+  const stList = activeStories();
+  const liveReq = db.reqs.find(canPostStory);
+  const addBtn = liveReq ? `<div class="st-item" data-a="openstory" data-id="${liveReq.id}"><div style="position:relative;display:inline-flex">${avImg(db.u, 54)}<span style="position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:#0095f6;color:#fff;font-weight:800;font-size:.95rem;display:flex;align-items:center;justify-content:center;border:2px solid #fff">+</span></div><span>${_('Tu historia', 'Zure historia')}</span></div>` : "";
+  const stBar = (stList.length || liveReq) ? `<div class="card" style="padding:.7rem .9rem"><small class="mut" style="font-weight:800">📸 ${_('Historias en directo (24 h)', 'Zuzeneko historiak (24 h)')}</small><div class="stories-bar">${addBtn}${stList.map(st => { const u = st.userId === sbUid ? db.u : (usersList.find(x => x.id === st.userId) || { name: st.userName || _('Vecino', 'Bizilaguna'), avatar: st.avatar || "" }); return `<div class="st-item" data-a="viewstory" data-v="${st.id}"><div class="ig-ring">${avImg(u, 54)}</div><span>${esc((u.name || _('Vecino', 'Bizilaguna')).split(' ')[0])}</span></div>`; }).join("")}</div></div>` : "";
+  let h = back() + head(_('Comunidad y planes', 'Komunitatea eta planak')) + stBar + `<div class="tabs" role="tablist">${[['neigh', _('Personas · Red social', 'Pertsonak · Sare soziala'), fCnt], ['plans', _('Planes conjuntos', 'Plan bateratuak'), pCnt]].map(t => `<button class="btn ${ct == t[0] ? "" : 'g'}" role="tab" aria-selected="${ct == t[0]}" data-a="tab" data-v="${t[0]}">${t[1]}${t[2] ? `<span class="badge">${t[2]}</span>` : ""}</button>`).join("")}</div>`;
+  if (ct == 'neigh') {
+    if (viewU) {
+      const u = usersList.find(x => x.id == viewU);
+      if (u) {
+        const out = folRows.find(x => x.follower_id == sbUid && x.following_id == u.id), inReq = folRows.find(x => x.follower_id == u.id && x.following_id == sbUid);
+        const segs = folRows.filter(x => x.following_id == u.id && x.status == 'accepted').length, sig = folRows.filter(x => x.follower_id == u.id && x.status == 'accepted').length;
+        const canChat = (out?.status == 'accepted') || (inReq?.status == 'accepted');
+        let bTxt = inReq?.status == 'accepted' ? _('+ Seguir de vuelta', '+ Jarraitu bueltan') : _('+ Seguir', '+ Jarraitu'), bCls = 's';
+        if (out?.status == 'pending') { bTxt = _('⏳ Pendiente (cancelar)', '⏳ Zain (ezeztatu)'); bCls = 'g'; }
+        else if (out?.status == 'accepted') { bTxt = _('✓ Siguiendo', '✓ Jarraitzen'); bCls = 'g'; }
+        h += `<div class="card"><button class="btn g" style="margin-bottom:.8rem" data-a="uprof" data-v="${u.id}">← ${_('Volver a personas', 'Pertsonetara itzuli')}</button><div class="row">${avImg(u, 72)}<div class="grow"><h2>${esc(u.name)}</h2><p class="mut">${esc(u.username)} · ${esc(u.addr || 'Bilbao')}</p><p style="margin-top:.3rem"><b>${segs}</b> ${_('seguidores', 'jarraitzaile')} · <b>${sig}</b> ${_('seguidos', 'jarraituak')}</p></div></div><div class="row" style="margin-top:1rem"><button class="btn ${bCls}" data-a="fol" data-v="${u.id}">${bTxt}</button>${canChat ? `<button class="btn" data-a="dm" data-v="${u.id}">💬 ${_('Enviar mensaje', 'Mezua bidali')}</button>` : ""}</div></div>`;
+        return h;
+      }
+    }
+    const inc = folRows.filter(x => x.following_id == sbUid && x.status == 'pending');
+    if (inc.length) h += `<div class="card" style="border:2px solid var(--p)"><h3>🔔 ${_('Solicitudes de seguimiento', 'Jarraipen eskaerak')} (${inc.length})</h3>${inc.map(req => { const u = usersList.find(x => x.id == req.follower_id) || { name: _('Usuario', 'Erabiltzailea'), username: "" }; return `<div class="row" style="justify-content:space-between;margin:.6rem 0"><div class="row" style="cursor:pointer" data-a="uprof" data-v="${u.id}">${avImg(u, 40)}<div><b>${esc(u.name)}</b><br><span class="mut">${esc(u.username)}</span></div></div><div class="row"><button class="btn s" data-a="facc" data-v="${u.id}">${_('Aceptar', 'Onartu')}</button><button class="btn g" data-a="frej" data-v="${u.id}">✕</button></div></div>`; }).join("")}</div>`;
+    const others = usersList.filter(u => u.id != sbUid);
+    h += `<div class="grid">${others.length ? others.map(u => { const out = folRows.find(x => x.follower_id == sbUid && x.following_id == u.id), inAcc = folRows.find(x => x.follower_id == u.id && x.following_id == sbUid && x.status == 'accepted'), canChat = (out && out.status == 'accepted') || inAcc; let bTxt = inAcc ? _('+ Seguir de vuelta', '+ Jarraitu bueltan') : _('+ Seguir', '+ Jarraitu'), bCls = 's'; if (out?.status == 'pending') { bTxt = _('⏳ Pendiente', '⏳ Zain'); bCls = 'g'; } else if (out?.status == 'accepted') { bTxt = _('✓ Siguiendo', '✓ Jarraitzen'); bCls = 'g'; } return `<article class="card"><div class="row" style="cursor:pointer" data-a="uprof" data-v="${u.id}">${avImg(u, 50)}<div class="grow"><h3>${esc(u.name)}</h3><p class="mut">${esc(u.username)} · ${esc(u.addr || 'Bilbao')}</p></div></div><div class="row" style="margin-top:.8rem"><button class="btn g" data-a="uprof" data-v="${u.id}">${_('Ver perfil', 'Profila ikusi')}</button><button class="btn ${bCls}" data-a="fol" data-v="${u.id}">${bTxt}</button>${canChat ? `<button class="btn" data-a="dm" data-v="${u.id}">💬 ${_('Enviar mensaje', 'Mezua bidali')}</button>` : ""}</div></article>`; }).join("") : `<div class="card"><p>${_('Aún no hay otras personas registradas.', 'Oraindik ez dago beste pertsonarik erregistratuta.')}</p></div>`}</div>`;
+  } else {
+    const iFollowIds = folRows.filter(x => x.follower_id == sbUid && x.status == 'accepted').map(x => x.following_id);
+    const visPlans = db.plans.filter(p => p.ownerId ? (p.ownerId == sbUid || p.accU == sbUid || iFollowIds.includes(p.ownerId)) : true);
+    const myIntReqs = visPlans.filter(p => p.ownerId == sbUid && p.int && p.int.length);
+    if (myIntReqs.length) h += `<div class="card" style="border:2px solid var(--p)"><h3>🙋 ${_('Interesados en tus planes', 'Zure planetan interesatuak')}</h3>${myIntReqs.map(p => p.int.map(uid => { const u = usersList.find(x => x.id == uid) || { name: _('Usuario', 'Erabiltzailea'), username: "" }; return `<div class="row" style="justify-content:space-between;margin:.6rem 0;flex-wrap:wrap"><div class="row">${avImg(u, 38)}<div><b>${esc(u.name)}</b> ${_('quiere unirse a', 'bat egin nahi du:')} <i>${esc(p.t[L()] || p.t.es)}</i></div></div><div class="row"><button class="btn s" data-a="pacc" data-v="${p.id}:${uid}">${_('Aceptar', 'Onartu')}</button><button class="btn g" data-a="prej" data-v="${p.id}:${uid}">✕</button></div></div>`; }).join("")).join("")}</div>`;
+    h += visPlans.length ? visPlans.map(p => {
+      if (!p.ownerId) return plan(p);
+      const ow = usersList.find(x => x.id == p.ownerId) || { name: p.ownerName || _('Vecino', 'Bizilaguna'), username: "" }, isMine = p.ownerId == sbUid, isAcc = p.accU == sbUid || (isMine && p.accU), isInt = (p.int || []).includes(sbUid);
+      const chatPeer = isMine ? p.accU : p.ownerId, peerObj = usersList.find(x => x.id == chatPeer) || { name: ow.name };
+      return `<article class="card"><div class="row" style="justify-content:space-between"><div class="row">${avImg(ow, 42)}<div><b>${esc(ow.name)}</b> <span class="mut">${esc(ow.username || "")}</span></div></div>${S((p.t[L()] || p.t.es) + '. ' + p.w)}</div><p style="margin:.6rem 0 .2rem;font-size:1.1rem"><b>${esc(p.t[L()] || p.t.es)}</b></p><p class="mut">📅 ${esc(p.w)} · ${p.h} h</p><div style="margin:.6rem 0"><span class="tag">${_('Plan conjunto (16,00 €/h por persona · 2+ personas + trabajador Hurbil)', 'Plan bateratua (16,00 €/h pertsonako · 2+ pertsona + Hurbil langilea)')}</span></div>${isAcc ? `<div class="row" style="margin-top:.6rem"><span class="btn s" style="cursor:default">✅ ${_('Plan conjunto creado', 'Plan bateratua sortuta')}</span></div><button class="btn" style="width:100%;margin-top:.6rem" data-a="dm" data-v="${chatPeer}">💬 ${_('Abrir chat con', 'Ireki txata:')} ${esc(peerObj.name)}</button>` : isMine ? `<p class="mut">${(p.int || []).length} ${_('interesados', 'interesatu')}</p>` : `<button class="btn ${isInt ? 'g' : 's'}" style="margin-top:.5rem" data-a="pint" data-v="${p.id}">${isInt ? '✓ ' + _('Me interesa enviado (cancelar)', 'Interesa bidalita (ezeztatu)') : '🙋 ' + _('Me interesa', 'Interesatzen zait')}</button>`}</article>`;
+    }).join("") : `<div class="card"><p>${_('Aún no hay planes publicados por la gente a la que sigues.', 'Oraindik ez dago jarraitzen duzun jendeak argitaratutako planik.')}</p></div>`;
+  }
+  return h;
+}
+
+function storyPage() {
+  const list = activeStories();
+  const cur = list[storyIdx] || list[0];
+  if (!cur) { go(prevRoute || 'home'); return home(); }
+  const ago = Math.max(1, Math.round((Date.now() - cur.createdAt) / 60000));
+  const agoTxt = ago < 60 ? `${ago} min` : `${Math.round(ago / 60)} h`;
+  const uObj = cur.userId === sbUid ? db.u : (usersList.find(x => x.id === cur.userId) || { name: cur.userName, avatar: cur.avatar });
+  const isMine = cur.userId === sbUid || cur.userName === db.u.name;
+  return `<div class="ig-story-full"><div class="ig-story-top"><div class="ig-story-bars">${list.map((_, i) => `<span class="${i < storyIdx ? 'done' : i === storyIdx && cur.type !== 'video' ? 'cur' : i === storyIdx ? 'done' : ""}"></span>`).join("")}</div><div class="row" style="justify-content:space-between;align-items:center"><div class="row">${avImg(uObj, 40)}<div><b style="color:#fff;font-size:1rem">${esc(cur.userName || 'Hurbil')}</b><div style="font-size:.8rem;color:rgba(255,255,255,.78)">${esc(cur.svc || "")} · ${agoTxt}</div></div></div><div class="row" style="gap:.45rem">${isMine ? `<button style="background:rgba(220,38,38,.78);border:0;color:#fff;width:42px;height:42px;border-radius:50%;font-size:1.15rem" data-a="stdel_ask" aria-label="${_('Eliminar historia', 'Historia ezabatu')}" title="${_('Eliminar historia', 'Historia ezabatu')}">🗑️</button>` : ""}<button style="background:rgba(255,255,255,.16);border:0;color:#fff;width:42px;height:42px;border-radius:50%;font-size:1.3rem;font-weight:800" data-a="stclose" aria-label="${_('Cerrar', 'Itxi')}">✕</button></div></div>${askDelStory ? `<div style="margin-top:.75rem;background:rgba(15,23,42,.92);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:.75rem"><p style="margin:0 0 .55rem;font-weight:800;font-size:.95rem">🗑️ ${_('¿Borrar esta historia?', 'Historia hau ezabatu?')}</p><div class="row" style="gap:.5rem"><button class="btn" style="flex:1;min-height:42px;background:var(--r);border-color:var(--r);color:#fff" data-a="stdel_yes" data-v="${cur.id}">${_('Sí, borrar', 'Bai, ezabatu')}</button><button class="btn g" style="flex:1;min-height:42px" data-a="stdel_no">${_('No', 'Ez')}</button></div></div>` : ""}</div><div class="ig-story-media">${cur.type === 'video' ? `<video src="${esc(cur.url)}" controls autoplay playsinline onended="act({dataset:{a:'stnext'}})"></video>` : `<img src="${esc(cur.url)}" alt="">`}</div>${cur.type !== 'video' && !askDelStory ? `<div class="ig-story-tap"><div data-a="stprev" title="${_('Anterior', 'Aurrekoa')}"></div><div data-a="stnext" title="${_('Siguiente', 'Hurrengoa')}"></div></div>` : ""}${cur.cap || list.length > 1 ? `<div class="ig-story-bot">${cur.cap ? `<p style="margin:0 0 .5rem;font-size:1.05rem;font-weight:700;color:#fff">${esc(cur.cap)}</p>` : ""}${list.length > 1 ? `<div class="row" style="justify-content:center;gap:.8rem"><button class="pill" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)" data-a="stprev">← ${_('Anterior', 'Aurrekoa')}</button><button class="pill" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)" data-a="stnext">${_('Siguiente', 'Hurrengoa')} →</button></div>` : ""}</div>` : ""}</div>`;
+}
+
+function chatPage() {
+  if (dmUser) {
+    const peer = usersList.find(x => x.id == dmUser) || { name: 'Chat', username: "" };
+    const chatMsgs = dmList.filter(m => (m.sender_id == sbUid && m.receiver_id == dmUser) || (m.sender_id == dmUser && m.receiver_id == sbUid));
+    return `${back()}<div class="card" style="margin-top:.8rem"><div style="display:flex;align-items:center;gap:.75rem;padding-bottom:.75rem;border-bottom:1px solid #efefef;margin-bottom:.6rem"><button class="btn g" style="min-height:40px;padding:.35rem .7rem;border-radius:999px" data-a="dmback">←</button><div style="cursor:pointer" onclick="ct='neigh';viewU='${peer.id}';go('comm');render()">${avImg(peer, 44)}</div><div class="grow" style="cursor:pointer" onclick="ct='neigh';viewU='${peer.id}';go('comm');render()"><div style="font-weight:800;font-size:1.05rem;line-height:1.15">${esc(peer.name)}</div><div style="font-size:.82rem;color:#6b7280">${esc(peer.username || "")} · <span style="color:#16a34a;font-weight:700">${_('Activo ahora', 'Aktibo orain')}</span></div></div></div>`
+      + `<div class="ig-feed">${chatMsgs.length ? chatMsgs.map(m => { const mine = m.sender_id == sbUid, tm = m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "", pl = m.plan_id ? db.plans.find(x => String(x.id) == String(m.plan_id)) : null; let card = ""; if (pl && pl.prop) { const q = pl.prop, meN = db.u.name, okMe = q.acc.includes(meN); card = `<div style="margin-top:.55rem;background:#fff;color:#111827;border-radius:14px;padding:.75rem;border:1px solid #e5e7eb;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-weight:800;font-size:.93rem">🤝 ${esc(pl.t[L()] || pl.t.es)}</div><div style="font-size:.8rem;color:#6b7280;margin:.2rem 0">📅 ${esc(pl.w)} · ${pl.h} h</div><div style="font-size:.8rem;font-weight:700;color:#4f46e5;margin:.3rem 0">${PS[q.st][L()]} (${q.acc.length}/2)</div>${q.st == 'draft' ? (!okMe ? `<button class="btn s" style="width:100%;margin-top:.35rem;min-height:auto;padding:.5rem;border-radius:10px;font-size:.9rem" data-a="acc" data-v="${pl.id}" data-n="${esc(meN)}">✅ ${_('Aceptar plan conjunto', 'Plan bateratua onartu')}</button>` : `<div style="font-size:.8rem;color:#16a34a;font-weight:700">✓ ${_('Has aceptado · esperando a ', 'Onartu duzu · zain: ')}${esc(peer.name)}</div>`) : ""}</div>`; } return mine ? `<div class="ig-me">${esc(m.text)}${card}${tm ? `<div style="font-size:.65rem;opacity:.75;text-align:right;margin-top:.2rem">${tm}</div>` : ""}</div>` : `<div class="ig-them">${avImg(peer, 28)}<div class="ig-bubble">${esc(m.text)}${card}${tm ? `<div style="font-size:.65rem;color:#9ca3af;margin-top:.2rem">${tm}</div>` : ""}</div></div>`; }).join("") : `<div style="text-align:center;margin:2rem 0"><div class="ig-ring" style="margin-bottom:.5rem">${avImg(peer, 64)}</div><div style="font-weight:800">${esc(peer.name)}</div><div class="mut" style="font-size:.85rem">${esc(peer.username || "")} · Hurbil Bilbao</div><p class="mut" style="font-size:.85rem;margin-top:.6rem">${_('Envía un mensaje para empezar la conversación', 'Bidali mezu bat elkarrizketa hasteko')}</p></div>`}</div>`
+      + `<div class="ig-bar"><input aria-label="${_('Escribe un mensaje', 'Idatzi mezu bat')}" placeholder="${_('Envía un mensaje...', 'Bidali mezu bat...')}" value="${esc(draftChat)}" oninput="draftChat=this.value" onkeydown="if(event.key==='Enter')this.nextElementSibling.click()"><button class="ig-send" data-a="send" data-v="dm:${dmUser}">${_('Enviar', 'Bidali')}</button></div></div>`;
+  }
+  const cloudTeam = sbUid ? dmList.filter(m => (m.sender_id == sbUid && m.receiver_id == TEAM_ID) || (m.sender_id == TEAM_ID && m.receiver_id == sbUid)) : [];
+  const welcome = { f: 'h', t: _('¡Hola! Somos el equipo de Hurbil en Bilbao. Escríbenos aquí lo que necesites y te responderemos personalmente desde administración.', 'Kaixo! Bilboko Hurbil taldea gara. Idatzi hemen behar duzuna eta administrazioatik zuzenean erantzungo dizugu.') };
+  const teamList = sbUid ? [welcome, ...cloudTeam.map(m => ({ f: m.sender_id == sbUid ? 'u' : 'h', t: m.text }))] : db.team;
+  const friendsBody = !sbUid ? `<p class="mut" style="margin:.4rem 0">${_('Inicia sesión en tu cuenta para enviar y recibir mensajes con tus seguidores.', 'Hasi saioa zure kontuan zure jarraitzaileekin mezuak bidaltzeko eta jasotzeko.')}</p><a class="btn s" href="#prof" data-a="go" data-v="prof" style="margin-top:.5rem">${_('Entrar / Crear cuenta', 'Sartu / Kontua sortu')}</a>` : (usersList.filter(u => u.id != sbUid && (folRows.some(x => x.follower_id == sbUid && x.following_id == u.id && x.status == 'accepted') || folRows.some(x => x.follower_id == u.id && x.following_id == sbUid && x.status == 'accepted'))).map(u => {
+    const last = [...dmList].reverse().find(m => (m.sender_id == sbUid && m.receiver_id == u.id) || (m.sender_id == u.id && m.receiver_id == sbUid));
+    const unread = last && last.receiver_id == sbUid && (last.id || 0) > lastSeenDm;
+    return `<div data-a="dm" data-v="${u.id}" style="display:flex;align-items:center;gap:.8rem;padding:.75rem .6rem;border-radius:14px;cursor:pointer;border-bottom:1px solid var(--bd)"><div class="${unread ? 'ig-ring' : ""}">${avImg(u, 52)}</div><div class="grow" style="min-width:0"><div style="font-weight:${unread ? '800' : '700'};font-size:1rem">${esc(u.name)}</div><div style="font-size:.86rem;color:${unread ? 'var(--t)' : 'var(--m)'};font-weight:${unread ? '700' : '400'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${last ? esc(last.text) : _('Toca para enviar un mensaje', 'Sakatu mezua bidaltzeko')}</div></div>${unread ? '<span style="width:10px;height:10px;border-radius:50%;background:#0095f6;flex-shrink:0"></span>' : '<span class="mut" style="font-size:1.3rem">›</span>'}</div>`;
+  }).join("") || `<p class="mut" style="margin:.4rem 0">${_('Acepta o envía solicitudes en Comunidad para chatear con tus seguidores.', 'Onartu edo bidali eskaerak Komunitatean zure jarraitzaileekin txateatzeko.')}</p><a class="btn g" href="#comm" data-a="go" data-v="comm" style="margin-top:.5rem">${_('Ir a Comunidad', 'Joan Komunitatera')}</a>`);
+  return back() + head('💬 ' + _('Mensajes y Chat', 'Mezuak eta Txata')) + `<div class="tabs">${[['friends', _('Mensajes', 'Mezuak')], ['team', _('Equipo Hurbil', 'Hurbil taldea')]].map(t => `<button class="btn ${mt == t[0] ? "" : 'g'}" data-a="tm" data-v="${t[0]}">${t[1]}</button>`).join("")}</div><div class="card">${mt == 'team' ? msgs(teamList, "") + sendBox('team') : friendsBody}</div>`;
+}
+
+function prof() {
+  const u = db.u, f = (k, l, ty) => `<label for="f_${k}">${l}</label><div class="row"><input class="grow" id="f_${k}" type="${k == 'pass' && !sp ? 'password' : ty || 'text'}" data-f="db.u.${k}" value="${esc(u[k] || '')}">${k == 'pass' ? `<button class="ib" data-a="pw">${sp ? _('Ocultar', 'Ezkutatu') : _('Mostrar', 'Erakutsi')}</button>` : ""}</div>${S(l)}`;
+  const flds = f('name', _('Nombre completo', 'Izen osoa')) + f('user', _('Nombre de usuario (ej. @aimar_bilbao)', 'Erabiltzaile-izena (adib. @aimar_bilbao)')) + f('contact', _('Correo electrónico o teléfono', 'Posta elektronikoa edo telefonoa')) + f('pass', _('Contraseña', 'Pasahitza')) + f('addr', _('Barrio o dirección en Bilbao', 'Auzoa edo helbidea Bilbon')) + f('fam', _('Teléfono del familiar de confianza (WhatsApp)', 'Konfiantzazko senidearen telefonoa (WhatsApp)'), 'tel');
+  const editFlds = f('name', _('Nombre completo', 'Izen osoa')) + f('user', _('Nombre de usuario (ej. @aimar_bilbao)', 'Erabiltzaile-izena (adib. @aimar_bilbao)')) + f('contact', _('Correo electrónico o teléfono', 'Posta elektronikoa edo telefonoa')) + f('addr', _('Barrio o dirección en Bilbao', 'Auzoa edo helbidea Bilbon')) + f('fam', _('Teléfono del familiar de confianza (WhatsApp)', 'Konfiantzazko senidearen telefonoa (WhatsApp)'), 'tel');
+  let h = back() + head(_('Mi perfil / Cuenta', 'Nire profila / Kontua'));
+  if (u.on) {
+    return h + `<div class="card"><div class="row" style="align-items:flex-start;gap:1rem">${avImg(u, 68)}<div class="grow"><b>${esc(u.name)}</b><p class="mut" style="margin:.15rem 0">${esc(u.user)}</p><p class="mut" style="font-size:.88rem;margin:0 0 .5rem">📍 ${esc(u.addr || 'Bilbao')}${u.fam ? ' · ' + esc(u.fam) : ""}</p><label class="btn g" style="display:inline-flex;margin:0;cursor:pointer">📷 ${_('Cambiar foto de perfil', 'Profileko argazkia aldatu')}<input type="file" accept="image/*" style="display:none" onchange="upAv(this)"></label></div><button class="ib rd" data-a="edprof" aria-pressed="${editProf}" aria-label="${_('Editar datos', 'Datuak editatu')}" title="${_('Editar datos', 'Datuak editatu')}">✏️</button></div>${editProf ? `<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)">${editFlds}<div class="row" style="margin-top:1rem"><button class="btn s" data-a="prof">${_('Guardar datos', 'Datuak gorde')}</button><button class="btn g" data-a="edprof">${_('Cancelar', 'Utzi')}</button></div></div>` : ""}<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)"><button class="btn g" style="width:100%" data-a="out">${_('Cerrar sesión', 'Saioa itxi')}</button></div></div>` + pextra();
+  }
+  return h + `<div class="tabs">${[['create', _('Crear cuenta', 'Kontua sortu')], ['login', _('Iniciar sesión', 'Saioa hasi')]].map(t => `<button class="btn ${pm == t[0] ? "" : 'g'}" data-a="mode" data-v="${t[0]}">${t[1]}</button>`).join("")}</div><div class="card">${pm == 'create' ? flds + `<button class="btn s" style="margin-top:1rem" data-a="auth" data-v="c">${_('Crear cuenta', 'Kontua sortu')}</button>` : `<label for="lu">${_('Usuario o correo/teléfono', 'Erabiltzailea edo posta/telefonoa')}</label><input id="lu" data-f="lg.u"><label for="lp">${_('Contraseña', 'Pasahitza')}</label><input id="lp" type="password" data-f="lg.p"><button class="btn s" style="margin-top:1rem" data-a="auth" data-v="l">${_('Iniciar sesión', 'Saioa hasi')}</button>`}</div>`;
+}
+
+let admOk = false, admTab = 'reqs', admErr = false;
+function admin() {
+  if (!admOk) {
+    return back() + `<h2>🔒 ${_('Administración', 'Administrazioa')}</h2><div class="card"><label for="admp">${_('Contraseña', 'Pasahitza')}</label><input id="admp" type="password" onkeydown="if(event.key==='Enter')document.getElementById('admb').click()">${admErr ? `<p style="color:var(--r);font-weight:700;margin:.5rem 0 0">${_('Contraseña incorrecta.', 'Pasahitz okerra.')}</p>` : ""}<button id="admb" class="btn s" style="width:100%;margin-top:1rem" onclick="if(document.getElementById('admp').value==='hurbil2026'){admOk=true;admErr=false;render()}else{admErr=true;render()}">${_('Entrar', 'Sartu')}</button></div><p class="mut" style="text-align:center;margin-top:1rem">${_('Proyecto Erronka · Las solicitudes se envían a Hurbil para su revisión.', 'Erronka Proiektua · Eskaerak Hurbilera bidaltzen dira berrikusteko.')}</p>`;
+  }
+  const sel = (r, k, o) => `<select data-a="adm" data-k="${k}" data-id="${r.id}" aria-label="${k}">${o.map(x => `<option value="${x[0]}"${r[k] === x[0] ? ' selected' : ""}>${x[1]}</option>`).join("")}</select>`;
+  const stBadge = s => s === 'done' ? `✅ ${ST.done[L()]}` : s === 'accepted' ? `✅ ${ST.accepted[L()]}` : s === 'rejected' ? `❌ ${ST.rejected[L()]}` : s === 'assigned' ? `👤 ${ST.assigned[L()]}` : s === 'ongoing' ? `🟢 ${ST.ongoing[L()]}` : `⏳ ${_('Pendiente', 'Zain')}`;
+  const reqCards = db.reqs.map(r => `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:.4rem"><span class="bd">${stBadge(r.st)}</span><span class="mut">#${r.id}</span></div><p style="margin:.2rem 0;font-size:1.1rem"><b>${esc(r.cli ? r.cli : 'Aimar Fernandez')}</b></p><p style="margin:.2rem 0">${svc(r)} · ${r.bono > 1 ? `Bono ${r.bono} horas · ` : ""}${r.hTot} h</p><p class="mut" style="margin:.2rem 0">📅 ${r.ses.map(sl).join(' | ')} (${sesH(r.ses)}/${r.hTot} h)</p><p class="mut" style="margin:.2rem 0">📍 ${esc(r.addr)}${r.pin ? ` · 🔑 ${r.pin}` : ""}</p><p style="margin:.4rem 0"><b>${fmt(r.tot)}</b></p><label>${_('Trabajador asignado', 'Esleitutako langilea')}</label>${sel(r, 'w', [['', '-'], ...W.map(x => [x, x])])}<div class="row" style="margin-top:.8rem;gap:.6rem"><button class="btn s" style="flex:1" data-a="adm" data-k="st" data-id="${r.id}" value="accepted">✓ ${_('Aceptar', 'Onartu')}</button><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="adm" data-k="st" data-id="${r.id}" value="rejected">✕ ${_('Rechazar', 'Baztertu')}</button></div></div>`).join("");
+  const allPlanCards = `<h3 style="margin-top:1.2rem">${_('Planes conjuntos publicados', 'Argitaratutako plan bateratuak')} (${db.plans.length})</h3>` + (db.plans.length ? db.plans.map(p => `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:.4rem"><span class="bd">${p.prop ? PS[p.prop.st][L()] : _('Abierto en Comunidad', 'Komunitatean irekita')}</span><button class="btn g" style="min-height:38px;padding:.3rem .7rem;color:var(--r);border-color:var(--r)" data-a="delplan_ask" data-v="${p.id}">🗑️ ${_('Borrar plan', 'Plana ezabatu')}</button></div><p><b>${esc(p.t[L()] || p.t.es)}</b> · ${p.m.map(esc).join(' + ')}</p>${p.w ? `<p class="mut">📅 ${esc(p.w)}</p>` : ""}${p.prop && p.prop.st !== 'draft' ? `<div class="row" style="gap:.6rem;margin-top:.5rem"><button class="btn s" style="flex:1" data-a="jp" data-v="${p.id}" data-k="accepted">✓ ${_('Aceptar', 'Onartu')}</button><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="jp" data-v="${p.id}" data-k="rejected">✕ ${_('Rechazar', 'Baztertu')}</button></div>` : ""}${String(askDelPlan) === String(p.id) ? `<div class="confirm-box"><p style="margin:0 0 .6rem;font-weight:800">${_('¿Estás seguro de que quieres borrar este plan?', 'Ziur zaude plan hau ezabatu nahi duzula?')}</p><div class="row" style="gap:.6rem"><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="delplan_yes" data-v="${p.id}">${_('Sí, borrar', 'Bai, ezabatu')}</button><button class="btn g" style="flex:1" data-a="delplan_no">${_('No', 'Ez')}</button></div></div>` : ""}</div>`).join("") : `<div class="card"><p class="mut">${_('No hay planes registrados.', 'Ez dago planik erregistratuta.')}</p></div>`);
+  const cloudUsersCard = `<div class="card"><h3>👥 ${_('Cuentas registradas en la app', 'Aplikazioan erregistratutako kontuak')} (${usersList.length})</h3>${usersList.length ? usersList.map(u => `<div class="row" style="justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--bd)"><div class="row">${avImg(u, 38)}<div><b>${esc(u.name || _('Sin nombre', 'Izenik gabe'))}</b><br><span class="mut">${esc(u.username || "")} · ${esc(u.addr || 'Bilbao')}</span></div></div><button class="btn" style="min-height:38px;padding:.35rem .75rem;background:var(--r);color:#fff;border-color:var(--r)" data-a="delacc" data-v="${u.id}">${_('Borrar', 'Ezabatu')}</button></div>`).join("") : `<p class="mut">${_('No hay cuentas cargadas de Supabase.', 'Ez dago Supabasetik kargatutako konturik.')}</p>`}</div>`;
+  const accCards = cloudUsersCard + `<div class="card"><h3>🔑 PIN ${_('trabajadores', 'langileak')}</h3>${W.map(n => `<p>${n}: <b>${WP[n]}</b></p>`).join("")}</div><div class="card"><h3>⭐ ${_('Valoraciones', 'Balorazioak')}</h3>${W.map(n => { const a = db.reqs.filter(r => r.w === n && r.rate), m = a.length ? a.reduce((s, r) => s + r.rate.s, 0) / a.length : 0; return `<p><b>${n}</b>: ${a.length ? `${stars(Math.round(m))} ${m.toFixed(1).replace('.', ',')} (${a.length})` : _('Sin valoraciones', 'Baloraziorik gabe')}</p>${a.map(r => `<p class="mut">"${esc(r.rate.c ? r.rate.c : '-')}"</p>`).join("")}`; }).join("")}</div>`;
+  const teamThreadIds = [...new Set(teamMsgs.map(m => m.sender_id == TEAM_ID ? m.receiver_id : m.sender_id))].filter(Boolean);
+  const teamChatCards = teamThreadIds.length ? teamThreadIds.map(uid => {
+    const u = usersList.find(x => x.id == uid) || { name: _('Usuario', 'Erabiltzailea'), username: "", addr: 'Bilbao' };
+    const thread = teamMsgs.filter(m => (m.sender_id == uid && m.receiver_id == TEAM_ID) || (m.sender_id == TEAM_ID && m.receiver_id == uid));
+    const formatted = thread.map(m => ({ f: m.sender_id == TEAM_ID ? 'u' : 'h', n: m.sender_id == TEAM_ID ? 'Equipo Hurbil' : u.name, t: m.text }));
+    return `<div class="card"><div class="row" style="margin-bottom:.5rem">${avImg(u, 42)}<div><b>${esc(u.name)}</b><br><span class="mut">${esc(u.username || "")} · ${esc(u.addr || 'Bilbao')}</span></div></div>${msgs(formatted, 'Equipo Hurbil')}${sendBox('admteam:' + uid)}</div>`;
+  }).join("") : `<div class="card"><p class="mut">${_('Aún ningún usuario ha escrito al Equipo Hurbil desde el chat.', 'Oraindik ez du inork idatzi Hurbil Taldeari txatetik.')}</p></div>`;
+  return `${back()}<div class="row" style="justify-content:space-between;align-items:center"><h2>⚙️ ${_('Administración', 'Administrazioa')}</h2><button class="btn g" onclick="admOk=false;render()">${_('Salir', 'Irten')}</button></div><p class="mut" style="margin-top:-.3rem"><span style="color:var(--s)">●</span> ${_('En directo · panel de control', 'Zuzenean · kontrol panela')}</p><div class="row" style="gap:.5rem;margin:1rem 0"><button class="btn ${admTab === 'reqs' ? 's' : ""}" style="flex:1" onclick="admTab='reqs';render()">📋 ${_('Solicitudes', 'Eskaerak')} (${db.reqs.length + db.plans.length})</button><button class="btn ${admTab === 'msgs' ? 's' : ""}" style="flex:1" onclick="admTab='msgs';render()">💬 ${_('Mensajes Hurbil', 'Hurbil Mezuak')} (${teamThreadIds.length})</button><button class="btn ${admTab === 'accs' ? 's' : ""}" style="flex:1" onclick="admTab='accs';render()">👥 ${_('Cuentas', 'Kontuak')} (${usersList.length})</button></div>${admTab === 'reqs' ? (reqCards + allPlanCards) : admTab === 'msgs' ? teamChatCards : accCards}<button class="btn g" style="margin-top:.8rem" data-a="rst">${_('Restablecer datos de muestra', 'Laginketa-datuak berrezarri')}</button>`;
+}
+
+function modal() {
+  if (!md) return "";
+  let b = "";
+  if (md == 'sos') {
+    const m = encodeURIComponent(`🆘 URGENTE: ${db.u.name} necesita ayuda. Dirección: ${db.u.addr || 'Bilbao'}. Hurbil 644 270 017`);
+    b = `<div class="row"><h2 class="grow" style="color:var(--r)">🆘 ${_('Emergencia', 'Larrialdia')}</h2>${S(_('Ayuda inmediata. Pulsa llamar al 644 270 017.', 'Berehalako laguntza. Sakatu 644 270 017 zenbakira deitzeko.'))}</div><p><b>${_('Si es muy grave, llama también al 112.', 'Oso larria bada, deitu 112ra ere.')}</b></p><div class="row" style="flex-direction:column;align-items:stretch"><a class="btn" href="tel:644270017">📞 ${_('Llamar a Hurbil', 'Hurbilera deitu')} · 644 270 017</a><a class="btn s" target="_blank" rel="noopener" href="https://wa.me/${phone(db.u.fam) || ""}?text=${m}">💬 ${_('Avisar a mi familiar por WhatsApp', 'Abisatu nire senideari WhatsApp bidez')}</a><a class="btn g" target="_blank" rel="noopener" href="https://wa.me/34644270017?text=${m}">📍 ${_('Enviar alerta urgente con mi dirección', 'Bidali larrialdi-alerta nire helbidearekin')}</a></div><p class="mut">📍 ${esc(db.u.addr || 'Bilbao')}</p>`;
+  } else if (md == 'story_up') {
+    const r = db.reqs.find(x => String(x.id) === String(storyReqId));
+    b = `<div class="row"><h2 class="grow">📸 ${_('Subir historia del servicio', 'Zerbitzuaren historia igo')}</h2></div>${r ? `<p class="mut" style="margin:.2rem 0 .7rem">${svc(r)}</p>` : ""}<label for="st_cap">${_('Texto o comentario (opcional)', 'Testua edo iruzkina (aukerakoa)')}</label><input id="st_cap" placeholder="${_('Ej. ¡Paseando por Bilbao con Ander!', 'Adib. Bilbotik paseatzen Anderrekin!')}" value="${esc(draftChat)}" oninput="draftChat=this.value"><label style="margin-top:.9rem">${_('Elige foto o vídeo (máx. 20 s)', 'Aukeratu argazkia edo bideoa (geh. 20 s)')}</label><label class="btn s" style="width:100%;margin-top:.4rem;cursor:pointer;${storyUploading ? 'opacity:.6;pointer-events:none' : ""}">${storyUploading ? '⏳ ' + _('Subiendo...', 'Igotzen...') : '📷 ' + _('Seleccionar foto o vídeo', 'Hautatu argazkia edo bideoa')}<input type="file" accept="image/*,video/*" style="display:none" onchange="upStory(this)"></label><p class="mut" style="font-size:.82rem;margin-top:.6rem">${_('La historia estará visible durante 24 horas para tus seguidores.', 'Historia 24 orduz egongo da ikusgai zure jarraitzaileentzat.')}</p>`;
+  }
+  return `<div class="ov"><div class="mo" role="dialog" aria-modal="true">${b}<button class="btn g" style="margin-top:1rem;width:100%" data-a="close">✕ ${_('Cerrar', 'Itxi')}</button></div></div>`;
+}
+
+const saved = () => db.reqs.reduce((s, r) => s + (r.base - r.tot), 0) + db.plans.filter(p => p.prop && p.prop.st == 'accepted' && p.m.includes(fn())).reduce((s, p) => s + (21 - 16) * p.h, 0);
+function pextra() {
+  const sv = `${_('Has ahorrado', 'Aurreztu duzu')} ${fmt(saved())}`, bo = db.reqs.find(r => r.bono && !arch(r));
+  let b = "";
+  if (bo) {
+    const tot = bo.hTot, con = bo.ses.filter(x => end(x.d, x.t, x.h) < Date.now()).reduce((s, x) => s + x.h, 0), sch = sesH(bo.ses), tx = `${_('Bono', 'Bonoa')} ${tot} h: ${con} h ${_('consumidas', 'kontsumituta')} · ${sch - con} h ${_('programadas', 'programatuta')} · ${tot - sch} h ${_('disponibles', 'eskuragarri')}`;
+    b = `<div class="card"><div class="row"><h3 class="grow">🎟️ ${_('Mi bono', 'Nire bonoa')}</h3>${S(tx)}</div><div class="bar" style="margin:.5rem 0"><i style="width:${con / tot * 100}%"></i><i class="f" style="width:${(sch - con) / tot * 100}%"></i></div><p>${tx}</p></div>`;
+  }
+  return `<div class="card"><div class="row"><h3 class="grow">💚 ${_('Mi ahorro total', 'Nire aurrezki osoa')}</h3>${S(sv)}</div><p style="font-size:1.7rem;font-weight:800;margin:.2rem 0">${fmt(saved())}</p><p class="mut">${_('Frente a la tarifa estándar de 21 €/h, con bonos y planes conjuntos.', '21 €/orduko tarifa estandarrarekin alderatuta, bonoekin eta plan bateratuekin.')}</p></div>` + b;
+}
+
+const WK = [
+  ['Aimar Fernandez', '👨🏻', ['Compañía y paseos', 'Konpainia eta ibilaldiak'], ['Soy de Bilbao de toda la vida y me encanta pasear por Doña Casilda charlando sin prisa.', 'Bilbokoa naiz betidanik eta Doña Casildan lasai-lasai berriketan ibiltzea maite dut.']],
+  ['Ander Herrera', '🧑🏻', ['Recados y móvil', 'Egitekoak eta mugikorra'], ['Te ayudo con el móvil, las citas y los recados con mucha paciencia: sin prisa ni tecnicismos.', 'Mugikorrarekin, hitzorduekin eta egitekoekin laguntzen dizut pazientzia handiz: presarik eta teknizismorik gabe.']],
+  ['Eder Fernandez', '🧔🏻', ['Acompañamiento médico', 'Laguntza medikoa'], ['Te acompaño al centro de salud o al hospital y me quedo contigo hasta que vuelves a casa.', 'Osasun-zentrora edo ospitalera laguntzen dizut eta zurekin geratzen naiz etxera itzuli arte.']],
+  ['Eidan Irastorza', '👱🏻', ['Hogar y tareas ligeras', 'Etxea eta lan arinak'], ['Te echo una mano en casa: ordenar, preparar algo sencillo o regar las plantas, a tu ritmo.', 'Etxean laguntzen dizut: ordenatu, janari sinplea prestatu edo landareak ureztatu, zure erritmoan.']]
+];
+
+function team() {
+  return back() + head(_('Conoce a nuestro equipo', 'Ezagutu gure taldea')) + WK.map(k => {
+    const t = `${k[0]}. ${k[2][L()]}. ${k[3][L()]}`;
+    return `<article class="card"><div class="row" style="align-items:flex-start"><div style="font-size:2.4rem;line-height:1">${k[1]}</div><div class="grow"><h3>${k[0]}</h3><span class="bd">${k[2][L()]}</span></div>${S(t)}</div><p>${k[3][L()]}</p></article>`;
+  }).join("");
+}
+
+function work() {
+  const h = back() + head(_('Portal de trabajadores', 'Langileen ataria'));
+  if (!wk) return h + `<div class="card"><label for="wn">${_('Trabajador', 'Langilea')}</label><select id="wn" data-f="wl.n">${W.map(n => `<option ${wl.n == n ? 'selected' : ""}>${n}</option>`).join("")}</select><label for="wp">${_('PIN de acceso (4 dígitos)', 'Sarbide PINa (4 digitu)')}</label><input id="wp" type="password" inputmode="numeric" maxlength="4" data-f="wl.p" value="${esc(wl.p)}"><button class="btn s" style="margin-top:1rem" data-a="wlog">${_('Entrar', 'Sartu')}</button></div>`;
+  const m = db.reqs.filter(r => r.w == wk && !ended(r));
+  return h + `<div class="row"><b class="grow">👤 ${esc(wk)}</b><button class="btn g" data-a="wout">${_('Salir', 'Irten')}</button></div>` + (m.length ? m.map(r => {
+    const t = `${svc(r)}. ${esc(r.cli || "")}. ${r.addr}. ${r.ses.map(sl).join('. ')}. PIN ${(r.pin || "").split("").join(' ')}`;
+    return `<article class="card"><div class="row"><h3 class="grow">${svc(r)}</h3>${S(t)}</div><p>👤 ${esc(r.cli || '-')}</p><p>📍 ${esc(r.addr)}</p>${r.ses.map(q => `<p>📅 ${sl(q)}</p>`).join("")}<p style="font-size:1.4rem">🔑 ${_('PIN del cliente', 'Bezeroaren PINa')}: <b style="letter-spacing:.2em">${r.pin || '-'}</b></p><small class="mut">${_('Comprueba este código con el cliente al llegar.', 'Egiaztatu kode hau bezeroarekin iristean.')}</small></article>`;
+  }).join("") : `<div class="card"><p>${_('No tienes tareas asignadas ahora.', 'Ez duzu eginkizunik esleituta orain.')}</p></div>`);
+}
+
+function scheduleStoryAuto() {
+  clearTimeout(storyTimer);
+  if (route !== 'story' || askDelStory) return;
+  const list = activeStories();
+  const cur = list[storyIdx] || list[0];
+  if (!cur || cur.type === 'video') return;
+  storyTimer = setTimeout(() => {
+    if (route !== 'story' || askDelStory) return;
+    if (storyIdx + 1 < list.length) { storyIdx++; render(); }
+    else { go(prevRoute || 'home'); render(); }
+  }, 5000);
+}
+
+function render() {
+  stopSay();
+  const h = route, pg = { help, reqs, comm, prof, admin, team, work, chat: chatPage, story: storyPage }[h] || home;
+  document.documentElement.lang = db.lang;
+  document.body.className = (db.hc ? 'hc ' : "") + (db.easy ? 'easy' : "");
+  document.documentElement.style.fontSize = (16 + db.fs * 2 + (db.easy ? 4 : 0)) + 'px';
+  if (h === 'story') {
+    $('#hd').innerHTML = ''; $('#app').innerHTML = storyPage(); $('#fab').innerHTML = ""; $('#md').innerHTML = "";
+    scheduleStoryAuto(); return;
+  }
+  clearTimeout(storyTimer);
+  $('#hd').innerHTML = hdr();
+  $('#app').innerHTML = pg() + `<footer class="adv" style="margin-top:2rem;text-align:center"><small>Hurbil Bilbao · 644 270 017 · <a href="#admin" data-a="go" data-v="admin" style="opacity:.6">${_('admin', 'admin')}</a> · <a href="#work" data-a="go" data-v="work" style="opacity:.6">${_('trabajadores', 'langileak')}</a></small></footer>`;
+  const uDm = unreadDmCount();
+  $('#fab').innerHTML = `<div class="fab"><button class="cb" data-a="openchat">💬 ${_('Chat', 'Txata')}${uDm ? `<span class="badge">${uDm}</span>` : ""}</button><button class="sos" data-a="md" data-v="sos" aria-label="SOS">🆘 SOS</button></div>`;
+  $('#md').innerHTML = modal();
+  document.querySelectorAll('.msgs,.ig-feed').forEach(e => e.scrollTop = e.scrollHeight);
+  if (fo) { const i = document.querySelector('.send input,.ig-bar input'); i && i.focus(); fo = false; }
+}
+
+window.upAv = inp => {
+  const f = inp.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const im = new Image();
+    im.onload = () => {
+      const s = Math.min(im.width, im.height), sx = (im.width - s) / 2, sy = (im.height - s) / 2, c = document.createElement('canvas');
+      c.width = 180; c.height = 180; c.getContext('2d').drawImage(im, sx, sy, s, s, 0, 0, 180, 180);
+      db.u.avatar = c.toDataURL('image/jpeg', .8); save(); render(); toast(_('Foto actualizada', 'Argazkia eguneratuta'));
+    };
+    im.src = e.target.result;
+  };
+  r.readAsDataURL(f);
+};
+
+window.upStory = async inp => {
+  const f = inp.files[0]; if (!f) return;
+  const r = db.reqs.find(x => String(x.id) === String(storyReqId));
+  storyUploading = true; render();
+  const finish = async (url, type) => {
+    const stObj = { id: 'story_' + Date.now(), reqId: r ? r.id : 0, userId: sbUid || 'local', userName: db.u.name || _('Usuario', 'Erabiltzailea'), avatar: db.u.avatar || "", svc: r ? svc(r) : "", type, url, cap: draftChat.trim(), createdAt: Date.now(), exp: Date.now() + 864e5 };
+    db.stories = [stObj, ...(db.stories || [])]; save();
+    if (sbUid) await sb.from('plans').upsert({ id: stObj.id, data: stObj });
+    storyUploading = false; draftChat = ""; md = null; render();
+    toast(_('¡Historia publicada durante 24 horas!', 'Historia 24 orduz argitaratuta!'));
+  };
+  if (f.type.startsWith('video/')) {
+    if (!sbUid) { storyUploading = false; render(); toast(_('Inicia sesión para subir vídeos.', 'Hasi saioa bideoak igotzeko.')); return; }
+    const ext = (f.name.split('.').pop() || 'mp4').toLowerCase();
+    const path = `${sbUid}/${Date.now()}.${ext}`;
+    const { error } = await sb.storage.from('stories').upload(path, f, { contentType: f.type, upsert: true });
+    if (error) { storyUploading = false; render(); toast(_('Crea el bucket público "stories" en Supabase Storage para vídeos.', 'Sortu "stories" bucket publikoa Supabase Storage-n bideoetarako.')); return; }
+    const { data: pub } = sb.storage.from('stories').getPublicUrl(path);
+    await finish(pub.publicUrl, 'video');
+  } else {
+    const fr = new FileReader();
+    fr.onload = e => {
+      const im = new Image();
+      im.onload = async () => {
+        const maxW = 1080, sc = im.width > maxW ? maxW / im.width : 1, c = document.createElement('canvas');
+        c.width = Math.round(im.width * sc); c.height = Math.round(im.height * sc);
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        await finish(c.toDataURL('image/jpeg', .85), 'image');
+      };
+      im.src = e.target.result;
+    };
+    fr.readAsDataURL(f);
+  }
+};
+
+function act(el) {
+  const a = el.dataset.a, v = el.dataset.v, id = +el.dataset.id, r = db.reqs.find(x => x.id == id);
+  switch (a) {
+    case 'say': say(el.dataset.t, el); return;
+    case 'lang': db.lang = v; break;
+    case 'fs': db.fs = Math.max(-1, Math.min(6, db.fs + +v)); break;
+    case 'hc': db.hc ^= 1; break;
+    case 'easy': db.easy ^= 1; break;
+    case 'notif': {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        db.notif = db.notif === 0 ? 1 : 0;
+        toast(db.notif ? _('Avisos activados', 'Abisuak aktibatuta') : _('Avisos silenciados', 'Abisuak isilduta'));
+        break;
+      }
+      if (!('Notification' in window)) { toast(_('Tu navegador no soporta notificaciones.', 'Zure nabigatzaileak ez ditu jakinarazpenak onartzen.')); break; }
+      Notification.requestPermission().then(p => {
+        if (p === 'granted') { db.notif = 1; notifyUser('Hurbil', _('Notificaciones activadas correctamente', 'Jakinarazpenak behar bezala aktibatu dira')); }
+        else toast(_('Permiso de notificaciones denegado en el navegador.', 'Jakinarazpen baimena ukatuta nabigatzailean.'));
+        save(); render();
       });
+      break;
     }
-
-    toast(_('✅ Solicitud enviada. Coordinación Hurbil asignará tu acompañante.', '✅ Eskaera bidalita.'));
-    st.route = 'family_home';
-    await syncAll();
-  }
-
-  async function cancelBooking(bk) {
-    const serviceStart = new Date(`${bk.service_date}T${bk.start_time}`);
-    const hoursDiff = (serviceStart - new Date()) / 3600000;
-    if (hoursDiff < 24) {
-      return toast(_('⚠️ Faltan menos de 24h. Llama al 644 270 017 para gestionar cambios.', '⚠️ 24 ordu baino gutxiago falta dira. Deitu 644 270 017 zenbakira.'));
+    case 'md': md = v; draftChat = ""; break;
+    case 'openchat': md = null; dmUser = null; mt = 'friends'; draftChat = ""; go('chat'); break;
+    case 'dmback': dmUser = null; mt = 'friends'; draftChat = ""; break;
+    case 'close': md = null; draftChat = ""; break;
+    case 'go': md = null; draftChat = ""; go(v); break;
+    case 'tm': mt = v; draftChat = ""; if (v == 'team' && dmList.length) { lastSeenDm = Math.max(...dmList.map(x => x.id || 0)); localStorage.setItem('hurbil_seen_dm', String(lastSeenDm)); } break;
+    case 'openstory': { storyReqId = el.dataset.id; draftChat = ""; md = 'story_up'; break; }
+    case 'viewstory': { const list = activeStories(); const idx = list.findIndex(x => String(x.id) === String(v)); storyIdx = idx >= 0 ? idx : 0; askDelStory = false; if (route !== 'story') prevRoute = route; md = null; go('story'); break; }
+    case 'stclose': { askDelStory = false; go(prevRoute || 'home'); break; }
+    case 'stnext': { askDelStory = false; const list = activeStories(); if (list.length) { if (storyIdx + 1 < list.length) storyIdx++; else go(prevRoute || 'home'); } break; }
+    case 'stprev': { askDelStory = false; const list = activeStories(); if (list.length) storyIdx = Math.max(0, storyIdx - 1); break; }
+    case 'stdel_ask': { clearTimeout(storyTimer); askDelStory = true; break; }
+    case 'stdel_no': { askDelStory = false; break; }
+    case 'stdel_yes': { const sid = String(v); askDelStory = false; db.delPlans = [...(db.delPlans || []), sid]; db.stories = (db.stories || []).filter(x => String(x.id) !== sid); save(); sb.from('plans').delete().eq('id', sid).then(() => {}); const rem = activeStories(); if (rem.length) { storyIdx = Math.min(storyIdx, rem.length - 1); } else { go(prevRoute || 'home'); } toast(_('Historia eliminada', 'Historia ezabatuta')); break; }
+    case 'edprof': { editProf = !editProf; break; }
+    case 'cat': w.cat = +v; w.opt = null; w.txt = ""; break;
+    case 'opt': w.opt = v == 'o' ? 'o' : +v; if (v != 'o') w.txt = ""; break;
+    case 'wplan': w.plan = v; break;
+    case 'wwho': w.who = v; if (v == 'me') { w.rName = db.u.name || ""; w.rAddr = db.u.addr || ""; w.rPhone = db.u.contact || ""; } else { w.rName = ""; w.rPhone = ""; } break;
+    case 'wpay': w.pay = el.value; break;
+    case 'adds': { if (!w.sd || !w.st || (+w.sh < 1)) return; w.ses.push({ d: w.sd, t: w.st, h: Math.max(1, +w.sh || 1) }); w.ses.sort((a, b) => (a.d + a.t).localeCompare(b.d + b.t)); w.sh = 1; toast(_('Cita añadida al plan', 'Hitzordua planera gehituta')); break; }
+    case 'dels': { w.ses.splice(+v, 1); break; }
+    case 'cx': Object.assign(w, W0()); go('reqs'); break;
+    case 'addto': Object.assign(w, W0(), { addTo: id, plan: 'bono', s: 4 }); go('help'); break;
+    case 'svs': {
+      const R0 = db.reqs.find(x => x.id == w.addTo);
+      R0.ses.push(...w.ses); R0.ses.sort((a, b) => (a.d + a.t).localeCompare(b.d + b.t));
+      const totU = sesH(R0.ses);
+      if (totU > R0.hTot) {
+        const extra = totU - R0.hTot, exRate = R0.hTot >= 12 ? 18 : 19.50;
+        R0.tot = +(R0.tot + extra * exRate).toFixed(2);
+        R0.hTot = totU; R0.base = 21 * totU;
+      }
+      if (sbUid) sb.from('requests').update({ data: R0 }).eq('id', R0.id).then(() => {});
+      Object.assign(w, W0()); toast(_('Citas guardadas.', 'Hitzorduak gordeta.')); go('reqs'); break;
     }
-
-    await sb.from('hurbil_bookings').update({ status: 'cancelled' }).eq('id', bk.id);
-    if (Number(bk.hours_deducted) > 0) {
-      const restored = Number(st.profile.bonus_hours) + Number(bk.hours_deducted);
-      await sb.from('hurbil_profiles').update({ bonus_hours: restored }).eq('id', st.user.id);
+    case 'wlog': if (wl.p === WP[wl.n]) wk = wl.n; else { toast(_('PIN incorrecto.', 'PIN okerra.')); return; } break;
+    case 'wout': wk = null; wl.p = ""; break;
+    case 'shw': { w.share = !w.share; break; }
+    case 'fol': {
+      if (!sbUid) { toast(_('Inicia sesión primero.', 'Hasi saioa lehenik.')); break; }
+      const ex = folRows.find(x => x.follower_id == sbUid && x.following_id == v);
+      if (ex) {
+        folRows = folRows.filter(x => !(x.follower_id == sbUid && x.following_id == v));
+        sb.from('follows').delete().eq('follower_id', sbUid).eq('following_id', v).then(() => syncCloud());
+        toast(_('Dejaste de seguir', 'Jarraitzeari utzi diozu'));
+      } else {
+        folRows.push({ follower_id: sbUid, following_id: v, status: 'pending' });
+        sb.from('follows').insert({ follower_id: sbUid, following_id: v, status: 'pending' }).then(() => syncCloud());
+        toast(_('Solicitud de seguimiento enviada', 'Jarraipen eskaera bidalita'));
+      }
+      break;
     }
-    toast(_('✅ Cita cancelada gratuitamente (>24h). Saldo/reembolso tramitado.', '✅ Hitzordua doan bertan behera utzita.'));
-    await syncAll();
-  }
-
-  async function submitPin(bookingId, type) {
-    const inputEl = document.getElementById(`pin-${type}-${bookingId}`);
-    const pinVal = (inputEl?.value || '').trim();
-    if (pinVal.length !== 4) return toast(_('Introduce los 4 dígitos del PIN', 'Sartu 4 digituko PINa'));
-
-    const { data, error } = await sb.rpc('validate_hurbil_pin', {
-      p_booking_id: bookingId,
-      p_pin: pinVal,
-      p_type: type
-    });
-
-    if (error || !data?.ok) {
-      return toast(data?.error || error?.message || 'Error al validar PIN');
+    case 'pint': {
+      if (!sbUid) { toast(_('Inicia sesión primero.', 'Hasi saioa lehenik.')); break; }
+      const p = db.plans.find(x => String(x.id) == v); if (!p) break;
+      p.int = p.int || [];
+      if (p.int.includes(sbUid)) p.int = p.int.filter(x => x != sbUid);
+      else { p.int.push(sbUid); toast(_('¡Aviso enviado! Le llegará una notificación al creador del plan.', 'Abisua bidalita! Jakinarazpena iritsiko zaio planaren sortzaileari.')); }
+      sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => syncCloud()); break;
     }
-
-    sb.functions.invoke('hurbil-api', {
-      body: { action: 'send_pin_email', payload: data }
-    }).catch(() => {});
-
-    toast(type === 'entry'
-      ? _('✅ PIN de Entrada validado. Familia notificada.', '✅ Sarrera PINa balioztatuta.')
-      : _('✅ PIN de Salida validado. Servicio completado.', '✅ Irteera PINa balioztatuta.')
-    );
-    await syncAll();
-  }
-
-  async function reportIncident(bookingId) {
-    const msg = prompt(_('Describe brevemente la incidencia para el equipo de guardia Hurbil:', 'Azaldu labur gertakaria:'));
-    if (!msg) return;
-    await sb.from('hurbil_bookings').update({ incident_reported: true, incident_details: msg }).eq('id', bookingId);
-    toast(_('🚨 Incidencia registrada. Central Hurbil contactará de inmediato.', '🚨 Gertakaria erregistratuta.'));
-    await syncAll();
-  }
-
-  async function rateBooking(bookingId, stars) {
-    await sb.from('hurbil_bookings').update({ rating: stars }).eq('id', bookingId);
-    toast(_(`⭐ Gracias por valorar el servicio con ${stars} estrellas.`, `⭐ Eskerrik asko ${stars} izarrekin baloratzeagatik.`));
-    await syncAll();
-  }
-
-  async function assignEmployee(bookingId) {
-    const empId = document.getElementById(`assign-${bookingId}`)?.value;
-    if (!empId) return toast(_('Selecciona un empleado de plantilla', 'Hautatu langile bat'));
-    await sb.from('hurbil_bookings').update({ employee_id: empId, status: 'confirmed' }).eq('id', bookingId);
-    toast(_('✅ Empleado asignado. Cita confirmada y PINs generados.', '✅ Langilea esleituta.'));
-    await syncAll();
-  }
-
-  async function createInternalEmployee(e) {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const { data, error } = await sb.functions.invoke('hurbil-api', {
-      body: {
-        action: 'create_employee',
-        payload: {
-          full_name: fd.get('full_name'),
-          email: fd.get('email'),
-          password: fd.get('password'),
-          phone: fd.get('phone'),
-          bio: fd.get('bio')
+    case 'pacc': {
+      const [pid, uid] = v.split(':'), p = db.plans.find(x => String(x.id) == pid); if (!p) break;
+      const peer = usersList.find(x => x.id == uid) || { name: _('Vecino', 'Bizilaguna') };
+      p.int = (p.int || []).filter(x => x != uid); p.accU = uid; p.m = [p.ownerName || db.u.name, peer.name];
+      p.prop = { st: 'draft', acc: [] }; p.msgs = p.msgs || [];
+      p.msgs.push({ n: 'Hurbil', t: _('🤝 Plan conjunto creado entre ', '🤝 Plan bateratua sortuta: ') + p.m[0] + ' & ' + p.m[1] + _('. Ambos debéis pulsar Aceptar plan aquí abajo.', '. Biok behean Plana onartu sakatu behar duzue.') });
+      sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => {
+        sb.from('direct_messages').insert({ sender_id: sbUid, receiver_id: uid, text: '🤝 ' + _('He aceptado tu interés en el plan: ', 'Zure interesa onartu dut planean: ') + (p.t[L()] || p.t.es), plan_id: String(p.id) }).then(() => syncCloud());
+      });
+      toast(_('¡Plan aceptado! Ya puedes pulsar Abrir chat con ', 'Plana onartuta! Orain sakatu dezakezu Ireki txata: ') + peer.name); break;
+    }
+    case 'prej': {
+      const [pid, uid] = v.split(':'), p = db.plans.find(x => String(x.id) == pid); if (!p) break;
+      p.int = (p.int || []).filter(x => x != uid);
+      sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => syncCloud());
+      toast(_('Solicitud rechazada', 'Eskaera baztertuta')); break;
+    }
+    case 'ok': {
+      if (sendingReq) return; sendingReq = true; setTimeout(() => sendingReq = false, 2000);
+      const est = estCalc(), sesList = w.plan == 'normal' ? [{ d: w.sd, t: w.st, h: Math.max(1, +w.sh || 1) }] : [...w.ses], s0 = sesList[0], hTot = w.plan == 'normal' ? s0.h : Math.max(w.plan == 'bono' ? 5 : 12, sesH(sesList)), extraTxt = [w.rDo, w.rNotes].filter(Boolean).join('. '), fullTxt = [w.txt, extraTxt].filter(Boolean).join(' · ');
+      db.reqs.unshift({ id: Date.now(), c: w.cat, o: w.opt, t: fullTxt, ses: sesList, hTot, bono: w.plan != 'normal' ? 1 : 0, date: s0.d, time: s0.t, h: s0.h, addr: w.rAddr, cli: w.rName || db.u.name, phone: w.rPhone, who: w.who, pay: w.pay, ppl: 1, base: 21 * hTot, tot: est.tot, st: 'pending', w: "" });
+      if (!db.u.addr) db.u.addr = w.rAddr;
+      if (sbUid) sb.from('requests').insert({ user_id: sbUid, data: db.reqs[0] }).then(() => syncCloud());
+      if (w.share && sbUid) {
+        const pid = String(Date.now() + 1), np = { id: pid, ownerId: sbUid, ownerName: db.u.name, t: { es: svc(db.reqs[0]), eu: svc(db.reqs[0]) }, w: sesList.map(sl).join(' | ') + ' · ' + w.rAddr, h: hTot, m: [db.u.name], int: [], accU: null, prop: null, msgs: [] };
+        db.plans.unshift(np); sb.from('plans').upsert({ id: pid, data: np }).then(() => syncCloud());
+      }
+      Object.assign(w, W0()); toast(_('¡Solicitud enviada! Te avisaremos cuando Hurbil la acepte.', 'Eskaera bidalita! Hurbilek onartzen duenean abisatuko dizugu.')); go('reqs'); break;
+    }
+    case 'jp': {
+      const p = db.plans.find(x => String(x.id) == v), k = el.dataset.k;
+      p.prop.st = k;
+      p.msgs.push({ n: 'Hurbil', t: k == 'accepted' ? _('✅ Hurbil ha aceptado vuestro plan conjunto.', '✅ Hurbilek zuen plan bateratua onartu du.') : _('❌ Hurbil no puede aceptar este plan. Os propondremos otra fecha.', '❌ Hurbilek ezin du plan hau onartu. Beste data bat proposatuko dizuegu.') });
+      sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => {}); break;
+    }
+    case 'delreq_ask': { askDelReq = el.dataset.id; break; }
+    case 'delreq_no': { askDelReq = null; break; }
+    case 'delreq_yes': { const rid = String(el.dataset.id); askDelReq = null; db.delReqs = [...(db.delReqs || []), rid]; db.reqs = db.reqs.filter(x => String(x.id) !== rid); save(); sb.from('requests').delete().eq('id', rid).then(() => {}); sb.from('requests').delete().eq('id', +rid).then(() => {}); toast(_('Solicitud eliminada', 'Eskaera ezabatuta')); break; }
+    case 'delplan_ask': { askDelPlan = v; break; }
+    case 'delplan_no': { askDelPlan = null; break; }
+    case 'delplan_yes': { const pid = String(v); askDelPlan = null; db.delPlans = [...(db.delPlans || []), pid]; db.plans = db.plans.filter(x => String(x.id) !== pid); save(); sb.from('plans').delete().eq('id', pid).then(() => {}); if (!isNaN(+pid)) sb.from('plans').delete().eq('id', +pid).then(() => {}); toast(_('Plan eliminado definitivamente', 'Plana behin betiko ezabatuta')); break; }
+    case 'delacc': { usersList = usersList.filter(x => x.id != v); sb.from('follows').delete().or(`follower_id.eq.${v},following_id.eq.${v}`).then(() => {}); sb.from('direct_messages').delete().or(`sender_id.eq.${v},receiver_id.eq.${v}`).then(() => {}); sb.from('profiles').delete().eq('id', v).then(() => syncCloud()); toast(_('Cuenta eliminada', 'Kontua ezabatuta')); break; }
+    case 'nx': w.s++; break;
+    case 'pv': w.s--; break;
+    case 'wa': {
+      const p = phone(db.u.fam);
+      if (!p) { toast(_('Añade el teléfono de tu familiar en el perfil.', 'Gehitu zure senidearen telefonoa profilean.')); go('prof'); render(); return; }
+      open(`https://wa.me/${p}?text=${encodeURIComponent(`Hola, te aviso de mi cita con Hurbil: ${svc(r)}. ${r.ses.map(sl).join('; ')}, en ${r.addr}. Estado: ${ST[r.st][0]}. Hurbil: 644 270 017`)}`, '_blank', 'noopener'); return;
+    }
+    case 'star': tr[id] = { ...tr[id], s: +v }; break;
+    case 'rate': {
+      const x = tr[id]; if (!x?.s) { toast(_('Elige de 1 a 5 estrellas.', 'Aukeratu 1 eta 5 izar artean.')); return; }
+      if (dl(r) <= 0) { toast(_('El plazo de 24 horas ha terminado.', '24 orduko epea amaitu da.')); break; }
+      r.rate = { s: x.s, c: x.c || "" }; break;
+    }
+    case 'facc': { const row = folRows.find(x => x.follower_id == v && x.following_id == sbUid); if (row) row.status = 'accepted'; sb.from('follows').update({ status: 'accepted' }).eq('follower_id', v).eq('following_id', sbUid).then(() => syncCloud()); toast(_('Solicitud aceptada', 'Eskaera onartuta')); break; }
+    case 'frej': { folRows = folRows.filter(x => !(x.follower_id == v && x.following_id == sbUid)); sb.from('follows').delete().eq('follower_id', v).eq('following_id', sbUid).then(() => syncCloud()); toast(_('Solicitud rechazada', 'Eskaera baztertuta')); break; }
+    case 'uprof': { viewU = viewU == v ? null : v; break; }
+    case 'dm': { md = null; dmUser = v; draftChat = ""; go('chat'); if (dmList.length) { lastSeenDm = Math.max(...dmList.map(x => x.id || 0)); localStorage.setItem('hurbil_seen_dm', String(lastSeenDm)); } syncCloud(); break; }
+    case 'tab': ct = v; break;
+    case 'flt': fl = !fl; break;
+    case 'join': {
+      const p = db.plans.find(x => x.id == +v), n = fn();
+      if (p.m.includes(n)) { p.m = p.m.filter(x => x != n); p.prop = null; }
+      else {
+        p.m.push(n);
+        if (p.m.length == 2) {
+          p.prop = { st: 'draft', acc: [] };
+          p.msgs.push({ n: p.m[0], t: _('¡Genial, ya somos dos! Vamos a por este plan.', 'Bikaina, bi gara! Egin dezagun plan hau.') }, { n: 'Hurbil', t: _('🤝 Propuesta de plan conjunto creada para 2 personas (16,00 €/h por persona). Aceptadla los dos y la enviamos a Hurbil.', '🤝 2 pertsonentzako plan bateratuaren proposamena sortu da (16,00 €/h pertsonako). Biok onartu eta Hurbili bidaliko diogu.') });
+          oc = p.id;
         }
       }
-    });
-    if (error || data?.error) return toast(data?.error || error.message);
-    toast(_('✅ Empleado interno dado de alta en plantilla', '✅ Langile berria altan emanda'));
-    e.target.reset();
-    await syncAll();
-  }
-
-  function render() {
-    const navEl = document.getElementById('nav-actions');
-    const appEl = document.getElementById('app');
-
-    if (!st.user || !st.profile) {
-      navEl.innerHTML = '';
-      appEl.innerHTML = renderAuth();
-      return;
+      sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => {}); break;
     }
-
-    navEl.innerHTML = `
-      <span class="badge">${st.profile.role === 'admin' ? 'ADMIN' : st.profile.role === 'employee' ? 'EMPLEADO' : `Bono: ${st.profile.bonus_hours}h`}</span>
-      <button onclick="logout()">${_('Salir', 'Irten')}</button>
-    `;
-
-    if (st.profile.role === 'family') {
-      appEl.innerHTML = renderFamilyDashboard();
-    } else if (st.profile.role === 'admin') {
-      appEl.innerHTML = renderAdminDashboard();
-    } else if (st.profile.role === 'employee') {
-      appEl.innerHTML = renderEmployeeDashboard();
+    case 'acc': {
+      const p = db.plans.find(x => String(x.id) == v), n = el.dataset.n;
+      if (p && p.prop && !p.prop.acc.includes(n)) {
+        p.prop.acc.push(n);
+        if (p.prop.acc.length >= 2) {
+          p.prop.st = 'sent';
+          p.msgs.push({ n: 'Hurbil', t: _('📤 Plan conjunto enviado a Hurbil para confirmación.', '📤 Plan bateratua Hurbilera bidalita baieztatzeko.') });
+          toast(_('¡Los dos habéis aceptado! Plan enviado a Hurbil.', 'Biok onartu duzue! Plana Hurbilera bidalita.'));
+        } else {
+          toast(_('Has aceptado el plan. Falta la otra persona.', 'Plana onartu duzu. Beste pertsona falta da.'));
+        }
+        sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => syncCloud());
+      }
+      break;
     }
-  }
-
-  function renderAuth() {
-    return `
-      <div class="card">
-        <div style="display:flex;gap:8px;margin-bottom:16px;">
-          <button class="${st.authMode === 'login' ? 'primary' : ''}" onclick="st.authMode='login';render()">
-            ${_('Ya tengo cuenta / Personal', 'Sartu kontura / Langileak')}
-          </button>
-          <button class="${st.authMode === 'register' ? 'primary' : ''}" onclick="st.authMode='register';render()">
-            ${_('Crear cuenta familiar', 'Sortu familia kontua')}
-          </button>
-        </div>
-
-        ${st.authMode === 'login' ? `
-          <form onsubmit="handleLogin(event)">
-            <h2>${_('Acceso a Hurbil Bilbao', 'Hurbil Bilbora sarrera')}</h2>
-            <label>${_('Correo electrónico', 'Posta elektronikoa')}</label>
-            <input type="email" name="email" required />
-            <label>${_('Contraseña', 'Pasahitza')}</label>
-            <input type="password" name="password" required />
-            <button type="submit" class="primary" style="width:100%;margin-top:16px;">${_('Entrar', 'Sartu')}</button>
-          </form>
-        ` : `
-          <form onsubmit="handleRegister(event)">
-            <h2>${_('Registro de Cliente / Familia en Bilbao', 'Bezero / Familia Erregistroa Bilbon')}</h2>
-            <p style="color:var(--muted);font-size:0.92rem;">
-              ${_('Todos nuestros acompañantes son personal contratado directamente por Hurbil.', 'Gure laguntzaile guztiak Hurbilek zuzenean kontratatutako langileak dira.')}
-            </p>
-            <div class="grid-2">
-              <div>
-                <label>${_('Nombre del titular que contrata', 'Kontratatzen duen titularraren izena')}</label>
-                <input name="full_name" placeholder="Ej. Amaia Etxebarria" required />
-              </div>
-              <div>
-                <label>${_('Teléfono móvil de contacto', 'Harremanetarako mugikorra')}</label>
-                <input name="phone" placeholder="600 000 000" required />
-              </div>
-            </div>
-            <div class="grid-2">
-              <div>
-                <label>${_('Correo electrónico (para avisos PIN)', 'Posta elektronikoa (PIN abisuetarako)')}</label>
-                <input type="email" name="email" required />
-              </div>
-              <div>
-                <label>${_('Contraseña', 'Pasahitza')}</label>
-                <input type="password" name="password" minlength="6" required />
-              </div>
-            </div>
-
-            <hr style="margin:18px 0;border:0;border-top:1px solid var(--border);" />
-            <h3>${_('Datos de la persona mayor a acompañar (Bilbao)', 'Lagunduko den adinekoaren datuak (Bilbo)')}</h3>
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-              <input type="checkbox" name="is_self" style="width:auto;" onchange="document.getElementById('ben-extra').style.display=this.checked?'none':'block'" />
-              ${_('Contrato el acompañamiento para mí mismo/a', 'Niretzat kontratatzen dut laguntza')}
-            </label>
-
-            <div id="ben-extra">
-              <div class="grid-2">
-                <div>
-                  <label>${_('Nombre del familiar mayor', 'Adineko senidearen izena')}</label>
-                  <input name="ben_name" placeholder="Ej. Javier Etxebarria" />
-                </div>
-                <div>
-                  <label>${_('Teléfono del domicilio / mayor', 'Etxeko / adinekoaren telefonoa')}</label>
-                  <input name="ben_phone" placeholder="944 000 000" />
-                </div>
-              </div>
-            </div>
-
-            <div class="grid-2">
-              <div>
-                <label>${_('Barrio de Bilbao', 'Bilboko auzoa')}</label>
-                <select name="neighborhood">
-                  ${BARRIOS_BILBAO.map(b => `<option value="${b}">${b}</option>`).join('')}
-                </select>
-              </div>
-              <div>
-                <label>${_('Dirección exacta (Calle, portal, piso)', 'Helbide zehatza (Kalea, ataria, pisua)')}</label>
-                <input name="exact_address" placeholder="Ej. Calle Ercilla 24, 3º Izq" required />
-              </div>
-            </div>
-            <label>${_('Notas de acceso / portal (opcional)', 'Atariko oharrak (aukerakoa)')}</label>
-            <input name="access_notes" placeholder="Ej. Portero automático 3B, ascensor cota cero" />
-
-            <label style="display:flex;align-items:flex-start;gap:10px;margin-top:16px;background:var(--primary-light);padding:12px;border-radius:10px;">
-              <input type="checkbox" name="non_medical_ok" required style="width:auto;margin-top:4px;" />
-              <span>
-                ${_('Acepto los términos y comprendo que Hurbil presta un servicio <strong>estrictamente no sanitario</strong> (no incluye administración de medicación ni curas médicas).',
-                    'Baldintzak onartzen ditut eta ulertzen dut Hurbilek <strong>zerbitzu ez-sanitarioa</strong> eskaintzen duela (ez du botikarik edo sendaketarik barne hartzen).')}
-              </span>
-            </label>
-
-            <button type="submit" class="primary" style="width:100%;margin-top:16px;font-size:1.05rem;">
-              ${_('Completar registro en Hurbil', 'Osatu erregistroa Hurbilen')}
-            </button>
-          </form>
-        `}
-      </div>
-    `;
-  }
-
-  function renderFamilyDashboard() {
-    const ben = st.beneficiaries[0];
-    return `
-      ${st.notifications.length ? `
-        <div class="card" style="border-left:5px solid var(--primary);">
-          <strong>🔔 ${_('Últimos avisos de seguridad', 'Azken segurtasun abisuak')}</strong>
-          ${st.notifications.slice(0, 2).map(n => `<div style="font-size:0.9rem;margin-top:6px;">• <strong>${n.title}:</strong> ${n.body}</div>`).join('')}
-        </div>
-      ` : ''}
-
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-          <div>
-            <h2>${_('Hola,', 'Kaixo,')} ${st.profile.full_name}</h2>
-            <small>${_('Beneficiario:', 'Onuraduna:')} <strong>${ben?.full_name || ''}</strong> (${ben?.neighborhood || ''} · ${ben?.exact_address || ''})</small>
-          </div>
-          <div style="text-align:right;">
-            <span class="badge" style="font-size:1rem;padding:8px 14px;">⏱️ ${_('Saldo Bono:', 'Bonu Saldo:')} ${st.profile.bonus_hours}h</span>
-          </div>
-        </div>
-
-        <h3 style="margin-top:18px;">${_('1. Tarifas fijas Hurbil (IVA incluido · Mínimo 1h)', '1. Hurbil tarifa finkoak (BEZa barne · Gutxienez 1h)')}</h3>
-        <div class="grid-2">
-          <div class="rate-box ${st.planType === 'single_hour' ? 'selected' : ''}" onclick="st.planType='single_hour';render()">
-            <div class="rate-price">21,00 €/h</div>
-            <strong>${_('Hora suelta', 'Ordu soltea')}</strong>
-            <div style="font-size:0.85rem;color:var(--muted);">${_('Pago puntual por sesión individual', 'Saio bakarrerako ordainketa')}</div>
-          </div>
-          <div class="rate-box ${st.planType === 'bonus_use' ? 'selected' : ''}" onclick="st.planType='bonus_use';render()">
-            <div class="rate-price">${_('Usar Bono', 'Erabili Bonua')} (${st.profile.bonus_hours}h)</div>
-            <strong>${_('Descontar de mi saldo', 'Nire saldotik deskontatu')}</strong>
-            <div style="font-size:0.85rem;color:var(--muted);">${_('Con Bono 5h (19,50 €/h) o Plan 12h (18,00 €/h)', '5h Bonuarekin edo 12h Planarekin')}</div>
-          </div>
-          <div class="rate-box ${st.planType === 'joint_plan' ? 'selected' : ''}" onclick="st.planType='joint_plan';render()">
-            <div class="rate-price">16,00 €/h <small style="font-size:0.8rem;">/persona</small></div>
-            <strong>${_('Plan Conjunto (2 vecinos a la vez)', 'Plan Bateratua (2 bizilagun batera)')}</strong>
-            <div style="font-size:0.85rem;color:var(--muted);">${_('32,00 €/h total compartido en mismo portal/barrio', '32,00 €/h guztira atari/auzo berean')}</div>
-          </div>
-        </div>
-
-        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
-          <button onclick="buyBonusPack('bonus_5h', 5, 97.50)">➕ ${_('Recargar Bono 5 horas (97,50 € · 19,50 €/h)', 'Kargatu 5 orduko Bonua (97,50 €)')}</button>
-          <button onclick="buyBonusPack('monthly_12h', 12, 216.00)">➕ ${_('Activar Plan Mensual 12 horas (216,00 € · 18,00 €/h)', 'Aktibatu Hileko 12h Plana (216,00 €)')}</button>
-        </div>
-
-        <h3 style="margin-top:20px;">${_('2. Solicitar acompañamiento', '2. Eskatu laguntza')}</h3>
-        <div class="grid-2">
-          <div>
-            <label>${_('Fecha del servicio', 'Zerbitzuaren data')}</label>
-            <input type="date" value="${st.serviceDate}" onchange="st.serviceDate=this.value" />
-          </div>
-          <div>
-            <label>${_('Hora de inicio', 'Hasiera ordua')}</label>
-            <input type="time" value="${st.startTime}" onchange="st.startTime=this.value" />
-          </div>
-          <div>
-            <label>${_('Duración (mínimo 1h, tramos 30 min)', 'Iraupena (gutxienez 1h)')}</label>
-            <select onchange="st.durationHours=Number(this.value);render()">
-              ${[1, 1.5, 2, 2.5, 3, 3.5, 4].map(h => `<option value="${h}" ${st.durationHours === h ? 'selected' : ''}>${h} horas</option>`).join('')}
-            </select>
-          </div>
-        </div>
-
-        <label>${_('Tareas del día (no sanitarias)', 'Eguneko zereginak (ez-sanitarioak)')}</label>
-        <div>
-          ${TAREAS_OPCIONES.map(t => {
-            const active = st.selectedTasks.includes(t.id);
-            return `<span class="task-chip ${active ? 'active' : ''}" onclick="toggleTask('${t.id}')">${_(t.es, t.eu)}</span>`;
-          }).join('')}
-        </div>
-
-        <label>${_('Indicaciones adicionales para nuestro empleado', 'Gure langilearentzako argibide gehigarriak')}</label>
-        <input value="${st.extraNotes}" onchange="st.extraNotes=this.value" placeholder="Ej. Llevar paraguas si llueve, gusta pasear por Doña Casilda" />
-
-        <button class="primary" style="width:100%;margin-top:16px;font-size:1.05rem;" onclick="createBooking()">
-          ${_('Confirmar solicitud de acompañamiento', 'Baieztatu laguntza eskaera')}
-        </button>
-      </div>
-
-      <div class="card">
-        <h3>${_('Mis citas y Protocolo Doble PIN', 'Nire hitzorduak eta PIN Bikoitza')}</h3>
-        ${!st.bookings.length ? `<p style="color:var(--muted);">${_('Aún no tienes citas programadas.', 'Oraindik ez duzu hitzordurik.')}</p>` : ''}
-        ${st.bookings.map(bk => `
-          <div style="border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;">
-            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-              <strong>📅 ${bk.service_date} · ⏰ ${bk.start_time.slice(0,5)} (${bk.duration_hours}h)</strong>
-              <span class="badge ${bk.status === 'in_progress' ? 'live' : bk.status === 'pending_assignment' ? 'warn' : ''}">
-                ${bk.status === 'pending_assignment' ? _('Pendiente de asignar empleado', 'Langilea esleitzeko zain')
-                  : bk.status === 'confirmed' ? _('Confirmada · Empleado asignado', 'Baieztatuta')
-                  : bk.status === 'in_progress' ? _('🟢 EN CURSO EN DOMICILIO', '🟢 MARTXAN ETXEAN')
-                  : bk.status === 'completed' ? _('Finalizada', 'Amaituta')
-                  : _('Cancelada', 'Bertan behera')}
-              </span>
-            </div>
-
-            ${bk.hurbil_profiles ? `<p style="margin:6px 0;">👤 ${_('Acompañante Hurbil:', 'Hurbil Laguntzailea:')} <strong>${bk.hurbil_profiles.full_name}</strong> (${bk.hurbil_profiles.phone || ''})</p>` : ''}
-
-            ${['confirmed', 'in_progress'].includes(bk.status) ? `
-              <div class="pin-banner">
-                <div class="pin-card">
-                  <small>${_('PIN DE ENTRADA (Dar al llegar)', 'SARRERA PINa (Iristean eman)')}</small>
-                  <span class="pin-digits">${bk.pin_entry}</span>
-                </div>
-                <div class="pin-card">
-                  <small>${_('PIN DE SALIDA (Dar al irse)', 'IRTEERA PINa (Joatean eman)')}</small>
-                  <span class="pin-digits">${bk.pin_exit}</span>
-                </div>
-              </div>
-            ` : ''}
-
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              ${['pending_assignment', 'confirmed'].includes(bk.status) ? `
-                <button onclick='cancelBooking(${JSON.stringify(bk)})'>${_('Cancelar cita (>24h gratis)', 'Bertan behera utzi (>24h doan)')}</button>
-              ` : ''}
-              ${bk.status === 'in_progress' ? `
-                <button class="danger" onclick="reportIncident('${bk.id}')">⚠️ ${_('Reportar incidencia en curso', 'Jakinarazi gertakaria')}</button>
-              ` : ''}
-              ${bk.status === 'completed' && !bk.rating ? `
-                <div>
-                  <span>${_('Valora el servicio:', 'Baloratu zerbitzua:')} </span>
-                  ${[1,2,3,4,5].map(n => `<button onclick="rateBooking('${bk.id}', ${n})">${n}⭐</button>`).join('')}
-                </div>
-              ` : ''}
-              ${bk.rating ? `<span class="badge">⭐ ${_('Valorado:', 'Baloratuta:')} ${bk.rating}/5</span>` : ''}
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  }
-
-  function toggleTask(id) {
-    if (st.selectedTasks.includes(id)) {
-      st.selectedTasks = st.selectedTasks.filter(x => x !== id);
-    } else {
-      st.selectedTasks.push(id);
+    case 'pchat': oc = oc == +v ? null : +v; draftChat = ""; break;
+    case 'gop': md = null; ct = 'plans'; oc = +v; go('comm'); break;
+    case 'send': {
+      const inp = el.parentElement.querySelector('input'), t = inp.value.trim(); if (!t) return;
+      inp.value = ""; draftChat = ""; fo = true;
+      if (v == 'team') {
+        if (sbUid) {
+          dmList.push({ sender_id: sbUid, receiver_id: TEAM_ID, text: t });
+          teamMsgs.push({ sender_id: sbUid, receiver_id: TEAM_ID, text: t });
+          sb.from('direct_messages').insert({ sender_id: sbUid, receiver_id: TEAM_ID, text: t }).then(() => syncCloud());
+        } else {
+          db.team.push({ f: 'u', t });
+          toast(_('Inicia sesión para que el equipo de Hurbil pueda responderte aquí.', 'Hasi saioa Hurbil taldeak hemen erantzun ahal izateko.'));
+        }
+      } else if (v.startsWith('admteam:')) {
+        const to = v.slice(8);
+        teamMsgs.push({ sender_id: TEAM_ID, receiver_id: to, text: t });
+        sb.from('direct_messages').insert({ sender_id: TEAM_ID, receiver_id: to, text: t }).then(() => syncCloud());
+        toast(_('Respuesta enviada al usuario', 'Erantzuna erabiltzaileari bidalita'));
+      } else if (v.startsWith('dm:')) {
+        const to = v.slice(3);
+        dmList.push({ sender_id: sbUid, receiver_id: to, text: t });
+        sb.from('direct_messages').insert({ sender_id: sbUid, receiver_id: to, text: t }).then(() => syncCloud());
+      } else {
+        const p = db.plans.find(x => x.id == +v.slice(1));
+        p.msgs.push({ n: fn(), t });
+        sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => {});
+      }
+      break;
     }
-    render();
+    case 'pw': sp = !sp; break;
+    case 'mode': pm = v; break;
+    case 'prof': { editProf = false; toast(_('Datos guardados.', 'Datuak gordeta.')); break; }
+    case 'auth': {
+      if (v == 'c') {
+        if (!db.u.user || !db.u.pass || !db.u.name || !db.u.contact) { toast(_('Rellena nombre, usuario, correo y contraseña.', 'Bete izena, erabiltzailea, posta eta pasahitza.')); return; }
+        const email = db.u.contact.includes('@') ? db.u.contact.trim() : db.u.user.replace('@', "") + '@hurbil.eus';
+        sb.auth.signUp({ email, password: db.u.pass }).then(async ({ data, error }) => {
+          if (error) { toast(error.message); return; }
+          sbUid = data.user.id; db.u.on = 1; save(); await syncCloud(); toast(_('¡Cuenta creada!', 'Kontua sortuta!'));
+        }); return;
+      } else {
+        const email = lg.u.includes('@') ? lg.u.trim() : lg.u.replace('@', "") + '@hurbil.eus';
+        sb.auth.signInWithPassword({ email, password: lg.p }).then(async ({ data, error }) => {
+          if (error) { toast(_('Correo o contraseña incorrectos.', 'Posta edo pasahitz okerra.')); return; }
+          sbUid = data.user.id; db.u.on = 1; await syncCloud(); toast(_('¡Bienvenido de nuevo!', 'Ongi etorri berriro!'));
+        }); return;
+      }
+    }
+    case 'out': sb.auth.signOut(); sbUid = null; db.u.on = 0; editProf = false; break;
+    case 'adm': {
+      const k = el.dataset.k; r[k] = el.value;
+      if (k == 'w' && r.w && r.st == 'pending') r.st = 'assigned';
+      if (k == 'st' && r.st == 'done' && !r.doneAt) r.doneAt = Date.now();
+      if (r.st != 'pending' && !r.pin) { let n; do n = String(1000 + Math.floor(Math.random() * 9000)); while (db.reqs.some(x => x.pin == n)); r.pin = n; }
+      sb.from('requests').update({ data: r }).eq('id', r.id).then(() => {}); break;
+    }
+    case 'rst': db = seed(); break;
   }
+  save(); render();
+}
 
-  function renderAdminDashboard() {
-    return `
-      <div class="card">
-        <h2>🛠️ Panel de Coordinación Hurbil Bilbao (Admin)</h2>
-        <h3>1. Asignar empleados internos a reservas</h3>
-        ${!st.bookings.length ? '<p style="color:var(--muted);">Aún no hay reservas registradas.</p>' : ''}
-        ${st.bookings.map(bk => `
-          <div style="border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;">
-            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
-              <strong>📅 ${bk.service_date} · ${bk.start_time.slice(0,5)} (${bk.duration_hours}h) — ${bk.plan_type}</strong>
-              <span class="badge ${bk.status === 'pending_assignment' ? 'warn' : ''}">${bk.status}</span>
-            </div>
-            <p style="margin:6px 0;">
-              <strong>Beneficiario:</strong> ${bk.hurbil_beneficiaries?.full_name} · <strong>${bk.hurbil_beneficiaries?.neighborhood}</strong> (${bk.hurbil_beneficiaries?.exact_address})<br/>
-              <strong>Familia:</strong> ${bk.hurbil_profiles?.full_name} (${bk.hurbil_profiles?.phone}) · <strong>Tareas:</strong> ${(bk.tasks || []).join(', ')}
-            </p>
-            ${bk.incident_reported ? `<div style="color:var(--danger);font-weight:700;">🚨 INCIDENCIA: ${bk.incident_details}</div>` : ''}
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <select id="assign-${bk.id}">
-                <option value="">-- Seleccionar empleado de plantilla --</option>
-                ${st.employees.map(emp => `<option value="${emp.id}" ${bk.employee_id === emp.id ? 'selected' : ''}>${emp.full_name} (${emp.phone || ''})</option>`).join('')}
-              </select>
-              <button class="primary" onclick="assignEmployee('${bk.id}')">Asignar y Confirmar</button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-
-      <div class="card">
-        <h3>2. Dar de alta nuevo empleado interno en plantilla</h3>
-        <form onsubmit="createInternalEmployee(event)">
-          <div class="grid-2">
-            <div>
-              <label>Nombre completo del empleado/a</label>
-              <input name="full_name" required />
-            </div>
-            <div>
-              <label>Teléfono móvil</label>
-              <input name="phone" required />
-            </div>
-            <div>
-              <label>Correo corporativo / acceso</label>
-              <input type="email" name="email" required />
-            </div>
-            <div>
-              <label>Contraseña inicial</label>
-              <input type="password" name="password" minlength="6" required />
-            </div>
-          </div>
-          <label>Perfil / especialidad (opcional)</label>
-          <input name="bio" placeholder="Ej. Auxiliar geriátrico con experiencia en acompañamiento en Bilbao" />
-          <button type="submit" class="primary" style="margin-top:12px;">Registrar Empleado Interno</button>
-        </form>
-      </div>
-    `;
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]');
+  if (e.target.classList.contains('ov')) { stopSay(); md = null; draftChat = ""; render(); return; }
+  if (el && !['SELECT', 'INPUT'].includes(el.tagName)) { if (el.dataset.a == 'go') e.preventDefault(); act(el); }
+});
+document.addEventListener('change', e => {
+  if ((e.target.tagName == 'SELECT' || e.target.type == 'date' || e.target.type == 'checkbox') && e.target.dataset.a) act(e.target);
+});
+document.addEventListener('input', e => {
+  const f = e.target.dataset.f; if (!f) return;
+  const k = f.split('.'); let o = X[k[0]];
+  for (const p of k.slice(1, -1)) o = o[p] ??= {};
+  o[k[k.length - 1]] = e.target.value; save();
+  if (k[0] == 'w') {
+    if (w.s == 4) {
+      const eb = document.querySelector('.est-box');
+      if (eb) { const c = estCalc(); eb.innerHTML = `<small class="mut">${c.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado', 'Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(c.tot)}</div>`; }
+    }
+    const n = $('#nx'); if (n) n.disabled = !ok();
   }
-
-  function renderEmployeeDashboard() {
-    return `
-      <div class="card">
-        <h2>👋 Turnos asignados · ${st.profile.full_name}</h2>
-        ${!st.bookings.length ? '<p>No tienes servicios asignados todavía.</p>' : ''}
-        ${st.bookings.map(bk => `
-          <div style="border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;">
-            <div style="display:flex;justify-content:space-between;">
-              <strong>📅 ${bk.service_date} · ⏰ ${bk.start_time.slice(0,5)} (${bk.duration_hours}h)</strong>
-              <span class="badge">${bk.status}</span>
-            </div>
-            <p style="margin:8px 0;">
-              <strong>Persona mayor:</strong> ${bk.hurbil_beneficiaries?.full_name} (Tel: ${bk.hurbil_beneficiaries?.phone})<br/>
-              <strong>Dirección Bilbao:</strong> ${bk.hurbil_beneficiaries?.neighborhood} — ${bk.hurbil_beneficiaries?.exact_address}<br/>
-              <strong>Portal / acceso:</strong> ${bk.hurbil_beneficiaries?.access_notes || 'Sin notas'}<br/>
-              <strong>Tareas:</strong> ${(bk.tasks || []).join(', ')} ${bk.extra_notes ? `(${bk.extra_notes})` : ''}
-            </p>
-
-            ${bk.status === 'confirmed' ? `
-              <div style="display:flex;gap:8px;align-items:center;margin-top:10px;">
-                <input id="pin-entry-${bk.id}" maxlength="4" placeholder="PIN Entrada (4 dígitos)" style="max-width:200px;" />
-                <button class="primary" onclick="submitPin('${bk.id}', 'entry')">🟢 Validar Entrada</button>
-              </div>
-            ` : ''}
-
-            ${bk.status === 'in_progress' ? `
-              <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
-                <input id="pin-exit-${bk.id}" maxlength="4" placeholder="PIN Salida (4 dígitos)" style="max-width:200px;" />
-                <button class="primary" onclick="submitPin('${bk.id}', 'exit')">🏁 Validar Salida</button>
-                <button class="danger" onclick="reportIncident('${bk.id}')">⚠️ Reportar Incidencia</button>
-              </div>
-            ` : ''}
-          </div>
-        `).join('')}
-      </div>
-    `;
+});
+document.addEventListener('keydown', e => {
+  if (e.key == 'Escape') {
+    stopSay();
+    if (route === 'story') { askDelStory = false; go(prevRoute || 'home'); render(); return; }
+    if (md) { md = null; draftChat = ""; render(); }
   }
-
-  init();
+  if (e.key == 'Enter' && e.target.closest('.send,.ig-bar') && e.target.tagName == 'INPUT') e.target.parentElement.querySelector('button').click();
+});
+addEventListener('hashchange', () => { stopSay(); route = location.hash.slice(1) || 'home'; scrollTo(0, 0); render(); });
+render();
+syncCloud();
+setInterval(() => { if (sbUid || admOk) syncCloud(true); }, 6000);
+if ('serviceWorker' in navigator) {
+  addEventListener('load', () => { navigator.serviceWorker.register('/Hurbil/sw.js', { scope: '/Hurbil/' }).then(reg => reg.update()).catch(() => {}); });
+}
 </script>
 </body>
 </html>
+```[cite: 9]
