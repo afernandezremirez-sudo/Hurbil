@@ -1,140 +1,143 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hurbil Siempre cerca de ti</title>
-  <link id="mf-link" rel="manifest" href="/Hurbil/manifest.json">
-  <link rel="apple-touch-icon" href="/Hurbil/logo.png">
-  <link rel="icon" type="image/png" href="/Hurbil/logo.png">
-  <meta name="theme-color" content="#2D5373">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    :root{--bg:#F6F7F5;--c:#fff;--bd:#E2E8F0;--p:#2D5373;--ph:#244560;--s:#447458;--sb:#EBF1F6;--sbd:#D6E2EC;--t:#1E293B;--pt:#fff;--st:#fff;--r:#C0463F;--m:#64748B}
-    body.hc{--bg:#000;--c:#000;--bd:#FFE600;--p:#FFE600;--ph:#fff;--s:#FFE600;--sb:#1a1a00;--sbd:#FFE600;--t:#FFE600;--pt:#000;--st:#000;--r:#FFE600;--m:#FFE600}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--t);font:1rem/1.55 Nunito,system-ui,sans-serif}
-    a{color:var(--p);font-weight:700}
-    h1,h2,h3{font-weight:800;color:var(--t);line-height:1.2;margin:.2em 0}
-    h1{font-size:1.9rem}h2{font-size:1.5rem}h3{font-size:1.2rem}
-    header{background:var(--c);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
-    .hw{max-width:760px;margin:auto;padding:.6rem 1rem;display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;justify-content:space-between}
-    .lg{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--t)}
-    .lg b{display:block;font-size:1.05rem;line-height:1.2}
-    .lg span{min-width:0;flex:1}
-    .lg small{color:var(--m);font-weight:700}
-    .ct{display:flex;flex-wrap:nowrap;gap:.35rem;align-items:center;margin-left:auto}
-    .hz{max-width:760px;margin:auto;padding:0 1rem .5rem;display:flex;justify-content:flex-end;gap:.5rem;align-items:center}
-    .seg{display:inline-flex;border:1px solid var(--sbd);border-radius:.9rem;overflow:hidden;background:var(--c)}
-    .seg button{border:0;background:var(--c);padding:.3rem .7rem;font-weight:800;min-height:42px}
-    .seg button[aria-pressed=true],.sw[aria-checked=true],.ib[aria-pressed=true]{background:var(--p);color:var(--pt)}
-    .ib,.sw,.pill{border:1px solid var(--sbd);background:var(--sb);border-radius:2rem;padding:.3rem .85rem;font-weight:800;min-height:42px;color:var(--t);text-decoration:none;display:inline-flex;white-space:nowrap;align-items:center;position:relative}
-    .rd{flex:none;border-radius:50%;width:42px;min-width:42px;height:42px;padding:0;justify-content:center;background:var(--c);font-size:1.3rem;line-height:1}
-    .sw{font-size:.85rem}
-    button{font:inherit;cursor:pointer;color:inherit}
-    main{max-width:640px;margin:auto;padding:1rem 1rem 7rem}
-    .card{background:var(--c);border:1px solid var(--bd);border-radius:16px;padding:1.1rem;margin:.8rem 0;box-shadow:0 1px 4px #1e293b0f}
-    .live-story-hero{background:linear-gradient(135deg,#fdf2f8 0%,#eef2ff 100%);border:2px solid #f472b6;border-radius:18px;padding:1rem 1.1rem;margin:.4rem 0 .9rem;box-shadow:0 4px 14px rgba(219,39,119,.12)}
-    body.hc .live-story-hero{background:#000;border:2px solid #FFE600}
-    .row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
-    .row>.grow{flex:1}
-    .btn{background:var(--p);color:var(--pt);border:1px solid var(--p);border-radius:16px;padding:.8rem 1.3rem;font-weight:800;font-size:1.05rem;min-height:52px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;position:relative}
-    .btn:hover{background:var(--ph)}
-    .btn.g{background:var(--sb);color:var(--t);border-color:var(--sbd)}
-    .btn.s{background:var(--s);border-color:var(--s);color:var(--st)}
-    .btn:disabled{opacity:.45;cursor:not-allowed}
-    .spk{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#DCE8F2;color:#1E293B;font-size:1.15rem;touch-action:manipulation;user-select:none;-webkit-user-select:none}
-    body.hc .spk{background:#1a1a00;border:2px solid #FFE600}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:.7rem}
-    .mw{position:relative;margin:.7rem 0}
-    .mb{display:flex;align-items:center;justify-content:center;width:100%;min-height:66px;border-radius:16px;padding:.9rem 3.6rem;font-size:1.25rem;font-weight:800;text-decoration:none;text-align:center}
-    .mb.pri{background:var(--s);color:var(--st)}
-    .mb.soft{background:var(--sb);color:var(--t);border:1px solid var(--sbd)}
-    .mw .spk{position:absolute;right:.7rem;top:50%;transform:translateY(-50%)}
-    .opt{display:flex;gap:.8rem;align-items:center;text-align:left;flex:1;border:1px solid var(--sbd);background:var(--c);border-radius:16px;padding:.9rem 1.1rem;font-weight:700;min-height:64px}
-    .opt.on{border:2px solid var(--s);background:#EFF5F1}
-    .opt .ic{font-size:1.85rem;line-height:1;flex:none}
-    .subpills{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 .9rem .2rem}
-    .sp-pill{border:1px solid var(--bd);background:var(--c);border-radius:999px;padding:.45rem 1rem;font-weight:700;font-size:.95rem;min-height:42px;display:inline-flex;align-items:center;gap:.35rem}
-    .sp-pill.on{border:2px solid var(--s);background:#EFF5F1;color:var(--s);font-weight:800}
-    .est-box{background:var(--sb);border-radius:16px;padding:1rem 1.2rem;margin:1rem 0}
-    .est-val{font-size:1.75rem;font-weight:800;color:var(--s);line-height:1.15;margin-top:.15rem}
-    .confirm-box{background:#FEF2F2;border:2px solid var(--r);border-radius:14px;padding:.85rem;margin-top:.7rem}
-    body.hc .confirm-box{background:#1a1a00}
-    .bd,.tag{display:inline-block;background:var(--sb);color:var(--t);border:1px solid var(--sbd);border-radius:2rem;padding:.15rem .75rem;font-weight:800;font-size:.85rem}
-    .mut{color:var(--m)}
-    .badge{background:#ef4444;color:#fff;font-size:.72rem;font-weight:800;min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;margin-left:.3rem}
-    .bar{display:flex;height:10px;background:var(--bd);border-radius:9px;overflow:hidden}
-    .bar i.f{background:var(--p)}
-    .bar i{display:block;height:100%;background:var(--s)}
-    input,textarea,select{font:inherit;width:100%;padding:.75rem .9rem;border:1px solid var(--sbd);border-radius:14px;background:var(--c);color:var(--t);min-height:50px}
-    input:focus,textarea:focus,button:focus-visible,a:focus-visible,select:focus{outline:3px solid var(--p);outline-offset:2px}
-    label{font-weight:800;display:block;margin:.75rem 0 .3rem}
-    .fab{position:fixed;right:1rem;bottom:1rem;display:flex;flex-direction:column;gap:.5rem;z-index:6}
-    .fab button{border:0;border-radius:2rem;padding:.65rem 1.1rem;font-weight:800;font-size:.95rem;box-shadow:0 4px 12px #1e293b33;display:inline-flex;align-items:center;justify-content:center}
-    .sos{background:var(--r);color:#fff}
-    body.hc .sos{color:#000}
-    .cb{background:var(--p);color:var(--pt)}
-    .ov{position:fixed;inset:0;background:#1e293b99;z-index:9;display:flex;align-items:center;justify-content:center;padding:1rem}
-    .mo{background:var(--c);border:1px solid var(--bd);border-radius:22px;padding:1.1rem;max-width:480px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 20px 50px rgba(15,23,42,.25)}
-    .msgs{max-height:340px;overflow:auto;border:1px solid var(--bd);border-radius:12px;padding:.5rem;margin:.5rem 0}
-    .m{display:flex;gap:.4rem;align-items:center;margin:.3rem 0}
-    .m div{background:var(--sb);color:var(--t);border-radius:14px;padding:.4rem .8rem;flex:1}
-    .m.me div{background:var(--p);color:var(--pt)}
-    body.hc .m div{border:1px solid #FFE600}
-    .send{display:flex;gap:.5rem}
-    .tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
-    .star{font-size:2.2rem;background:none;border:0;color:var(--p);padding:0 .1rem}
-    #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:5.5rem;background:var(--t);color:var(--bg);padding:.8rem 1.2rem;border-radius:1rem;z-index:12;font-weight:800;max-width:90%;box-shadow:0 8px 24px rgba(0,0,0,.2)}
-    .ig-ring{padding:2px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:inline-flex;flex-shrink:0}
-    .ig-ring>*{border:2px solid #fff !important}
-    .stories-bar{display:flex;gap:.85rem;overflow-x:auto;padding:.5rem .2rem .75rem;margin:.4rem 0;scrollbar-width:none}
-    .stories-bar::-webkit-scrollbar{display:none}
-    .st-item{display:flex;flex-direction:column;align-items:center;gap:.3rem;min-width:68px;cursor:pointer;text-align:center}
-    .st-item span{font-size:.78rem;font-weight:800;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .ig-story-full{position:fixed;inset:0;background:#09090b;color:#fff;z-index:20;display:flex;flex-direction:column;justify-content:space-between;user-select:none}
-    .ig-story-top{position:relative;z-index:3;padding:.75rem 1rem 1.2rem;background:linear-gradient(180deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,0) 100%)}
-    .ig-story-bars{display:flex;gap:4px;margin-bottom:.7rem}
-    .ig-story-bars span{flex:1;height:3px;border-radius:999px;background:rgba(255,255,255,.32);overflow:hidden;position:relative}
-    .ig-story-bars span.done{background:#fff}
-    .ig-story-bars span.cur::after{content:"";position:absolute;inset:0;background:#fff;transform-origin:left;animation:stfill 5s linear forwards}
-    @keyframes stfill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-    .ig-story-media{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
-    .ig-story-media img,.ig-story-media video{width:100%;height:100%;max-width:540px;object-fit:contain}
-    .ig-story-tap{position:absolute;inset:72px 0 80px;display:flex;z-index:2}
-    .ig-story-tap div{flex:1;cursor:pointer}
-    .ig-story-bot{position:relative;z-index:3;padding:1.5rem 1.1rem 1.3rem;background:linear-gradient(0deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,0) 100%);text-align:center}
-    .ig-feed{max-height:440px;min-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;padding:.6rem .3rem;background:#fff;border-radius:12px}
-    .ig-me{align-self:flex-end;max-width:78%;background:linear-gradient(135deg,#3797f0,#5851db);color:#fff;padding:.65rem .95rem;border-radius:20px 20px 4px 20px;font-size:.96rem;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.08)}
-    .ig-them{align-self:flex-start;display:flex;align-items:flex-end;gap:.5rem;max-width:82%}
-    .ig-bubble{background:#efefef;color:#111827;padding:.65rem .95rem;border-radius:20px 20px 20px 4px;font-size:.96rem;line-height:1.35}
-    .ig-bar{display:flex;align-items:center;gap:.5rem;margin-top:.75rem;background:#fff;padding:.3rem .4rem .3rem 1rem;border-radius:999px;border:1px solid #dbdbdb}
-    .ig-bar input{border:none;background:transparent;flex:1;padding:.35rem 0;outline:none;font-size:.96rem;min-height:38px}
-    .ig-send{background:none;border:0;color:#0095f6;font-weight:800;font-size:.96rem;padding:.4rem .75rem;min-height:38px}
-    .ig-send:hover{color:#1877f2}
-    body.easy .btn,body.easy .opt{font-size:1.3rem;padding:1.1rem 1.4rem}
-    body.easy .adv{display:none}
-    @media(max-width:520px){.ct{flex-wrap:wrap;margin-left:0}.mb{padding:.9rem 3.2rem;font-size:1.1rem}h1{font-size:1.6rem}}
-    @media(prefers-reduced-motion:no-preference){.bar i{transition:width .3s}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hurbil · Siempre cerca de ti</title>
+<link id="mf-link" rel="manifest" href="/Hurbil/manifest.json">
+<link rel="apple-touch-icon" href="/Hurbil/logo.png">
+<link rel="icon" type="image/png" href="/Hurbil/logo.png">
+<meta name="theme-color" content="#2D5373">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#F6F7F5;--c:#fff;--bd:#E2E8F0;--p:#2D5373;--ph:#244560;--s:#447458;--sb:#EBF1F6;--sbd:#D6E2EC;--t:#1E293B;--pt:#fff;--st:#fff;--r:#C0463F;--m:#64748B}
+body.hc{--bg:#000;--c:#000;--bd:#FFE600;--p:#FFE600;--ph:#fff;--s:#FFE600;--sb:#1a1a00;--sbd:#FFE600;--t:#FFE600;--pt:#000;--st:#000;--r:#FFE600;--m:#FFE600}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--t);font:1rem/1.55 Nunito,system-ui,sans-serif}
+a{color:var(--p);font-weight:700}
+h1,h2,h3{font-weight:800;color:var(--t);line-height:1.2;margin:.2em 0}
+h1{font-size:1.9rem}h2{font-size:1.5rem}h3{font-size:1.2rem}
+header{background:var(--c);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
+.hw{max-width:760px;margin:auto;padding:.6rem 1rem;display:flex;flex-wrap:wrap;gap:.5rem .8rem;align-items:center;justify-content:space-between}
+.lg{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--t)}
+.lg b{display:block;font-size:1.05rem;line-height:1.2}
+.lg span{min-width:0;flex:1}
+.lg small{color:var(--m);font-weight:700}
+.ct{display:flex;flex-wrap:nowrap;gap:.35rem;align-items:center;margin-left:auto}
+.hz{max-width:760px;margin:auto;padding:0 1rem .5rem;display:flex;justify-content:flex-end;gap:.5rem;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--sbd);border-radius:.9rem;overflow:hidden;background:var(--c)}
+.seg button{border:0;background:var(--c);padding:.3rem .7rem;font-weight:800;min-height:42px}
+.seg button[aria-pressed=true],.sw[aria-checked=true],.sw[aria-pressed=true],.ib[aria-pressed=true]{background:var(--p);color:var(--pt)}
+.ib,.sw,.pill{border:1px solid var(--sbd);background:var(--sb);border-radius:2rem;padding:.3rem .85rem;font-weight:800;min-height:42px;color:var(--t);text-decoration:none;display:inline-flex;white-space:nowrap;align-items:center;position:relative}
+.rd{flex:none;border-radius:50%;width:42px;min-width:42px;height:42px;padding:0;justify-content:center;background:var(--c);font-size:1.3rem;line-height:1}
+.sw{font-size:.85rem}
+button{font:inherit;cursor:pointer;color:inherit}
+main{max-width:640px;margin:auto;padding:1rem 1rem 7rem}
+.card{background:var(--c);border:1px solid var(--bd);border-radius:16px;padding:1.1rem;margin:.8rem 0;box-shadow:0 1px 4px #1e293b0f}
+.live-story-hero{background:linear-gradient(135deg,#fdf2f8 0%,#eef2ff 100%);border:2px solid #f472b6;border-radius:18px;padding:1rem 1.1rem;margin:.4rem 0 .9rem;box-shadow:0 4px 14px rgba(219,39,119,.12)}
+body.hc .live-story-hero{background:#000;border:2px solid #FFE600}
+.row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.row>.grow{flex:1}
+.btn{background:var(--p);color:var(--pt);border:1px solid var(--p);border-radius:16px;padding:.8rem 1.3rem;font-weight:800;font-size:1.05rem;min-height:52px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.35rem;position:relative}
+.btn:hover{background:var(--ph)}
+.btn.g{background:var(--sb);color:var(--t);border-color:var(--sbd)}
+.btn.s{background:var(--s);border-color:var(--s);color:var(--st)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.spk{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#DCE8F2;color:#1E293B;font-size:1.15rem;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+body.hc .spk{background:#1a1a00;border:2px solid #FFE600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:.7rem}
+.mw{position:relative;margin:.7rem 0}
+.mb{display:flex;align-items:center;justify-content:center;width:100%;min-height:66px;border-radius:16px;padding:.9rem 3.6rem;font-size:1.25rem;font-weight:800;text-decoration:none;text-align:center}
+.mb.pri{background:var(--s);color:var(--st)}
+.mb.soft{background:var(--sb);color:var(--t);border:1px solid var(--sbd)}
+.mw .spk{position:absolute;right:.7rem;top:50%;transform:translateY(-50%)}
+.opt{display:flex;gap:.8rem;align-items:center;text-align:left;flex:1;border:1px solid var(--sbd);background:var(--c);border-radius:16px;padding:.9rem 1.1rem;font-weight:700;min-height:64px}
+.opt.on{border:2px solid var(--s);background:#EFF5F1}
+.opt .ic{font-size:1.85rem;line-height:1;flex:none}
+.subpills{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 .9rem .2rem}
+.sp-pill{border:1px solid var(--bd);background:var(--c);border-radius:999px;padding:.45rem 1rem;font-weight:700;font-size:.95rem;min-height:42px;display:inline-flex;align-items:center;gap:.35rem}
+.sp-pill.on{border:2px solid var(--s);background:#EFF5F1;color:var(--s);font-weight:800}
+.est-box{background:var(--sb);border-radius:16px;padding:1rem 1.2rem;margin:1rem 0}
+.est-val{font-size:1.75rem;font-weight:800;color:var(--s);line-height:1.15;margin-top:.15rem}
+.confirm-box{background:#FEF2F2;border:2px solid var(--r);border-radius:14px;padding:.85rem;margin-top:.7rem}
+body.hc .confirm-box{background:#1a1a00}
+.bd,.tag{display:inline-block;background:var(--sb);color:var(--t);border:1px solid var(--sbd);border-radius:2rem;padding:.15rem .75rem;font-weight:800;font-size:.85rem}
+.mut{color:var(--m)}
+.badge{background:#ef4444;color:#fff;font-size:.72rem;font-weight:800;min-width:20px;height:20px;padding:0 6px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;margin-left:.35rem}
+.bar{display:flex;height:10px;background:var(--bd);border-radius:9px;overflow:hidden}
+.bar i.f{background:var(--p)}
+.bar i{display:block;height:100%;background:var(--s)}
+input,textarea,select{font:inherit;width:100%;padding:.75rem .9rem;border:1px solid var(--sbd);border-radius:14px;background:var(--c);color:var(--t);min-height:50px}
+input:focus,textarea:focus,button:focus-visible,a:focus-visible,select:focus{outline:3px solid var(--p);outline-offset:2px}
+label{font-weight:800;display:block;margin:.75rem 0 .3rem}
+.fab{position:fixed;right:1rem;bottom:1rem;display:flex;flex-direction:column;gap:.5rem;z-index:6}
+.fab button{border:0;border-radius:2rem;padding:.65rem 1.1rem;font-weight:800;font-size:.95rem;box-shadow:0 4px 12px #1e293b33;display:inline-flex;align-items:center;justify-content:center}
+.sos{background:var(--r);color:#fff}
+body.hc .sos{color:#000}
+.cb{background:var(--p);color:var(--pt)}
+.ov{position:fixed;inset:0;background:#1e293b99;z-index:9;display:flex;align-items:center;justify-content:center;padding:1rem}
+.mo{background:var(--c);border:1px solid var(--bd);border-radius:22px;padding:1.1rem;max-width:480px;width:100%;max-height:92vh;overflow:auto;box-shadow:0 20px 50px rgba(15,23,42,.25)}
+.msgs{max-height:340px;overflow:auto;border:1px solid var(--bd);border-radius:12px;padding:.5rem;margin:.5rem 0}
+.m{display:flex;gap:.4rem;align-items:center;margin:.3rem 0}
+.m div{background:var(--sb);color:var(--t);border-radius:14px;padding:.4rem .8rem;flex:1}
+.m.me div{background:var(--p);color:var(--pt)}
+body.hc .m div{border:1px solid #FFE600}
+.send{display:flex;gap:.5rem}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
+.star{font-size:2.2rem;background:none;border:0;color:var(--p);padding:0 .1rem}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:5.5rem;background:var(--t);color:var(--bg);padding:.8rem 1.2rem;border-radius:1rem;z-index:12;font-weight:800;max-width:90%;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.ig-ring{padding:2px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:inline-flex;flex-shrink:0}
+.ig-ring>*{border:2px solid #fff !important}
+.stories-bar{display:flex;gap:.85rem;overflow-x:auto;padding:.5rem .2rem .75rem;margin:.4rem 0;scrollbar-width:none}
+.stories-bar::-webkit-scrollbar{display:none}
+.st-item{display:flex;flex-direction:column;align-items:center;gap:.3rem;min-width:68px;cursor:pointer;text-align:center}
+.st-item span{font-size:.78rem;font-weight:800;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ig-story-full{position:fixed;inset:0;background:#09090b;color:#fff;z-index:20;display:flex;flex-direction:column;justify-content:space-between;user-select:none}
+.ig-story-top{position:relative;z-index:3;padding:.75rem 1rem 1.2rem;background:linear-gradient(180deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,0) 100%)}
+.ig-story-bars{display:flex;gap:4px;margin-bottom:.7rem}
+.ig-story-bars span{flex:1;height:3px;border-radius:999px;background:rgba(255,255,255,.32);overflow:hidden;position:relative}
+.ig-story-bars span.done{background:#fff}
+.ig-story-bars span.cur::after{content:"";position:absolute;inset:0;background:#fff;transform-origin:left;animation:stfill 5s linear forwards}
+@keyframes stfill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.ig-story-media{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+.ig-story-media img,.ig-story-media video{width:100%;height:100%;max-width:540px;object-fit:contain}
+.ig-story-tap{position:absolute;inset:72px 0 80px;display:flex;z-index:2}
+.ig-story-tap div{flex:1;cursor:pointer}
+.ig-story-bot{position:relative;z-index:3;padding:1.5rem 1.1rem 1.3rem;background:linear-gradient(0deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,0) 100%);text-align:center}
+.ig-feed{max-height:440px;min-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:.45rem;padding:.6rem .3rem;background:#fff;border-radius:12px}
+.ig-me{align-self:flex-end;max-width:78%;background:linear-gradient(135deg,#3797f0,#5851db);color:#fff;padding:.65rem .95rem;border-radius:20px 20px 4px 20px;font-size:.96rem;line-height:1.35;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.ig-them{align-self:flex-start;display:flex;align-items:flex-end;gap:.5rem;max-width:82%}
+.ig-bubble{background:#efefef;color:#111827;padding:.65rem .95rem;border-radius:20px 20px 20px 4px;font-size:.96rem;line-height:1.35}
+.ig-bar{display:flex;align-items:center;gap:.5rem;margin-top:.75rem;background:#fff;padding:.3rem .4rem .3rem 1rem;border-radius:999px;border:1px solid #dbdbdb}
+.ig-bar input{border:none;background:transparent;flex:1;padding:.35rem 0;outline:none;font-size:.96rem;min-height:38px}
+.ig-send{background:none;border:0;color:#0095f6;font-weight:800;font-size:.96rem;padding:.4rem .75rem;min-height:38px}
+.ig-send:hover{color:#1877f2}
+body.easy .btn,body.easy .opt{font-size:1.3rem;padding:1.1rem 1.4rem}
+body.easy .adv{display:none}
+@media(max-width:520px){.ct{flex-wrap:wrap;margin-left:0}.mb{padding:.9rem 3.2rem;font-size:1.1rem}h1{font-size:1.6rem}}
+@media(prefers-reduced-motion:no-preference){.bar i{transition:width .3s}}
+</style>
 </head>
 <body>
+<div id="splash" style="position:fixed;inset:0;background:#fff;z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .5s">
+  <video id="splash-vid" src="/Hurbil/intro.mp4" autoplay muted playsinline style="width:100%;height:100%;max-width:540px;object-fit:contain;clip-path:inset(4% 4% 12% 4%)"></video>
+  <button type="button" onclick="endSplash()" style="position:fixed;bottom:1.5rem;right:1.5rem;background:rgba(45,83,115,.85);color:#fff;border:0;border-radius:999px;padding:.55rem 1.1rem;font-weight:800;font-size:.9rem;z-index:10000">Saltar ›</button>
+</div>
 <header id="hd"></header>
 <main id="app"></main>
 <div id="fab"></div>
 <div id="md"></div>
 <div id="toast" role="status" hidden></div>
-
 <script>
 const $ = s => document.querySelector(s),
-      esc = s => String(s ?? "").replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
+esc = s => String(s ?? "").replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const d0 = n => { const x = new Date(); x.setDate(x.getDate() + n); return x.toISOString().slice(0, 10); };
 
 function seed() {
   return {
     lang: 'es', fs: 1, hc: 0, easy: 0, notif: 1, delPlans: [], delReqs: [], stories: [],
-    u: { name: '', user: '', contact: '', pass: '', addr: '', fam: '', on: 0 },
+    u: { name: "", user: "", contact: "", pass: "", addr: "", fam: "", on: 0 },
     reqs: [],
     occ: { [d0(1) + '|9']: 4, [d0(1) + '|10']: 4, [d0(2) + '|17']: 4, [d0(2) + '|18']: 4 },
     fol: [],
@@ -147,11 +150,14 @@ function seed() {
 }
 
 const SB_URL = 'https://oijhfovricxgpnczwpfv.supabase.co';
-const SB_KEY = 'sb_publishable_I1I6eY2egVrjwMzbDqrs0Q_2EK05T2C';
+const SB_KEY = 'sb_publishable_1116eY2egVrjwMzbDqrs0Q_2EK05T2C';
 const sb = window.supabase ? window.supabase.createClient(SB_URL, SB_KEY) : null;
 const TEAM_ID = 'hurbil_team';
+let sbUid = null, usersList = [], lastSeenDm = +(localStorage.getItem('hurbil_seen_dm') || 0),
+firstSync = true, askDelPlan = null, askDelReq = null, askDelStory = false, draftChat = "",
+editProf = false, storyReqId = null, storyIdx = 0, storyUploading = false, prevRoute = 'home',
+storyTimer = null, sendingReq = false;
 
-let sbUid = null, usersList = [], lastSeenDm = +(localStorage.getItem('hurbil_seen_dm') || 0), firstSync = true, askDelPlan = null, askDelReq = null, askDelStory = false, draftChat = "", editProf = false, storyReqId = null, storyIdx = 0, storyUploading = false, prevRoute = 'home', storyTimer = null, sendingReq = false;
 let db;
 try { db = JSON.parse(localStorage.getItem('hurbil3')); } catch (e) {}
 if (!db || typeof db !== 'object' || !db.u) db = seed();
@@ -206,16 +212,19 @@ const pendingCommCount = () => {
   const pInt = db.plans.filter(p => p.ownerId == sbUid && p.int && p.int.length).reduce((s, p) => s + p.int.length, 0);
   return fReq + pInt;
 };
+
 const activeStories = () => {
   const now = Date.now();
   return (db.stories || []).filter(s => s && s.exp > now && !(db.delPlans || []).includes(String(s.id)));
 };
+
 const parseLocalTs = (dStr, tStr) => {
   const [y, m, d] = String(dStr || "").split('-').map(Number);
   const [hh, mm] = String(tStr || '00:00').split(':').map(Number);
   if (!y || !m || !d) return NaN;
   return new Date(y, m - 1, d, hh || 0, mm || 0, 0).getTime();
 };
+
 const canPostStory = r => {
   if (!['accepted', 'assigned', 'ongoing'].includes(r.st)) return false;
   const now = Date.now();
@@ -263,7 +272,10 @@ async function syncCloud(fromTimer = false) {
         }
         if (route == 'chat' && (dmUser || mt == 'team') && dms.length) {
           const maxId = Math.max(...dms.map(x => x.id || 0));
-          if (maxId > lastSeenDm) { lastSeenDm = maxId; localStorage.setItem('hurbil_seen_dm', String(lastSeenDm)); }
+          if (maxId > lastSeenDm) {
+            lastSeenDm = maxId;
+            localStorage.setItem('hurbil_seen_dm', String(lastSeenDm));
+          }
         }
         dmList = dms;
       }
@@ -293,7 +305,7 @@ async function syncCloud(fromTimer = false) {
           const oldInt = oldP?.int || [];
           p.int.filter(uid => !oldInt.includes(uid)).forEach(uid => {
             const u = usersList.find(x => x.id == uid);
-            notifyUser(_('¡Alguien quiere unirse a tu plan!', 'Norbait zure planera batu nahi du!'), (u?.name || _('Un vecino', 'Bizilagun bat')) + ' → ' + (p.t[L()] || p.t.es));
+            notifyUser(_('¡Alguien quiere unirse a tu plan!', 'Norbait zure planera batu nahi du!'), (u?.name || _('Un vecino', 'Bizilagun bat')) + ' · ' + (p.t[L()] || p.t.es));
           });
         });
       }
@@ -308,8 +320,8 @@ async function syncCloud(fromTimer = false) {
 }
 
 const _ = (a, b) => db.lang == 'eu' ? b : a,
-      L = () => db.lang == 'eu' ? 1 : 0,
-      fn = () => (db.u.name || '').split(' ')[0] || '';
+L = () => db.lang == 'eu' ? 1 : 0,
+fn = () => (db.u.name || "").split(' ')[0] || "";
 const fmt = n => Number(n || 0).toFixed(2).replace('.', ',') + ' €';
 const W = ['Aimar Fernandez', 'Ander Herrera', 'Eder Fernandez', 'Eidan Irastorza'];
 const ST = {
@@ -320,6 +332,7 @@ const ST = {
   ongoing: ['En curso', 'Abian'],
   done: ['Completada', 'Osatuta']
 };
+
 const C = [
   ['💬', ['Compañía', 'Konpainia'], [['Charlar', 'Berriketan aritu'], ['Jugar a las cartas', 'Kartetan jolastu'], ['Leer juntos', 'Elkarrekin irakurri'], ['Ver una película', 'Pelikula bat ikusi']], ['charlar, jugar a las cartas, leer juntos', 'berriketan aritu, kartetan jolastu, elkarrekin irakurri']],
   ['🏠', ['Tareas del hogar', 'Etxeko lanak'], [['Limpieza ligera', 'Garbiketa arina'], ['Doblar o recoger ropa', 'Arropa tolestu edo jaso'], ['Preparar comida sencilla', 'Janari sinplea prestatu'], ['Regar las plantas', 'Landareak ureztatu']], ['limpieza ligera, ropa, comida sencilla', 'garbiketa arina, janari sinplea']],
@@ -328,19 +341,20 @@ const C = [
   ['📱', ['Ayuda con el móvil y trámites', 'Mugikorrarekin eta izapideekin laguntza'], [['Configurar móvil o WhatsApp', 'Mugikorra edo WhatsApp konfiguratu'], ['Pedir cita médica / Osakidetza', 'Mediku-hitzordua / Osakidetza eskatu'], ['Trámites o papeles sencillos', 'Izapide edo paper sinpleak'], ['Videollamada con familiares', 'Bideo-deia senideekin']], ['móvil, citas médicas, videollamadas', 'mugikorra, mediku-hitzorduak, bideo-deiak']],
   ['✨', ['Otro servicio', 'Beste zerbitzu bat'], [], ['cuéntanos qué necesitas', 'kontatu zer behar duzun']]
 ];
+
 const PAY = [
   ['bizum', '📲 Bizum', '📲 Bizum'],
   ['card', '💳 Tarjeta de débito/crédito', '💳 Zordunketa/kreditu txartela'],
   ['transfer', '🏦 Transferencia bancaria', '🏦 Banku-transferentzia'],
-  ['prepay', '💶 Prepago', '💶 Aurreordainketa']
+  ['prepay', '👛 Prepago', '👛 Aurreordainketa']
 ];
+
 const LOGO = '<img src="/Hurbil/logo.png" alt="Logo Hurbil" style="width:44px;height:44px;border-radius:10px;object-fit:contain;flex:none">';
 const W0 = () => ({ s: 1, cat: null, opt: null, txt: "", plan: 'normal', who: 'me', rName: db.u.name || "", rAddr: db.u.addr || "", rPhone: db.u.contact || "", rDo: "", rNotes: "", share: false, sd: d0(1), st: '11:00', sh: 1, ses: [], addTo: 0, pay: "" });
 const w = W0(), tr = {}, lg = { u: "", p: "" }, wl = { n: W[0], p: "" }, X = { get db() { return db; }, w, tr, lg, wl };
 let wk = null, route = location.hash.slice(1) || 'home', md = null, mt = 'friends', ct = 'neigh', fl = false, oc = null, sp = false, pm = 'create', fo = false, sayBtn = null, saySeq = 0;
 
 const myReqs = () => sbUid ? db.reqs.filter(r => !r.user_id || r.user_id === sbUid) : db.reqs.filter(r => !r.user_id);
-
 const stopSay = () => {
   saySeq++;
   if (window.speechSynthesis) { try { speechSynthesis.pause(); speechSynthesis.cancel(); } catch (e) {} }
@@ -353,7 +367,7 @@ const say = (t, el) => {
   stopSay();
   if (wasOn || !window.speechSynthesis) return;
   const id = ++saySeq;
-  if (el) { sayBtn = el; el.dataset.on = '1'; el.textContent = '⏹️'; }
+  if (el) { sayBtn = el; el.dataset.on = '1'; el.textContent = '⏹'; }
   const u = new SpeechSynthesisUtterance(t);
   u.lang = db.lang == 'eu' ? 'eu-ES' : 'es-ES';
   u.rate = .9;
@@ -361,16 +375,19 @@ const say = (t, el) => {
   u.onend = done; u.onerror = done;
   setTimeout(() => { try { speechSynthesis.speak(u); } catch (e) { done(); } }, 40);
 };
+
 const go = r => {
   stopSay(); clearTimeout(storyTimer); route = r;
   try { history.replaceState(null, "", '#' + (r == 'home' ? "" : r)); } catch (e) {}
   scrollTo(0, 0);
 };
+
 const toast = m => {
   const e = $('#toast'); if (!e) return;
   e.textContent = m; e.hidden = false;
   clearTimeout(toast.t); toast.t = setTimeout(() => e.hidden = true, 4000);
 };
+
 const fd = d => d ? new Date(d + 'T12:00').toLocaleDateString(db.lang == 'eu' ? 'eu' : 'es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) : "";
 const sesH = a => (Array.isArray(a) ? a : []).reduce((s, x) => s + (+x.h || 0), 0);
 
@@ -394,6 +411,7 @@ const estCalc = () => {
   }
   return { tot: h * 21, sub: `${h} h × 21,00 €/h` };
 };
+
 const rate = h => h >= 12 ? 18 : h >= 5 ? 19.50 : 21;
 const pr = (h, p) => {
   if (p >= 2) {
@@ -404,14 +422,16 @@ const pr = (h, p) => {
   return { b, bn: b - r, g: 0, gx: 0, tot: r };
 };
 
-const T = n => String(n).padStart(2, '0') + ':00', rng = x => x.t + ' (' + x.h + ' h)', sl = x => fd(x.d) + ' ' + rng(x);
+const T = n => String(n).padStart(2, '0') + ':00', rng = x => x.t + ' (' + x.h + 'h)', sl = x => fd(x.d) + ' ' + rng(x);
 const end = (d, t, h) => new Date(d + 'T' + t).getTime() + h * 36e5, ended = r => r.ses && r.ses.length ? Math.max(...r.ses.map(x => end(x.d, x.t, x.h))) < Date.now() : false;
+
 const PS = {
   draft: ['Esperando que ambos acepten', 'Biak onartzeko zain'],
   sent: ['Enviado a Hurbil · pendiente', 'Hurbili bidalita · zain'],
   accepted: ['Aceptado por Hurbil', 'Hurbilek onartu du'],
   rejected: ['Rechazado por Hurbil', 'Hurbilek baztertu du']
 };
+
 const WP = { 'Aimar Fernandez': '8787', 'Ander Herrera': '0820', 'Eder Fernandez': '2008', 'Eidan Irastorza': '6334' };
 const stars = n => '★'.repeat(n) + '☆'.repeat(5 - n);
 const svc = r => { const c = C[r.c] || C[0], o = r.o == 'o' || !c[2].length ? r.t : c[2][r.o]?.[L()]; return c[1][L()] + (o ? ': ' + o : ""); };
@@ -424,34 +444,34 @@ const head = (t, x) => `<div class="row"><h2 class="grow">${t}</h2>${S(x || t)}<
 function hdr() {
   const bn = (v, t, l) => `<button data-a="fs" data-v="${v}" aria-label="${l}">${t}</button>`;
   const notifOn = ('Notification' in window && Notification.permission === 'granted') && db.notif !== 0;
-  return `<div class="hw"><a href="#" class="lg" data-a="go" data-v="home" aria-label="Hurbil">${LOGO}<span><b>Hurbil Siempre cerca de ti</b><small>Bilbao</small></span></a>
-  <div class="ct"><span class="seg" role="group" aria-label="Idioma / Hizkuntza"><button data-a="lang" data-v="es" aria-pressed="${db.lang == 'es'}">ES</button><button data-a="lang" data-v="eu" aria-pressed="${db.lang == 'eu'}">EU</button></span>
-  <span class="seg">${bn(-1, 'A-', _('Letra más pequeña', 'Letra txikiagoa'))}${bn(1, 'A+', _('Letra más grande', 'Letra handiagoa'))}</span>
-  <button class="ib rd" data-a="hc" aria-pressed="${!!db.hc}" aria-label="${_('Alto contraste', 'Kontraste altua')}"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 2a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button>
-  <a class="pill" href="#prof" data-a="go" data-v="prof">👤 ${db.u.on ? esc(fn()) : _('Entrar', 'Sartu')}</a></div></div>
-  <div class="hz"><button class="sw" aria-pressed="${notifOn}" data-a="notif">${notifOn ? '🔔 ' + _('Avisos activos', 'Abisuak aktibo') : '🔕 ' + _('Activar avisos', 'Abisuak aktibatu')}</button><button class="sw" aria-checked="${!!db.easy}" data-a="easy">${_('Modo Fácil', 'Modu Erraza')}</button></div>`;
+  return `<div class="hw"><a href="#" class="lg" data-a="go" data-v="home" aria-label="Hurbil">${LOGO}<span><b>Hurbil · Siempre cerca de ti</b><small>Bilbao</small></span></a>
+<div class="ct"><span class="seg" role="group" aria-label="Idioma / Hizkuntza"><button data-a="lang" data-v="es" aria-pressed="${db.lang == 'es'}">ES</button><button data-a="lang" data-v="eu" aria-pressed="${db.lang == 'eu'}">EU</button></span>
+<span class="seg">${bn(-1, 'A-', _('Letra más pequeña', 'Letra txikiagoa'))}${bn(1, 'A+', _('Letra más grande', 'Letra handiagoa'))}</span>
+<button class="ib rd" data-a="hc" aria-pressed="${!!db.hc}" aria-label="${_('Alto contraste', 'Kontraste altua')}"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 2a8 8 0 0 0 0 16z" fill="currentColor"/></svg></button>
+<a class="pill" href="#prof" data-a="go" data-v="prof">👤 ${db.u.on ? esc(fn()) : _('Entrar', 'Sartu')}</a></div></div>
+<div class="hz"><button class="sw" aria-pressed="${notifOn}" data-a="notif">${notifOn ? '🔔 ' + _('Avisos activos', 'Abisuak aktibo') : '🔕 ' + _('Activar avisos', 'Abisuak aktibatu')}</button><button class="sw" aria-checked="${!!db.easy}" data-a="easy">✨ ${_('Modo Fácil', 'Modu Erraza')}</button></div>`;
 }
 
 function home() {
   const t = _('¿En qué podemos ayudarte hoy?', 'Zertan lagun dezakegu gaur?'),
-        sub = _('Pide a una persona de confianza que vaya a casa. Tú eliges qué necesitas y cuándo.', 'Eskatu konfiantzazko pertsona bati etxera joateko. Zuk aukeratzen duzu zer behar duzun eta noiz.');
+  sub = _('Pide a una persona de confianza que vaya a casa. Tú eliges qué necesitas y cuándo.', 'Eskatu konfiantzazko pertsona bati etxera joateko. Zuk aukeratzen duzu zer behar duzun eta noiz.');
   const cc = pendingCommCount();
   const mine = myReqs();
   const liveReq = mine.find(canPostStory);
   const liveStories = liveReq ? activeStories().filter(st => String(st.reqId) === String(liveReq.id)) : [];
-  const liveBanner = liveReq ? `<div class="live-story-hero"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.3rem"><b>✨ ${_('Estás en horario de servicio', 'Zerbitzu-ordutegian zaude')}</b>${liveStories.length ? `<button class="pill" data-a="viewstory" data-v="${liveStories[0].id}">👁️ ${_('Ver', 'Ikusi')} (${liveStories.length})</button>` : ""}</div><p style="margin:.15rem 0 .2rem;font-weight:700">${svc(liveReq)}${liveReq.w ? ' · ' + esc(liveReq.w) : ""}</p><p class="mut" style="font-size:.86rem;margin:0 0 .65rem">${_('Comparte una foto o vídeo (máx. 20 s) visible 24 h para tus seguidores.', 'Partekatu argazki edo bideo bat (geh. 20 s), 24 orduz ikusgai zure jarraitzaileentzat.')}</p><button class="btn" style="width:100%;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);border:0;color:#fff" data-a="openstory" data-id="${liveReq.id}">📸 ${_('Subir historia del servicio', 'Zerbitzuaren historia igo')}</button></div>` : "";
+  const liveBanner = liveReq ? `<div class="live-story-hero"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:.3rem"><b>📸 ${_('Estás en horario de servicio', 'Zerbitzu-ordutegian zaude')}</b>${liveStories.length ? `<button class="pill" data-a="viewstory" data-v="${liveStories[0].id}">👁 ${_('Ver', 'Ikusi')} (${liveStories.length})</button>` : ""}</div><p style="margin:.15rem 0 .2rem;font-weight:700">${svc(liveReq)}${liveReq.w ? ' · ' + esc(liveReq.w) : ""}</p><p class="mut" style="font-size:.86rem;margin:0 0 .65rem">${_('Comparte una foto o vídeo (máx. 20 s) visible 24 h para tus seguidores.', 'Partekatu argazki edo bideo bat (geh. 20 s), 24 orduz ikusgai zure jarraitzaileentzat.')}</p><button class="btn" style="width:100%;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);border:0;color:#fff" data-a="openstory" data-id="${liveReq.id}">📷 ${_('Subir historia del servicio', 'Zerbitzuaren historia igo')}</button></div>` : "";
   const bt = (c, l, at, bdg = 0) => `<div class="mw"><a class="mb ${c}" ${at}>${l}${bdg ? `<span class="badge">${bdg}</span>` : ""}</a>${S(l.replace(/^\S+\s/, ""))}</div>`,
-        goAttr = v => `href="#${v}" data-a="go" data-v="${v}"`;
+  goAttr = v => `href="#${v}" data-a="go" data-v="${v}"`;
   const ct = _('Presentamos a la persona que irá a casa antes de la primera visita. Nuestra oficina de Bilbao también atiende en persona y por teléfono.', 'Etxera joango den pertsona lehen bisitaren aurretik aurkeztuko dizugu. Gure Bilboko bulegoak ere aurrez aurre eta telefonoz artatzen du.'),
-        ht = _('🛡️ Siempre sabrás quién viene', '🛡️ Beti jakingo duzu nor datorren'),
-        tm = 'Aimar Fernandez, Ander Herrera, Eder Fernandez, Eidan Irastorza';
+  ht = _('🛡️ Siempre sabrás quién viene', '🛡️ Beti jakingo duzu nor datorren'),
+  tm = 'Aimar Fernandez, Ander Herrera, Eder Fernandez, Eidan Irastorza';
   return `${liveBanner}<div class="row" style="align-items:flex-start"><div class="grow"><h1>${t}</h1><p class="mut" style="margin:.3rem 0 .8rem">${sub}</p></div>${S(t + '. ' + sub)}</div>
-  ${bt('pri', '🤝 ' + _('Pedir ayuda', 'Laguntza eskatu'), goAttr('help'))}
-  ${bt('soft', '📋 ' + _('Mis solicitudes', 'Nire eskaerak') + ` (${mine.filter(r => !arch(r)).length})`, goAttr('reqs'))}
-  ${bt('soft', '👥 ' + _('Comunidad y planes', 'Komunitatea eta planak'), goAttr('comm'), cc)}
-  ${bt('soft', '👋 ' + _('Conoce a nuestro equipo', 'Ezagutu gure taldea'), goAttr('team'))}
-  ${bt('soft', '📞 ' + _('Llamar', 'Deitu') + ': 644 270 017', 'href="tel:644270017"')}
-  <div class="card"><div class="row"><h2 class="grow" style="font-size:1.3rem">${ht}</h2>${S(ht.slice(2) + '. ' + ct)}</div><p style="font-size:1.1rem">${ct}</p><p class="mut adv" style="font-size:.85rem;margin:.6rem 0 0">${_('Equipo fundador', 'Sortzaileen taldea')}: ${tm}</p></div>`;
+${bt('pri', '🤝 ' + _('Pedir ayuda', 'Laguntza eskatu'), goAttr('help'))}
+${bt('soft', '📋 ' + _('Mis solicitudes', 'Nire eskaerak') + ` (${mine.filter(r => !arch(r)).length})`, goAttr('reqs'))}
+${bt('soft', '👥 ' + _('Comunidad y planes', 'Komunitatea eta planak'), goAttr('comm'), cc)}
+${bt('soft', '💚 ' + _('Conoce a nuestro equipo', 'Ezagutu gure taldea'), goAttr('team'))}
+${bt('soft', '📞 ' + _('Llamar', 'Deitu') + ': 644 270 017', 'href="tel:644270017"')}
+<div class="card"><div class="row"><h2 class="grow" style="font-size:1.3rem">${ht}</h2>${S(ht.slice(2) + '. ' + ct)}</div><p style="font-size:1.1rem">${ct}</p><p class="mut adv" style="font-size:.85rem;margin:.6rem 0 0">${_('Equipo fundador', 'Sortzaileen taldea')}: ${tm}</p></div>`;
 }
 
 function ok() {
@@ -467,7 +487,7 @@ function help() {
   let h = "";
   const est = estCalc();
   if (w.s == 1) {
-    h = head('🤝 ' + _('¿Qué necesitas?', 'Zer behar duzu?'), _('¿Qué necesitas?', 'Zer behar duzu?')) + C.map((c, i) => {
+    h = head('1️⃣ ' + _('¿Qué necesitas?', 'Zer behar duzu?'), _('¿Qué necesitas?', 'Zer behar duzu?')) + C.map((c, i) => {
       const on = w.cat == i;
       let sub = "";
       if (on) {
@@ -480,16 +500,16 @@ function help() {
   }
   if (w.s == 2) {
     const modes = [
-      ['normal', '⏱️', _('Una sola vez (Normal)', 'Behin bakarrik (Normala)'), '21,00 € / ' + _('hora', 'ordua')],
-      ['bono', '🎟️', _('Recurrente Bono 5 horas', 'Errepikakorra 5 orduko bonoa'), _('97,50 € base (5 h a 19,50 €/h) + 19,50 € por hora extra', '97,50 € oinarria (5 h 19,50 €/orduko) + 19,50 € ordu gehigarriko')],
+      ['normal', '🕐', _('Una sola vez (Normal)', 'Behin bakarrik (Normala)'), '21,00 € / ' + _('hora', 'ordua')],
+      ['bono', '🎟️', _('Recurrente · Bono 5 horas', 'Errepikakorra · 5 orduko bonoa'), _('97,50 € base (5 h a 19,50 €/h) + 19,50 € por hora extra', '97,50 € oinarria (5 h 19,50 €/orduko) + 19,50 € ordu gehigarriko')],
       ['month', '📅', _('Plan Mensual Hurbil', 'Hurbil Hileko Plana'), '216,00 € / ' + _('mes', 'hileko') + ' (12 h · 18,00 €/h)']
     ];
-    h = head('💶 ' + _('Modalidad y tarifas', 'Modalitatea eta tarifak'), _('Modalidad y tarifas', 'Modalidad y tarifas')) + modes.map(m => `<div style="margin:.55rem 0"><button class="opt ${w.plan == m[0] ? 'on' : ""}" style="width:100%" data-a="wplan" data-v="${m[0]}"><span class="ic">${m[1]}</span><div><div style="font-weight:800;font-size:1.05rem">${m[2]}</div><small class="mut" style="font-weight:600">${m[3]}</small></div></button></div>`).join("")
+    h = head('2️⃣ ' + _('Modalidad y tarifas', 'Modalitatea eta tarifak'), _('Modalidad y tarifas', 'Modalidad y tarifas')) + modes.map(m => `<div style="margin:.55rem 0"><button class="opt ${w.plan == m[0] ? 'on' : ""}" style="width:100%" data-a="wplan" data-v="${m[0]}"><span class="ic">${m[1]}</span><div><div style="font-weight:800;font-size:1.05rem">${m[2]}</div><small class="mut" style="font-weight:600">${m[3]}</small></div></button></div>`).join("")
       + `<div class="est-box"><small class="mut">${est.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado', 'Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(est.tot)}</div></div>`;
   }
   if (w.s == 3) {
-    h = head('📍 ' + _('¿Para quién y dónde?', 'Norentzat eta non?'), _('¿Para quién y dónde?', 'Norentzat eta non?'))
-      + `<div class="row" style="margin:.6rem 0"><button class="opt ${w.who == 'me' ? 'on' : ""}" style="justify-content:center" data-a="wwho" data-v="me">${_('Para mí', 'Niretzat')}</button><button class="opt ${w.who == 'fam' ? 'on' : ""}" style="justify-content:center" data-a="wwho" data-v="fam">${_('Para un familiar', 'Senide batentzat')}</button></div>`
+    h = head('3️⃣ ' + _('¿Para quién y dónde?', 'Norentzat eta non?'), _('¿Para quién y dónde?', 'Norentzat eta non?'))
+      + `<div class="row" style="margin:.6rem 0"><button class="opt ${w.who == 'me' ? 'on' : ""}" style="justify-content:center" data-a="wwho" data-v="me">🙋 ${_('Para mí', 'Niretzat')}</button><button class="opt ${w.who == 'fam' ? 'on' : ""}" style="justify-content:center" data-a="wwho" data-v="fam">👪 ${_('Para un familiar', 'Senide batentzat')}</button></div>`
       + `<label for="rn">${_('Nombre', 'Izena')}</label><input id="rn" data-f="w.rName" value="${esc(w.rName)}">`
       + `<label for="ra">${_('Dirección', 'Helbidea')}</label><input id="ra" data-f="w.rAddr" value="${esc(w.rAddr)}" placeholder="${_('Calle, nº, barrio', 'Kalea, zk., auzoa')}">`
       + `<label for="rp">${_('Teléfono', 'Telefonoa')}</label><input id="rp" data-f="w.rPhone" value="${esc(w.rPhone)}" placeholder="600 000 000">`
@@ -507,7 +527,7 @@ function help() {
         + `<div class="est-box"><small class="mut">${est.sub}</small><div style="font-weight:700;margin-top:.2rem">${_('Importe total estimado', 'Gutxi gorabeherako zenbateko osoa')}</div><div class="est-val">${fmt(est.tot)}</div></div>`;
     } else {
       const baseH = R0 ? R0.hTot : (w.plan == 'bono' ? 5 : 12), used = (R0 ? sesH(R0.ses) : 0) + sesH(w.ses), left = Math.max(0, baseH - used);
-      const px = _('Has repartido', 'Banatu dituzu') + ` <b>${used} h</b> ${_('de', '/')} <b>${baseH} h</b> ` + (left > 0 ? _('te quedan', 'geratzen zaizkizu') + ` <b>${left} h</b> ` + _('por repartir (puedes asignarlas ahora o más adelante)', 'banatzeko (orain edo geroago eslei ditzakezu)') : _('¡Bono completo! Si añades más horas se suman como extra.', 'Bonoa beteta! Ordu gehiago gehitzen badituzu, gehigarri gisa batuko dira.'));
+      const px = `${_('Has repartido', 'Banatu dituzu')} <b>${used} h</b> ${_('de', '/')} <b>${baseH} h</b> · ` + (left > 0 ? `${_('te quedan', 'geratzen zaizkizu')} <b>${left} h</b> ${_('por repartir (puedes asignarlas ahora o más adelante)', 'banatzeko (orain edo geroago eslei ditzakezu)')}` : _('¡Bono completo! Si añades más horas se suman como extra.', 'Bonoa beteta! Ordu gehiago gehitzen badituzu, gehigarri gisa batuko dira.'));
       h = head('📅 ' + _('Reparte tus horas en uno o varios días', 'Banatu zure orduak egun batean edo gehiagotan'), _('Reparte tus horas en uno o varios días', 'Banatu zure orduak egun batean edo gehiagotan'))
         + `<div class="card"><p style="margin:0 0 .5rem">${px}</p><div class="bar"><i style="width:${Math.min(100, used / baseH * 100)}%"></i></div></div>`
         + `<div class="card"><h3 style="margin-top:0">${_('Añadir día y horas', 'Gehitu eguna eta orduak')}</h3>`
@@ -521,7 +541,7 @@ function help() {
   }
   if (w.s == 5) {
     const c = C[w.cat] || C[0], subTxt = w.opt == 'o' || !c[2].length ? w.txt : c[2][w.opt]?.[L()];
-    const planLbl = w.plan == 'bono' ? _('Recurrente Bono 5 horas', 'Errepikakorra 5 orduko bonoa') : w.plan == 'month' ? _('Plan Mensual Hurbil', 'Hurbil Hileko Plana') : _('Una sola vez', 'Behin bakarrik');
+    const planLbl = w.plan == 'bono' ? _('Recurrente · Bono 5 horas', 'Errepikakorra · 5 orduko bonoa') : w.plan == 'month' ? _('Plan Mensual Hurbil', 'Hurbil Hileko Plana') : _('Una sola vez', 'Behin bakarrik');
     const sesList = w.plan == 'normal' ? [{ d: w.sd, t: w.st, h: Math.max(1, +w.sh || 1) }] : w.ses;
     const totH = w.plan == 'normal' ? Math.max(1, +w.sh || 1) : Math.max(w.plan == 'bono' ? 5 : 12, sesH(w.ses));
     const sm = `${c[1][L()]}. ${subTxt || ""}. ${planLbl}. ${sesList.map(sl).join(', ')}. ${_('Total', 'Guztira')} ${fmt(est.tot)}`;
@@ -563,16 +583,16 @@ function rcard(r) {
   }
   const pin = r.pin ? `<div class="card" style="background:var(--sb)"><div class="row"><b class="grow">🔑 ${_('Tu PIN de seguridad', 'Zure segurtasun-PINa')}: <span style="font-size:1.7rem;letter-spacing:.2em">${r.pin}</span></b>${S(_('Tu PIN de seguridad es', 'Zure segurtasun-PINa') + ': ' + r.pin.split("").join(' '))}</div><small>${_('El acompañante te dirá este código al llegar. Si no lo sabe, no abras la puerta.', 'Laguntzaileak kode hau esango dizu iristean. Ez badaki, ez ireki atea.')}</small></div>` : "";
   const canDel = r.st === 'pending';
-  const delUi = canDel ? (String(askDelReq) === String(r.id) ? `<div class="confirm-box"><p style="margin:0 0 .6rem;font-weight:800">${_('¿Estás seguro de que quieres eliminar esta solicitud?', 'Ziur zaude eskaera hau ezabatu nahi duzula?')}</p><div class="row" style="gap:.6rem"><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="delreq_yes" data-id="${r.id}">${_('Sí, eliminar', 'Bai, ezabatu')}</button><button class="btn g" style="flex:1" data-a="delreq_no">${_('No', 'Ez')}</button></div></div>` : `<button class="btn g" style="margin-top:.5rem;color:var(--r);border-color:var(--r)" data-a="delreq_ask" data-id="${r.id}">🗑️ ${_('Eliminar solicitud', 'Eskaera ezabatu')}</button>`) : "";
+  const delUi = canDel ? (String(askDelReq) === String(r.id) ? `<div class="confirm-box"><p style="margin:0 0 .6rem;font-weight:800">⚠️ ${_('¿Estás seguro de que quieres eliminar esta solicitud?', 'Ziur zaude eskaera hau ezabatu nahi duzula?')}</p><div class="row" style="gap:.6rem"><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="delreq_yes" data-id="${r.id}">${_('Sí, eliminar', 'Bai, ezabatu')}</button><button class="btn g" style="flex:1" data-a="delreq_no">${_('No', 'Ez')}</button></div></div>` : `<button class="btn g" style="margin-top:.5rem;color:var(--r);border-color:var(--r)" data-a="delreq_ask" data-id="${r.id}">🗑️ ${_('Eliminar solicitud', 'Eskaera ezabatu')}</button>`) : "";
   const liveStory = canPostStory(r);
   const rStories = activeStories().filter(st => String(st.reqId) === String(r.id));
-  const storyUi = liveStory ? `<div style="margin:.6rem 0;padding:.75rem;border-radius:14px;background:linear-gradient(135deg,#fdf2f8,#eef2ff);border:1px solid #f9a8d4"><div class="row" style="justify-content:space-between"><b>✨ ${_('Servicio en curso · ¡Comparte tu historia!', 'Zerbitzuaren ordua · Partekatu zure historia!')}</b>${rStories.length ? `<button class="pill" data-a="viewstory" data-v="${rStories[0].id}">👁️ ${_('Ver', 'Ikusi')} (${rStories.length})</button>` : ""}</div><p class="mut" style="font-size:.86rem;margin:.25rem 0 .6rem">${_('Sube una foto o vídeo (máx. 20 s) visible 24 h para tus seguidores.', 'Igo argazki edo bideo bat (geh. 20 s), 24 orduz ikusgai zure jarraitzaileentzat.')}</p><button class="btn" style="width:100%;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);border:0;color:#fff" data-a="openstory" data-id="${r.id}">📸 ${_('Subir historia del servicio', 'Zerbitzuaren historia igo')}</button></div>` : (rStories.length ? `<div style="margin:.5rem 0"><button class="btn g" data-a="viewstory" data-v="${rStories[0].id}">👁️ ${_('Ver historia de este servicio', 'Ikusi zerbitzu honen historia')} (${rStories.length})</button></div>` : "");
+  const storyUi = liveStory ? `<div style="margin:.6rem 0;padding:.75rem;border-radius:14px;background:linear-gradient(135deg,#fdf2f8,#eef2ff);border:1px solid #f9a8d4"><div class="row" style="justify-content:space-between"><b>📸 ${_('Servicio en curso · ¡Comparte tu historia!', 'Zerbitzuaren ordua · Partekatu zure historia!')}</b>${rStories.length ? `<button class="pill" data-a="viewstory" data-v="${rStories[0].id}">👁 ${_('Ver', 'Ikusi')} (${rStories.length})</button>` : ""}</div><p class="mut" style="font-size:.86rem;margin:.25rem 0 .6rem">${_('Sube una foto o vídeo (máx. 20 s) visible 24 h para tus seguidores.', 'Igo argazki edo bideo bat (geh. 20 s), 24 orduz ikusgai zure jarraitzaileentzat.')}</p><button class="btn" style="width:100%;background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);border:0;color:#fff" data-a="openstory" data-id="${r.id}">📷 ${_('Subir historia del servicio', 'Zerbitzuaren historia igo')}</button></div>` : (rStories.length ? `<div style="margin:.5rem 0"><button class="btn g" data-a="viewstory" data-v="${rStories[0].id}">👁 ${_('Ver historia de este servicio', 'Ikusi zerbitzu honen historia')} (${rStories.length})</button></div>` : "");
   return `<article class="card"><div class="row"><h3 class="grow">${r.bono ? '🎟️ ' : ""}${svc(r)}</h3>${S(t)}</div>${(r.ses || []).map(q => `<p>📅 ${sl(q)}</p>`).join("")}<p>${sesH(r.ses)}/${r.hTot} h · ${fmt(r.tot)}</p><p>📍 ${esc(r.addr)}</p><p><span class="bd">${s}</span>${r.w ? ' · ' + esc(r.w) : ""}</p>${storyUi}${pin}${r.bono ? `${left > 0 ? `<p class="mut">${_('Te quedan', 'Geratzen zaizkizu')} ${left} h ${_('por asignar', 'esleitzeko')}</p>` : ""}<button class="btn g" data-a="addto" data-id="${r.id}">+ ${_('Añadir cita', 'Hitzordua gehitu')}</button>` : ""}<div><button class="btn s" style="margin-top:.5rem" data-a="wa" data-id="${r.id}">💬 ${_('Avisar a mi familiar por WhatsApp', 'Abisatu nire senideari WhatsApp bidez')}</button></div>${delUi}${e}</article>`;
 }
 
 const jcard = p => {
   const q = PS[p.prop.st][L()];
-  return `<article class="card"><div class="row"><h3 class="grow">${p.t[L()] || p.t.es}</h3>${S((p.t[L()] || p.t.es) + '. ' + q)}</div><p>📅 ${p.when ? p.when[L()] : esc(p.w)} · ${p.h} h · ${fmt(pr(p.h, 2).tot)}/${_('persona', 'pertsona')}</p><p>${p.m.map(esc).join(' + ')}</p><p><span class="bd">${q}</span></p><button class="btn g" data-a="gop" data-v="${p.id}">💬 ${_('Abrir chat', 'Txata ireki')}</button></article>`;
+  return `<article class="card"><div class="row"><h3 class="grow">👥 ${p.t[L()] || p.t.es}</h3>${S((p.t[L()] || p.t.es) + '. ' + q)}</div><p>📅 ${p.when ? p.when[L()] : esc(p.w)} · ${p.h} h · ${fmt(pr(p.h, 2).tot)}/${_('persona', 'pertsona')}</p><p>👤 ${p.m.map(esc).join(' + ')}</p><p><span class="bd">${q}</span></p><button class="btn g" data-a="gop" data-v="${p.id}">💬 ${_('Abrir chat', 'Txata ireki')}</button></article>`;
 };
 
 function reqs() {
@@ -583,6 +603,7 @@ function reqs() {
 
 const msgs = (a, me) => `<div class="msgs">${a.map(m => `<div class="m ${m.n == me || m.f == 'u' ? 'me' : ""}"><div>${m.n ? `<b>${esc(m.n)}:</b> ` : ""}${esc(m.t)}</div>${S((m.n ? m.n + ': ' : "") + m.t)}</div>`).join("")}</div>`;
 const sendBox = v => `<div class="send"><input aria-label="${_('Escribe un mensaje', 'Idatzi mezu bat')}" placeholder="${_('Escribe un mensaje', 'Idatzi mezu bat')}" value="${esc(draftChat)}" oninput="draftChat=this.value"><button class="btn" data-a="send" data-v="${v}">${_('Enviar', 'Bidali')}</button></div>`;
+
 const propc = p => {
   const q = p.prop, me = fn(), o = p.m.find(x => x != me) || p.m[0], t = `${_('Plan conjunto para 2 personas', '2 pertsonentzako plan bateratua')}. ${p.t[L()]}. ${p.when[L()]}. ${PS[q.st][L()]}`;
   return `<div class="card" style="background:var(--sb)"><div class="row"><h3 class="grow">${_('Plan conjunto para 2 personas', '2 pertsonentzako plan bateratua')}</h3>${S(t)}</div><p>${p.t[L()]} · ${p.when[L()]} · ${p.h} h</p><p>${fmt(pr(p.h, 2).tot)}/${_('persona', 'pertsona')} <span class="bd">16,00 €/h</span></p><p>${[me, o].map(n => `${q.acc.includes(n) ? '✅' : '⏳'} ${esc(n)}`).join(' · ')}</p>${q.st == 'draft' ? [me, o].map(n => `<button class="btn ${q.acc.includes(n) ? 'g' : 's'}" style="margin:.2rem" data-a="acc" data-v="${p.id}" data-n="${esc(n)}" ${q.acc.includes(n) ? 'disabled' : ""}>${_('Aceptar', 'Onartu')} (${esc(n)})</button>`).join("") : ""}<p><span class="bd">${PS[q.st][L()]}</span></p></div>`;
@@ -613,8 +634,8 @@ function comm() {
         if (out?.status == 'pending') { bTxt = _('⏳ Pendiente (cancelar)', '⏳ Zain (ezeztatu)'); bCls = 'g'; }
         else if (out?.status == 'accepted') { bTxt = _('✓ Siguiendo', '✓ Jarraitzen'); bCls = 'g'; }
         h += `<div class="card"><button class="btn g" style="margin-bottom:.8rem" data-a="uprof" data-v="${u.id}">← ${_('Volver a personas', 'Pertsonetara itzuli')}</button><div class="row">${avImg(u, 72)}<div class="grow"><h2>${esc(u.name)}</h2><p class="mut">${esc(u.username)} · ${esc(u.addr || 'Bilbao')}</p><p style="margin-top:.3rem"><b>${segs}</b> ${_('seguidores', 'jarraitzaile')} · <b>${sig}</b> ${_('seguidos', 'jarraituak')}</p></div></div><div class="row" style="margin-top:1rem"><button class="btn ${bCls}" data-a="fol" data-v="${u.id}">${bTxt}</button>${canChat ? `<button class="btn" data-a="dm" data-v="${u.id}">💬 ${_('Enviar mensaje', 'Mezua bidali')}</button>` : ""}</div></div>`;
-        return h;
       }
+      return h;
     }
     const inc = folRows.filter(x => x.following_id == sbUid && x.status == 'pending');
     if (inc.length) h += `<div class="card" style="border:2px solid var(--p)"><h3>🔔 ${_('Solicitudes de seguimiento', 'Jarraipen eskaerak')} (${inc.length})</h3>${inc.map(req => { const u = usersList.find(x => x.id == req.follower_id) || { name: _('Usuario', 'Erabiltzailea'), username: "" }; return `<div class="row" style="justify-content:space-between;margin:.6rem 0"><div class="row" style="cursor:pointer" data-a="uprof" data-v="${u.id}">${avImg(u, 40)}<div><b>${esc(u.name)}</b><br><span class="mut">${esc(u.username)}</span></div></div><div class="row"><button class="btn s" data-a="facc" data-v="${u.id}">${_('Aceptar', 'Onartu')}</button><button class="btn g" data-a="frej" data-v="${u.id}">✕</button></div></div>`; }).join("")}</div>`;
@@ -624,12 +645,12 @@ function comm() {
     const iFollowIds = folRows.filter(x => x.follower_id == sbUid && x.status == 'accepted').map(x => x.following_id);
     const visPlans = db.plans.filter(p => p.ownerId ? (p.ownerId == sbUid || p.accU == sbUid || iFollowIds.includes(p.ownerId)) : true);
     const myIntReqs = visPlans.filter(p => p.ownerId == sbUid && p.int && p.int.length);
-    if (myIntReqs.length) h += `<div class="card" style="border:2px solid var(--p)"><h3>🙋 ${_('Interesados en tus planes', 'Zure planetan interesatuak')}</h3>${myIntReqs.map(p => p.int.map(uid => { const u = usersList.find(x => x.id == uid) || { name: _('Usuario', 'Erabiltzailea'), username: "" }; return `<div class="row" style="justify-content:space-between;margin:.6rem 0;flex-wrap:wrap"><div class="row">${avImg(u, 38)}<div><b>${esc(u.name)}</b> ${_('quiere unirse a', 'bat egin nahi du:')} <i>${esc(p.t[L()] || p.t.es)}</i></div></div><div class="row"><button class="btn s" data-a="pacc" data-v="${p.id}:${uid}">${_('Aceptar', 'Onartu')}</button><button class="btn g" data-a="prej" data-v="${p.id}:${uid}">✕</button></div></div>`; }).join("")).join("")}</div>`;
+    if (myIntReqs.length) h += `<div class="card" style="border:2px solid var(--p)"><h3>🔔 ${_('Interesados en tus planes', 'Zure planetan interesatuak')}</h3>${myIntReqs.map(p => p.int.map(uid => { const u = usersList.find(x => x.id == uid) || { name: _('Usuario', 'Erabiltzailea'), username: "" }; return `<div class="row" style="justify-content:space-between;margin:.6rem 0;flex-wrap:wrap"><div class="row">${avImg(u, 38)}<div><b>${esc(u.name)}</b> ${_('quiere unirse a', 'bat egin nahi du:')} <i>${esc(p.t[L()] || p.t.es)}</i></div></div><div class="row"><button class="btn s" data-a="pacc" data-v="${p.id}:${uid}">${_('Aceptar', 'Onartu')}</button><button class="btn g" data-a="prej" data-v="${p.id}:${uid}">✕</button></div></div>`; }).join("")).join("")}</div>`;
     h += visPlans.length ? visPlans.map(p => {
       if (!p.ownerId) return plan(p);
       const ow = usersList.find(x => x.id == p.ownerId) || { name: p.ownerName || _('Vecino', 'Bizilaguna'), username: "" }, isMine = p.ownerId == sbUid, isAcc = p.accU == sbUid || (isMine && p.accU), isInt = (p.int || []).includes(sbUid);
       const chatPeer = isMine ? p.accU : p.ownerId, peerObj = usersList.find(x => x.id == chatPeer) || { name: ow.name };
-      return `<article class="card"><div class="row" style="justify-content:space-between"><div class="row">${avImg(ow, 42)}<div><b>${esc(ow.name)}</b> <span class="mut">${esc(ow.username || "")}</span></div></div>${S((p.t[L()] || p.t.es) + '. ' + p.w)}</div><p style="margin:.6rem 0 .2rem;font-size:1.1rem"><b>${esc(p.t[L()] || p.t.es)}</b></p><p class="mut">📅 ${esc(p.w)} · ${p.h} h</p><div style="margin:.6rem 0"><span class="tag">${_('Plan conjunto (16,00 €/h por persona · 2+ personas + trabajador Hurbil)', 'Plan bateratua (16,00 €/h pertsonako · 2+ pertsona + Hurbil langilea)')}</span></div>${isAcc ? `<div class="row" style="margin-top:.6rem"><span class="btn s" style="cursor:default">✅ ${_('Plan conjunto creado', 'Plan bateratua sortuta')}</span></div><button class="btn" style="width:100%;margin-top:.6rem" data-a="dm" data-v="${chatPeer}">💬 ${_('Abrir chat con', 'Ireki txata:')} ${esc(peerObj.name)}</button>` : isMine ? `<p class="mut">${(p.int || []).length} ${_('interesados', 'interesatu')}</p>` : `<button class="btn ${isInt ? 'g' : 's'}" style="margin-top:.5rem" data-a="pint" data-v="${p.id}">${isInt ? '✓ ' + _('Me interesa enviado (cancelar)', 'Interesa bidalita (ezeztatu)') : '🙋 ' + _('Me interesa', 'Interesatzen zait')}</button>`}</article>`;
+      return `<article class="card"><div class="row" style="justify-content:space-between"><div class="row">${avImg(ow, 42)}<div><b>${esc(ow.name)}</b> <span class="mut">${esc(ow.username || "")}</span></div></div>${S((p.t[L()] || p.t.es) + '. ' + p.w)}</div><p style="margin:.6rem 0 .2rem;font-size:1.1rem"><b>${esc(p.t[L()] || p.t.es)}</b></p><p class="mut">📅 ${esc(p.w)} · ${p.h} h</p><div style="margin:.6rem 0"><span class="tag">${_('Plan conjunto (16,00 €/h por persona · 2+ personas + trabajador Hurbil)', 'Plan bateratua (16,00 €/h pertsonako · 2+ pertsona + Hurbil langilea)')}</span></div>${isAcc ? `<div class="row" style="margin-top:.6rem"><span class="btn s" style="cursor:default">✅ ${_('Plan conjunto creado', 'Plan bateratua sortuta')}</span></div><button class="btn" style="width:100%;margin-top:.6rem" data-a="dm" data-v="${chatPeer}">💬 ${_('Abrir chat con', 'Ireki txata:')} ${esc(peerObj.name)}</button>` : isMine ? `<p class="mut">${(p.int || []).length} ${_('interesados', 'interesatu')}</p>` : `<button class="btn ${isInt ? 'g' : 's'}" style="margin-top:.5rem" data-a="pint" data-v="${p.id}">${isInt ? '✓ ' + _('Me interesa enviado (cancelar)', 'Interesa bidalita (ezeztatu)') : '👋 ' + _('Me interesa', 'Interesatzen zait')}</button>`}</article>`;
     }).join("") : `<div class="card"><p>${_('Aún no hay planes publicados por la gente a la que sigues.', 'Oraindik ez dago jarraitzen duzun jendeak argitaratutako planik.')}</p></div>`;
   }
   return h;
@@ -643,15 +664,15 @@ function storyPage() {
   const agoTxt = ago < 60 ? `${ago} min` : `${Math.round(ago / 60)} h`;
   const uObj = cur.userId === sbUid ? db.u : (usersList.find(x => x.id === cur.userId) || { name: cur.userName, avatar: cur.avatar });
   const isMine = cur.userId === sbUid || cur.userName === db.u.name;
-  return `<div class="ig-story-full"><div class="ig-story-top"><div class="ig-story-bars">${list.map((_, i) => `<span class="${i < storyIdx ? 'done' : i === storyIdx && cur.type !== 'video' ? 'cur' : i === storyIdx ? 'done' : ""}"></span>`).join("")}</div><div class="row" style="justify-content:space-between;align-items:center"><div class="row">${avImg(uObj, 40)}<div><b style="color:#fff;font-size:1rem">${esc(cur.userName || 'Hurbil')}</b><div style="font-size:.8rem;color:rgba(255,255,255,.78)">${esc(cur.svc || "")} · ${agoTxt}</div></div></div><div class="row" style="gap:.45rem">${isMine ? `<button style="background:rgba(220,38,38,.78);border:0;color:#fff;width:42px;height:42px;border-radius:50%;font-size:1.15rem" data-a="stdel_ask" aria-label="${_('Eliminar historia', 'Historia ezabatu')}" title="${_('Eliminar historia', 'Historia ezabatu')}">🗑️</button>` : ""}<button style="background:rgba(255,255,255,.16);border:0;color:#fff;width:42px;height:42px;border-radius:50%;font-size:1.3rem;font-weight:800" data-a="stclose" aria-label="${_('Cerrar', 'Itxi')}">✕</button></div></div>${askDelStory ? `<div style="margin-top:.75rem;background:rgba(15,23,42,.92);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:.75rem"><p style="margin:0 0 .55rem;font-weight:800;font-size:.95rem">🗑️ ${_('¿Borrar esta historia?', 'Historia hau ezabatu?')}</p><div class="row" style="gap:.5rem"><button class="btn" style="flex:1;min-height:42px;background:var(--r);border-color:var(--r);color:#fff" data-a="stdel_yes" data-v="${cur.id}">${_('Sí, borrar', 'Bai, ezabatu')}</button><button class="btn g" style="flex:1;min-height:42px" data-a="stdel_no">${_('No', 'Ez')}</button></div></div>` : ""}</div><div class="ig-story-media">${cur.type === 'video' ? `<video src="${esc(cur.url)}" controls autoplay playsinline onended="act({dataset:{a:'stnext'}})"></video>` : `<img src="${esc(cur.url)}" alt="">`}</div>${cur.type !== 'video' && !askDelStory ? `<div class="ig-story-tap"><div data-a="stprev" title="${_('Anterior', 'Aurrekoa')}"></div><div data-a="stnext" title="${_('Siguiente', 'Hurrengoa')}"></div></div>` : ""}${cur.cap || list.length > 1 ? `<div class="ig-story-bot">${cur.cap ? `<p style="margin:0 0 .5rem;font-size:1.05rem;font-weight:700;color:#fff">${esc(cur.cap)}</p>` : ""}${list.length > 1 ? `<div class="row" style="justify-content:center;gap:.8rem"><button class="pill" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)" data-a="stprev">← ${_('Anterior', 'Aurrekoa')}</button><button class="pill" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)" data-a="stnext">${_('Siguiente', 'Hurrengoa')} →</button></div>` : ""}</div>` : ""}</div>`;
+  return `<div class="ig-story-full"><div class="ig-story-top"><div class="ig-story-bars">${list.map((_, i) => `<span class="${i < storyIdx ? 'done' : i === storyIdx && cur.type !== 'video' ? 'cur' : i === storyIdx ? 'done' : ""}"></span>`).join("")}</div><div class="row" style="justify-content:space-between;align-items:center"><div class="row">${avImg(uObj, 40)}<div><b style="color:#fff;font-size:1rem">${esc(cur.userName || 'Hurbil')}</b><div style="font-size:.8rem;color:rgba(255,255,255,.78)">${esc(cur.svc || "")} · ${agoTxt}</div></div></div><div class="row" style="gap:.45rem">${isMine ? `<button style="background:rgba(220,38,38,.78);border:0;color:#fff;width:42px;height:42px;border-radius:50%;font-size:1.15rem" data-a="stdel_ask" aria-label="${_('Eliminar historia', 'Historia ezabatu')}" title="${_('Eliminar historia', 'Historia ezabatu')}">🗑️</button>` : ""}<button style="background:rgba(255,255,255,.16);border:0;color:#fff;width:42px;height:42px;border-radius:50%;font-size:1.3rem;font-weight:800" data-a="stclose" aria-label="${_('Cerrar', 'Itxi')}">✕</button></div></div>${askDelStory ? `<div style="margin-top:.75rem;background:rgba(15,23,42,.92);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:.75rem"><p style="margin:0 0 .55rem;font-weight:800;font-size:.95rem">⚠️ ${_('¿Borrar esta historia?', 'Historia hau ezabatu?')}</p><div class="row" style="gap:.5rem"><button class="btn" style="flex:1;min-height:42px;background:var(--r);border-color:var(--r);color:#fff" data-a="stdel_yes" data-v="${cur.id}">${_('Sí, borrar', 'Bai, ezabatu')}</button><button class="btn g" style="flex:1;min-height:42px" data-a="stdel_no">${_('No', 'Ez')}</button></div></div>` : ""}</div><div class="ig-story-media">${cur.type === 'video' ? `<video src="${esc(cur.url)}" controls autoplay playsinline onended="act({dataset:{a:'stnext'}})"></video>` : `<img src="${esc(cur.url)}" alt="">`}</div>${cur.type !== 'video' && !askDelStory ? `<div class="ig-story-tap"><div data-a="stprev" title="${_('Anterior', 'Aurrekoa')}"></div><div data-a="stnext" title="${_('Siguiente', 'Hurrengoa')}"></div></div>` : ""}${cur.cap || list.length > 1 ? `<div class="ig-story-bot">${cur.cap ? `<p style="margin:0 0 .5rem;font-size:1.05rem;font-weight:700;color:#fff">${esc(cur.cap)}</p>` : ""}${list.length > 1 ? `<div class="row" style="justify-content:center;gap:.8rem"><button class="pill" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)" data-a="stprev">← ${_('Anterior', 'Aurrekoa')}</button><button class="pill" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3)" data-a="stnext">${_('Siguiente', 'Hurrengoa')} →</button></div>` : ""}</div>` : ""}</div>`;
 }
 
 function chatPage() {
   if (dmUser) {
     const peer = usersList.find(x => x.id == dmUser) || { name: 'Chat', username: "" };
     const chatMsgs = dmList.filter(m => (m.sender_id == sbUid && m.receiver_id == dmUser) || (m.sender_id == dmUser && m.receiver_id == sbUid));
-    return `${back()}<div class="card" style="margin-top:.8rem"><div style="display:flex;align-items:center;gap:.75rem;padding-bottom:.75rem;border-bottom:1px solid #efefef;margin-bottom:.6rem"><button class="btn g" style="min-height:40px;padding:.35rem .7rem;border-radius:999px" data-a="dmback">←</button><div style="cursor:pointer" onclick="ct='neigh';viewU='${peer.id}';go('comm');render()">${avImg(peer, 44)}</div><div class="grow" style="cursor:pointer" onclick="ct='neigh';viewU='${peer.id}';go('comm');render()"><div style="font-weight:800;font-size:1.05rem;line-height:1.15">${esc(peer.name)}</div><div style="font-size:.82rem;color:#6b7280">${esc(peer.username || "")} · <span style="color:#16a34a;font-weight:700">${_('Activo ahora', 'Aktibo orain')}</span></div></div></div>`
-      + `<div class="ig-feed">${chatMsgs.length ? chatMsgs.map(m => { const mine = m.sender_id == sbUid, tm = m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "", pl = m.plan_id ? db.plans.find(x => String(x.id) == String(m.plan_id)) : null; let card = ""; if (pl && pl.prop) { const q = pl.prop, meN = db.u.name, okMe = q.acc.includes(meN); card = `<div style="margin-top:.55rem;background:#fff;color:#111827;border-radius:14px;padding:.75rem;border:1px solid #e5e7eb;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-weight:800;font-size:.93rem">🤝 ${esc(pl.t[L()] || pl.t.es)}</div><div style="font-size:.8rem;color:#6b7280;margin:.2rem 0">📅 ${esc(pl.w)} · ${pl.h} h</div><div style="font-size:.8rem;font-weight:700;color:#4f46e5;margin:.3rem 0">${PS[q.st][L()]} (${q.acc.length}/2)</div>${q.st == 'draft' ? (!okMe ? `<button class="btn s" style="width:100%;margin-top:.35rem;min-height:auto;padding:.5rem;border-radius:10px;font-size:.9rem" data-a="acc" data-v="${pl.id}" data-n="${esc(meN)}">✅ ${_('Aceptar plan conjunto', 'Plan bateratua onartu')}</button>` : `<div style="font-size:.8rem;color:#16a34a;font-weight:700">✓ ${_('Has aceptado · esperando a ', 'Onartu duzu · zain: ')}${esc(peer.name)}</div>`) : ""}</div>`; } return mine ? `<div class="ig-me">${esc(m.text)}${card}${tm ? `<div style="font-size:.65rem;opacity:.75;text-align:right;margin-top:.2rem">${tm}</div>` : ""}</div>` : `<div class="ig-them">${avImg(peer, 28)}<div class="ig-bubble">${esc(m.text)}${card}${tm ? `<div style="font-size:.65rem;color:#9ca3af;margin-top:.2rem">${tm}</div>` : ""}</div></div>`; }).join("") : `<div style="text-align:center;margin:2rem 0"><div class="ig-ring" style="margin-bottom:.5rem">${avImg(peer, 64)}</div><div style="font-weight:800">${esc(peer.name)}</div><div class="mut" style="font-size:.85rem">${esc(peer.username || "")} · Hurbil Bilbao</div><p class="mut" style="font-size:.85rem;margin-top:.6rem">${_('Envía un mensaje para empezar la conversación', 'Bidali mezu bat elkarrizketa hasteko')}</p></div>`}</div>`
+    return `${back()}<div class="card" style="margin-top:.8rem"><div style="display:flex;align-items:center;gap:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--bd);margin-bottom:.5rem"><button class="btn g" style="min-height:40px;padding:.3rem .8rem" data-a="dmback">←</button><div class="ig-ring" style="cursor:pointer" onclick="ct='neigh';viewU='${peer.id}';go('comm');render()">${avImg(peer, 44)}</div><div class="grow" style="cursor:pointer" onclick="ct='neigh';viewU='${peer.id}';go('comm');render()"><div style="font-weight:800;font-size:1.05rem;line-height:1.15">${esc(peer.name)}</div><div style="font-size:.82rem;color:#6b7280">${esc(peer.username || "")} · <span style="color:#16a34a;font-weight:700">${_('Activo ahora', 'Aktibo orain')}</span></div></div></div>`
+      + `<div class="ig-feed">${chatMsgs.length ? chatMsgs.map(m => { const mine = m.sender_id == sbUid, tm = m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "", pl = m.plan_id ? db.plans.find(x => String(x.id) == String(m.plan_id)) : null; let card = ""; if (pl && pl.prop) { const q = pl.prop, meN = db.u.name, okMe = q.acc.includes(meN); card = `<div style="margin-top:.55rem;background:#fff;color:#111827;border-radius:14px;padding:.75rem;border:1px solid #e5e7eb;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,.06)"><div style="font-weight:800;font-size:.93rem">👥 ${esc(pl.t[L()] || pl.t.es)}</div><div style="font-size:.8rem;color:#6b7280;margin:.2rem 0">📅 ${esc(pl.w)} · ${pl.h} h</div><div style="font-size:.8rem;font-weight:700;color:#4f46e5;margin:.3rem 0">${PS[q.st][L()]} (${q.acc.length}/2)</div>${q.st == 'draft' ? (!okMe ? `<button class="btn s" style="width:100%;margin-top:.35rem;min-height:auto;padding:.5rem;border-radius:10px;font-size:.9rem" data-a="acc" data-v="${pl.id}" data-n="${esc(meN)}">✅ ${_('Aceptar plan conjunto', 'Plan bateratua onartu')}</button>` : `<div style="font-size:.8rem;color:#16a34a;font-weight:700">✓ ${_('Has aceptado · esperando a ', 'Onartu duzu · zain: ')}${esc(peer.name)}</div>`) : ""}</div>`; } return mine ? `<div class="ig-me">${esc(m.text)}${card}${tm ? `<div style="font-size:.65rem;opacity:.75;text-align:right;margin-top:.2rem">${tm}</div>` : ""}</div>` : `<div class="ig-them">${avImg(peer, 28)}<div class="ig-bubble">${esc(m.text)}${card}${tm ? `<div style="font-size:.65rem;color:#9ca3af;margin-top:.2rem">${tm}</div>` : ""}</div></div>`; }).join("") : `<div style="text-align:center;margin:2rem 0"><div class="ig-ring" style="margin-bottom:.5rem">${avImg(peer, 64)}</div><div style="font-weight:800">${esc(peer.name)}</div><div class="mut" style="font-size:.85rem">${esc(peer.username || "")} · Hurbil Bilbao</div><p class="mut" style="font-size:.85rem;margin-top:.6rem">${_('Envía un mensaje para empezar la conversación', 'Bidali mezu bat elkarrizketa hasteko')}</p></div>`}</div>`
       + `<div class="ig-bar"><input aria-label="${_('Escribe un mensaje', 'Idatzi mezu bat')}" placeholder="${_('Envía un mensaje...', 'Bidali mezu bat...')}" value="${esc(draftChat)}" oninput="draftChat=this.value" onkeydown="if(event.key==='Enter')this.nextElementSibling.click()"><button class="ig-send" data-a="send" data-v="dm:${dmUser}">${_('Enviar', 'Bidali')}</button></div></div>`;
   }
   const cloudTeam = sbUid ? dmList.filter(m => (m.sender_id == sbUid && m.receiver_id == TEAM_ID) || (m.sender_id == TEAM_ID && m.receiver_id == sbUid)) : [];
@@ -666,12 +687,12 @@ function chatPage() {
 }
 
 function prof() {
-  const u = db.u, f = (k, l, ty) => `<label for="f_${k}">${l}</label><div class="row"><input class="grow" id="f_${k}" type="${k == 'pass' && !sp ? 'password' : ty || 'text'}" data-f="db.u.${k}" value="${esc(u[k] || '')}">${k == 'pass' ? `<button class="ib" data-a="pw">${sp ? _('Ocultar', 'Ezkutatu') : _('Mostrar', 'Erakutsi')}</button>` : ""}</div>${S(l)}`;
+  const u = db.u, f = (k, l, ty) => `<label for="f_${k}">${l}</label><div class="row"><input class="grow" id="f_${k}" type="${k == 'pass' && !sp ? 'password' : ty || 'text'}" data-f="db.u.${k}" value="${esc(u[k] || "")}">${k == 'pass' ? `<button class="ib" data-a="pw">${sp ? _('Ocultar', 'Ezkutatu') : _('Mostrar', 'Erakutsi')}</button>` : ""}</div>${S(l)}`;
   const flds = f('name', _('Nombre completo', 'Izen osoa')) + f('user', _('Nombre de usuario (ej. @amaia_bilbao)', 'Erabiltzaile-izena (adib. @amaia_bilbao)')) + f('contact', _('Correo electrónico', 'Posta elektronikoa'), 'email') + f('pass', _('Contraseña', 'Pasahitza')) + f('addr', _('Barrio o dirección en Bilbao', 'Auzoa edo helbidea Bilbon')) + f('fam', _('Teléfono del familiar de confianza (WhatsApp)', 'Konfiantzazko senidearen telefonoa (WhatsApp)'), 'tel');
   const editFlds = f('name', _('Nombre completo', 'Izen osoa')) + f('user', _('Nombre de usuario (ej. @amaia_bilbao)', 'Erabiltzaile-izena (adib. @amaia_bilbao)')) + f('contact', _('Correo electrónico', 'Posta elektronikoa'), 'email') + f('addr', _('Barrio o dirección en Bilbao', 'Auzoa edo helbidea Bilbon')) + f('fam', _('Teléfono del familiar de confianza (WhatsApp)', 'Konfiantzazko senidearen telefonoa (WhatsApp)'), 'tel');
   let h = back() + head(_('Mi perfil / Cuenta', 'Nire profila / Kontua'));
   if (u.on) {
-    return h + `<div class="card"><div class="row" style="align-items:flex-start;gap:1rem">${avImg(u, 68)}<div class="grow"><b>${esc(u.name)}</b><p class="mut" style="margin:.15rem 0">${esc(u.user)}</p><p class="mut" style="font-size:.88rem;margin:0 0 .5rem">📍 ${esc(u.addr || 'Bilbao')}${u.fam ? ' · ' + esc(u.fam) : ""}</p><label class="btn g" style="display:inline-flex;margin:0;cursor:pointer">📷 ${_('Cambiar foto de perfil', 'Profileko argazkia aldatu')}<input type="file" accept="image/*" style="display:none" onchange="upAv(this)"></label></div><button class="ib rd" data-a="edprof" aria-pressed="${editProf}" aria-label="${_('Editar datos', 'Datuak editatu')}" title="${_('Editar datos', 'Datuak editatu')}">✏️</button></div>${editProf ? `<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)">${editFlds}<div class="row" style="margin-top:1rem"><button class="btn s" data-a="prof">${_('Guardar datos', 'Datuak gorde')}</button><button class="btn g" data-a="edprof">${_('Cancelar', 'Utzi')}</button></div></div>` : ""}<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)"><button class="btn g" style="width:100%" data-a="out">${_('Cerrar sesión', 'Saioa itxi')}</button></div></div>` + pextra();
+    return h + `<div class="card"><div class="row" style="align-items:flex-start;gap:1rem">${avImg(u, 68)}<div class="grow"><b>${esc(u.name)}</b><p class="mut" style="margin:.15rem 0">${esc(u.user)}</p><p class="mut" style="font-size:.88rem;margin:0 0 .5rem">📍 ${esc(u.addr || 'Bilbao')}${u.fam ? ' · 👨‍👩‍👧 ' + esc(u.fam) : ""}</p><label class="btn g" style="display:inline-flex;margin:0;cursor:pointer">📷 ${_('Cambiar foto de perfil', 'Profileko argazkia aldatu')}<input type="file" accept="image/*" style="display:none" onchange="upAv(this)"></label></div><button class="ib rd" data-a="edprof" aria-pressed="${editProf}" aria-label="${_('Editar datos', 'Datuak editatu')}" title="${_('Editar datos', 'Datuak editatu')}">✏️</button></div>${editProf ? `<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)">${editFlds}<div class="row" style="margin-top:1rem"><button class="btn s" data-a="prof">${_('Guardar datos', 'Datuak gorde')}</button><button class="btn g" data-a="edprof">${_('Cancelar', 'Utzi')}</button></div></div>` : ""}<div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--bd)"><button class="btn g" style="width:100%" data-a="out">${_('Cerrar sesión', 'Saioa itxi')}</button></div></div>` + pextra();
   }
   return h + `<div class="tabs">${[['create', _('Crear cuenta', 'Kontua sortu')], ['login', _('Iniciar sesión', 'Saioa hasi')]].map(t => `<button class="btn ${pm == t[0] ? "" : 'g'}" data-a="mode" data-v="${t[0]}">${t[1]}</button>`).join("")}</div><div class="card">${pm == 'create' ? flds + `<button class="btn s" style="margin-top:1rem" data-a="auth" data-v="c">${_('Crear cuenta', 'Kontua sortu')}</button>` : `<label for="lu">${_('Usuario o correo', 'Erabiltzailea edo posta')}</label><input id="lu" data-f="lg.u"><label for="lp">${_('Contraseña', 'Pasahitza')}</label><input id="lp" type="password" data-f="lg.p"><button class="btn s" style="margin-top:1rem" data-a="auth" data-v="l">${_('Iniciar sesión', 'Saioa hasi')}</button>`}</div>`;
 }
@@ -682,11 +703,11 @@ function admin() {
     return back() + `<h2>🔒 ${_('Administración', 'Administrazioa')}</h2><div class="card"><label for="admp">${_('Contraseña', 'Pasahitza')}</label><input id="admp" type="password" onkeydown="if(event.key==='Enter')document.getElementById('admb').click()">${admErr ? `<p style="color:var(--r);font-weight:700;margin:.5rem 0 0">${_('Contraseña incorrecta.', 'Pasahitz okerra.')}</p>` : ""}<button id="admb" class="btn s" style="width:100%;margin-top:1rem" onclick="if(document.getElementById('admp').value==='hurbil2026'){admOk=true;admErr=false;render()}else{admErr=true;render()}">${_('Entrar', 'Sartu')}</button></div><p class="mut" style="text-align:center;margin-top:1rem">${_('Proyecto Erronka · Las solicitudes se envían a Hurbil para su revisión.', 'Erronka Proiektua · Eskaerak Hurbilera bidaltzen dira berrikusteko.')}</p>`;
   }
   const sel = (r, k, o) => `<select data-a="adm" data-k="${k}" data-id="${r.id}" aria-label="${k}">${o.map(x => `<option value="${x[0]}"${r[k] === x[0] ? ' selected' : ""}>${x[1]}</option>`).join("")}</select>`;
-  const stBadge = s => s === 'done' ? `✅ ${ST.done[L()]}` : s === 'accepted' ? `✅ ${ST.accepted[L()]}` : s === 'rejected' ? `❌ ${ST.rejected[L()]}` : s === 'assigned' ? `👤 ${ST.assigned[L()]}` : s === 'ongoing' ? `🟢 ${ST.ongoing[L()]}` : `⏳ ${_('Pendiente', 'Zain')}`;
-  const reqCards = db.reqs.map(r => `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:.4rem"><span class="bd">${stBadge(r.st)}</span><span class="mut">#${r.id}</span></div><p style="margin:.2rem 0;font-size:1.1rem"><b>${esc(r.cli || _('Cliente', 'Bezeroa'))}</b></p><p style="margin:.2rem 0">${svc(r)} · ${r.bono > 1 ? `Bono ${r.bono} horas · ` : ""}${r.hTot} h</p><p class="mut" style="margin:.2rem 0">📅 ${(r.ses || []).map(sl).join(' | ')} (${sesH(r.ses)}/${r.hTot} h)</p><p class="mut" style="margin:.2rem 0">📍 ${esc(r.addr)}${r.pin ? ` · 🔑 ${r.pin}` : ""}</p><p style="margin:.4rem 0"><b>${fmt(r.tot)}</b></p><label>${_('Trabajador asignado', 'Esleitutako langilea')}</label>${sel(r, 'w', [['', '-'], ...W.map(x => [x, x])])}<div class="row" style="margin-top:.8rem;gap:.6rem"><button class="btn s" style="flex:1" data-a="adm" data-k="st" data-id="${r.id}" value="accepted">✓ ${_('Aceptar', 'Onartu')}</button><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="adm" data-k="st" data-id="${r.id}" value="rejected">✕ ${_('Rechazar', 'Baztertu')}</button></div></div>`).join("");
-  const allPlanCards = `<h3 style="margin-top:1.2rem">${_('Planes conjuntos publicados', 'Argitaratutako plan bateratuak')} (${db.plans.length})</h3>` + (db.plans.length ? db.plans.map(p => `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:.4rem"><span class="bd">${p.prop ? PS[p.prop.st][L()] : _('Abierto en Comunidad', 'Komunitatean irekita')}</span><button class="btn g" style="min-height:38px;padding:.3rem .7rem;color:var(--r);border-color:var(--r)" data-a="delplan_ask" data-v="${p.id}">🗑️ ${_('Borrar plan', 'Plana ezabatu')}</button></div><p><b>${esc(p.t[L()] || p.t.es)}</b> · ${p.m.map(esc).join(' + ')}</p>${p.w ? `<p class="mut">📅 ${esc(p.w)}</p>` : ""}${p.prop && p.prop.st !== 'draft' ? `<div class="row" style="gap:.6rem;margin-top:.5rem"><button class="btn s" style="flex:1" data-a="jp" data-v="${p.id}" data-k="accepted">✓ ${_('Aceptar', 'Onartu')}</button><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="jp" data-v="${p.id}" data-k="rejected">✕ ${_('Rechazar', 'Baztertu')}</button></div>` : ""}${String(askDelPlan) === String(p.id) ? `<div class="confirm-box"><p style="margin:0 0 .6rem;font-weight:800">${_('¿Estás seguro de que quieres borrar este plan?', 'Ziur zaude plan hau ezabatu nahi duzula?')}</p><div class="row" style="gap:.6rem"><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="delplan_yes" data-v="${p.id}">${_('Sí, borrar', 'Bai, ezabatu')}</button><button class="btn g" style="flex:1" data-a="delplan_no">${_('No', 'Ez')}</button></div></div>` : ""}</div>`).join("") : `<div class="card"><p class="mut">${_('No hay planes registrados.', 'Ez dago planik erregistratuta.')}</p></div>`);
-  const cloudUsersCard = `<div class="card"><h3>👥 ${_('Cuentas registradas en la app', 'Aplikazioan erregistratutako kontuak')} (${usersList.length})</h3>${usersList.length ? usersList.map(u => `<div class="row" style="justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--bd)"><div class="row">${avImg(u, 38)}<div><b>${esc(u.name || _('Sin nombre', 'Izenik gabe'))}</b><br><span class="mut">${esc(u.username || "")} · ${esc(u.addr || 'Bilbao')}</span></div></div><button class="btn" style="min-height:38px;padding:.35rem .75rem;background:var(--r);color:#fff;border-color:var(--r)" data-a="delacc" data-v="${u.id}">${_('Borrar', 'Ezabatu')}</button></div>`).join("") : `<p class="mut">${_('No hay cuentas cargadas de Supabase.', 'Ez dago Supabasetik kargatutako konturik.')}</p>`}</div>`;
-  const accCards = cloudUsersCard + `<div class="card"><h3>🔑 PIN ${_('trabajadores', 'langileak')}</h3>${W.map(n => `<p>${n}: <b>${WP[n]}</b></p>`).join("")}</div><div class="card"><h3>⭐ ${_('Valoraciones', 'Balorazioak')}</h3>${W.map(n => { const a = db.reqs.filter(r => r.w === n && r.rate), m = a.length ? a.reduce((s, r) => s + r.rate.s, 0) / a.length : 0; return `<p><b>${n}</b>: ${a.length ? `${stars(Math.round(m))} ${m.toFixed(1).replace('.', ',')} (${a.length})` : _('Sin valoraciones', 'Baloraziorik gabe')}</p>${a.map(r => `<p class="mut">"${esc(r.rate.c ? r.rate.c : '-')}"</p>`).join("")}`; }).join("")}</div>`;
+  const stBadge = s => s === 'done' ? `✅ ${ST.done[L()]}` : s === 'accepted' ? `✅ ${ST.accepted[L()]}` : s === 'rejected' ? `❌ ${ST.rejected[L()]}` : s === 'assigned' ? `👤 ${ST.assigned[L()]}` : s === 'ongoing' ? `▶️ ${ST.ongoing[L()]}` : `⏳ ${_('Pendiente', 'Zain')}`;
+  const reqCards = db.reqs.map(r => `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:.4rem"><span class="bd">${stBadge(r.st)}</span><span class="mut">#${r.id}</span></div><p style="margin:.2rem 0;font-size:1.1rem"><b>${esc(r.cli || _('Cliente', 'Bezeroa'))}</b></p><p style="margin:.2rem 0">${svc(r)} · ${r.bono > 1 ? `Bono ${r.bono} horas · ` : ""}${r.hTot} h</p><p class="mut" style="margin:.2rem 0">📅 ${(r.ses || []).map(sl).join(' | ')} (${sesH(r.ses)}/${r.hTot} h)</p><p class="mut" style="margin:.2rem 0">📍 ${esc(r.addr)}${r.pin ? ` · 🔑 ${r.pin}` : ""}</p><p style="margin:.4rem 0"><b>${fmt(r.tot)}</b></p><label>${_('Trabajador asignado', 'Esleitutako langilea')}</label>${sel(r, 'w', [["", '-'], ...W.map(x => [x, x])])}<div class="row" style="margin-top:.8rem;gap:.6rem"><button class="btn s" style="flex:1" data-a="adm" data-k="st" data-id="${r.id}" value="accepted">✅ ${_('Aceptar', 'Onartu')}</button><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="adm" data-k="st" data-id="${r.id}" value="rejected">✕ ${_('Rechazar', 'Baztertu')}</button></div></div>`).join("");
+  const allPlanCards = `<h3 style="margin-top:1.2rem">${_('Planes conjuntos publicados', 'Argitaratutako plan bateratuak')} (${db.plans.length})</h3>` + (db.plans.length ? db.plans.map(p => `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:.4rem"><span class="bd">${p.prop ? PS[p.prop.st][L()] : _('Abierto en Comunidad', 'Komunitatean irekita')}</span><button class="btn g" style="min-height:38px;padding:.25rem .7rem;color:var(--r);border-color:var(--r)" data-a="delplan_ask" data-v="${p.id}">🗑️ ${_('Borrar plan', 'Plana ezabatu')}</button></div><p><b>${esc(p.t[L()] || p.t.es)}</b> · ${p.m.map(esc).join(' + ')}</p>${p.w ? `<p class="mut">📅 ${esc(p.w)}</p>` : ""}${p.prop && p.prop.st !== 'draft' ? `<div class="row" style="gap:.6rem;margin-top:.5rem"><button class="btn s" style="flex:1" data-a="jp" data-v="${p.id}" data-k="accepted">✅ ${_('Aceptar', 'Onartu')}</button><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="jp" data-v="${p.id}" data-k="rejected">✕ ${_('Rechazar', 'Baztertu')}</button></div>` : ""}${String(askDelPlan) === String(p.id) ? `<div class="confirm-box"><p style="margin:0 0 .6rem;font-weight:800">⚠️ ${_('¿Estás seguro de que quieres borrar este plan?', 'Ziur zaude plan hau ezabatu nahi duzula?')}</p><div class="row" style="gap:.6rem"><button class="btn" style="flex:1;background:var(--r);color:#fff;border-color:var(--r)" data-a="delplan_yes" data-v="${p.id}">${_('Sí, borrar', 'Bai, ezabatu')}</button><button class="btn g" style="flex:1" data-a="delplan_no">${_('No', 'Ez')}</button></div></div>` : ""}</div>`).join("") : `<div class="card"><p class="mut">${_('No hay planes registrados.', 'Ez dago planik erregistratuta.')}</p></div>`);
+  const cloudUsersCard = `<div class="card"><h3>👥 ${_('Cuentas registradas en la app', 'Aplikazioan erregistratutako kontuak')} (${usersList.length})</h3>${usersList.length ? usersList.map(u => `<div class="row" style="justify-content:space-between;padding:.55rem 0;border-bottom:1px solid var(--bd)"><div class="row">${avImg(u, 38)}<div><b>${esc(u.name || _('Sin nombre', 'Izenik gabe'))}</b><br><span class="mut">${esc(u.username || "")} · ${esc(u.addr || 'Bilbao')}</span></div></div><button class="btn" style="min-height:38px;padding:.3rem .8rem;background:var(--r);color:#fff;border-color:var(--r)" data-a="delacc" data-v="${u.id}">${_('Borrar', 'Ezabatu')}</button></div>`).join("") : `<p class="mut">${_('No hay cuentas cargadas de Supabase.', 'Ez dago Supabasetik kargatutako konturik.')}</p>`}</div>`;
+  const accCards = cloudUsersCard + `<div class="card"><h3>🔑 PIN ${_('trabajadores', 'langileak')}</h3>${W.map(n => `<p>${n}: <b>${WP[n]}</b></p>`).join("")}</div><div class="card"><h3>${_('Valoraciones', 'Balorazioak')}</h3>${W.map(n => { const a = db.reqs.filter(r => r.w === n && r.rate), m = a.length ? a.reduce((s, r) => s + r.rate.s, 0) / a.length : 0; return `<p><b>${n}</b>: ${a.length ? `${stars(Math.round(m))} ${m.toFixed(1).replace('.', ',')} (${a.length})` : _('Sin valoraciones', 'Baloraziorik gabe')}</p>${a.map(r => `<p class="mut">"${esc(r.rate.c ? r.rate.c : '-')}"</p>`).join("")}`; }).join("")}</div>`;
   const teamThreadIds = [...new Set(teamMsgs.map(m => m.sender_id == TEAM_ID ? m.receiver_id : m.sender_id))].filter(Boolean);
   const teamChatCards = teamThreadIds.length ? teamThreadIds.map(uid => {
     const u = usersList.find(x => x.id == uid) || { name: _('Usuario', 'Erabiltzailea'), username: "", addr: 'Bilbao' };
@@ -694,17 +715,17 @@ function admin() {
     const formatted = thread.map(m => ({ f: m.sender_id == TEAM_ID ? 'u' : 'h', n: m.sender_id == TEAM_ID ? 'Equipo Hurbil' : u.name, t: m.text }));
     return `<div class="card"><div class="row" style="margin-bottom:.5rem">${avImg(u, 42)}<div><b>${esc(u.name)}</b><br><span class="mut">${esc(u.username || "")} · ${esc(u.addr || 'Bilbao')}</span></div></div>${msgs(formatted, 'Equipo Hurbil')}${sendBox('admteam:' + uid)}</div>`;
   }).join("") : `<div class="card"><p class="mut">${_('Aún ningún usuario ha escrito al Equipo Hurbil desde el chat.', 'Oraindik ez du inork idatzi Hurbil Taldeari txatetik.')}</p></div>`;
-  return `${back()}<div class="row" style="justify-content:space-between;align-items:center"><h2>⚙️ ${_('Administración', 'Administrazioa')}</h2><button class="btn g" onclick="admOk=false;render()">${_('Salir', 'Irten')}</button></div><p class="mut" style="margin-top:-.3rem"><span style="color:var(--s)">●</span> ${_('En directo · panel de control', 'Zuzenean · kontrol panela')}</p><div class="row" style="gap:.5rem;margin:1rem 0"><button class="btn ${admTab === 'reqs' ? 's' : ""}" style="flex:1" onclick="admTab='reqs';render()">📋 ${_('Solicitudes', 'Eskaerak')} (${db.reqs.length + db.plans.length})</button><button class="btn ${admTab === 'msgs' ? 's' : ""}" style="flex:1" onclick="admTab='msgs';render()">💬 ${_('Mensajes Hurbil', 'Hurbil Mezuak')} (${teamThreadIds.length})</button><button class="btn ${admTab === 'accs' ? 's' : ""}" style="flex:1" onclick="admTab='accs';render()">👥 ${_('Cuentas', 'Kontuak')} (${usersList.length})</button></div>${admTab === 'reqs' ? (reqCards + allPlanCards) : admTab === 'msgs' ? teamChatCards : accCards}<button class="btn g" style="margin-top:.8rem" data-a="rst">${_('Restablecer datos locales', 'Datu lokalak berrezarri')}</button>`;
+  return `${back()}<div class="row" style="justify-content:space-between;align-items:center"><h2>🔒 ${_('Administración', 'Administrazioa')}</h2><button class="btn g" onclick="admOk=false;render()">${_('Salir', 'Irten')}</button></div><p class="mut" style="margin-top:-.3rem"><span style="color:var(--s)">●</span> ${_('En directo · panel de control', 'Zuzenean · kontrol panela')}</p><div class="row" style="gap:.5rem;margin:1rem 0"><button class="btn ${admTab === 'reqs' ? 's' : ""}" style="flex:1" onclick="admTab='reqs';render()">📋 ${_('Solicitudes', 'Eskaerak')} (${db.reqs.length + db.plans.length})</button><button class="btn ${admTab === 'msgs' ? 's' : ""}" style="flex:1" onclick="admTab='msgs';render()">💬 ${_('Mensajes Hurbil', 'Hurbil Mezuak')} (${teamThreadIds.length})</button><button class="btn ${admTab === 'accs' ? 's' : ""}" style="flex:1" onclick="admTab='accs';render()">🔑 ${_('Cuentas', 'Kontuak')} (${usersList.length})</button></div>${admTab === 'reqs' ? (reqCards + allPlanCards) : admTab === 'msgs' ? teamChatCards : accCards}<button class="btn g" style="width:100%;margin-top:.8rem" data-a="rst">${_('Restablecer datos locales', 'Datu lokalak berrezarri')}</button>`;
 }
 
 function modal() {
   if (!md) return "";
   let b = "";
   if (md == 'sos') {
-    const m = encodeURIComponent(`🆘 URGENTE: ${db.u.name || 'Usuario'} necesita ayuda. Dirección: ${db.u.addr || 'Bilbao'}. Hurbil 644 270 017`);
-    b = `<div class="row"><h2 class="grow" style="color:var(--r)">🆘 ${_('Emergencia', 'Larrialdia')}</h2>${S(_('Ayuda inmediata. Pulsa llamar al 644 270 017.', 'Berehalako laguntza. Sakatu 644 270 017 zenbakira deitzeko.'))}</div><p><b>${_('Si es muy grave, llama también al 112.', 'Oso larria bada, deitu 112ra ere.')}</b></p><div class="row" style="flex-direction:column;align-items:stretch"><a class="btn" href="tel:644270017">📞 ${_('Llamar a Hurbil', 'Hurbilera deitu')} · 644 270 017</a><a class="btn s" target="_blank" rel="noopener" href="https://wa.me/${phone(db.u.fam) || ""}?text=${m}">💬 ${_('Avisar a mi familiar por WhatsApp', 'Abisatu nire senideari WhatsApp bidez')}</a><a class="btn g" target="_blank" rel="noopener" href="https://wa.me/34644270017?text=${m}">📍 ${_('Enviar alerta urgente con mi dirección', 'Bidali larrialdi-alerta nire helbidearekin')}</a></div><p class="mut">📍 ${esc(db.u.addr || 'Bilbao')}</p>`;
+    const m = encodeURIComponent(`SOS URGENTE: ${db.u.name || 'Usuario'} necesita ayuda. Dirección: ${db.u.addr || 'Bilbao'}. Hurbil 644 270 017`);
+    b = `<div class="row"><h2 class="grow" style="color:var(--r)">🚨 ${_('Emergencia', 'Larrialdia')}</h2>${S(_('Ayuda inmediata. Pulsa llamar al 644 270 017.', 'Berehalako laguntza. Sakatu 644 270 017 zenbakira deitzeko.'))}</div><p><b>${_('Si es muy grave, llama también al 112.', 'Oso larria bada, deitu 112ra ere.')}</b></p><div class="row" style="flex-direction:column;align-items:stretch"><a class="btn" href="tel:644270017">${_('Llamar a Hurbil', 'Hurbilera deitu')} · 644 270 017</a><a class="btn s" target="_blank" rel="noopener" href="https://wa.me/${phone(db.u.fam) || ""}?text=${m}">💬 ${_('Avisar a mi familiar por WhatsApp', 'Abisatu nire senideari WhatsApp bidez')}</a><a class="btn g" target="_blank" rel="noopener" href="https://wa.me/34644270017?text=${m}">📍 ${_('Enviar alerta urgente con mi dirección', 'Bidali larrialdi-alerta nire helbidearekin')}</a></div><p class="mut">📍 ${esc(db.u.addr || 'Bilbao')}</p>`;
   } else if (md == 'story_up') {
-const r = db.reqs.find(x => String(x.id) === String(storyReqId));
+    const r = db.reqs.find(x => String(x.id) === String(storyReqId));
     b = `<div class="row"><h2 class="grow">📸 ${_('Subir historia del servicio', 'Zerbitzuaren historia igo')}</h2></div>${r ? `<p class="mut" style="margin:.2rem 0 .7rem">${svc(r)}</p>` : ""}<label for="st_cap">${_('Texto o comentario (opcional)', 'Testua edo iruzkina (aukerakoa)')}</label><input id="st_cap" placeholder="${_('Ej. ¡Paseando por Bilbao con Ander!', 'Adib. Bilbotik paseatzen Anderrekin!')}" value="${esc(draftChat)}" oninput="draftChat=this.value"><label style="margin-top:.9rem">${_('Elige foto o vídeo (máx. 20 s)', 'Aukeratu argazkia edo bideoa (geh. 20 s)')}</label><label class="btn s" style="width:100%;margin-top:.4rem;cursor:pointer;${storyUploading ? 'opacity:.6;pointer-events:none' : ""}">${storyUploading ? '⏳ ' + _('Subiendo...', 'Igotzen...') : '📷 ' + _('Seleccionar foto o vídeo', 'Hautatu argazkia edo bideoa')}<input type="file" accept="image/*,video/*" style="display:none" onchange="upStory(this)"></label><p class="mut" style="font-size:.82rem;margin-top:.6rem">${_('La historia estará visible durante 24 horas para tus seguidores.', 'Historia 24 orduz egongo da ikusgai zure jarraitzaileentzat.')}</p>`;
   }
   return `<div class="ov"><div class="mo" role="dialog" aria-modal="true">${b}<button class="btn g" style="margin-top:1rem;width:100%" data-a="close">✕ ${_('Cerrar', 'Itxi')}</button></div></div>`;
@@ -719,16 +740,15 @@ function pextra() {
     const tot = bo.hTot, con = (bo.ses || []).filter(x => end(x.d, x.t, x.h) < Date.now()).reduce((s, x) => s + x.h, 0), sch = sesH(bo.ses), tx = `${_('Bono', 'Bonoa')} ${tot} h: ${con} h ${_('consumidas', 'kontsumituta')} · ${sch - con} h ${_('programadas', 'programatuta')} · ${tot - sch} h ${_('disponibles', 'eskuragarri')}`;
     b = `<div class="card"><div class="row"><h3 class="grow">🎟️ ${_('Mi bono', 'Nire bonoa')}</h3>${S(tx)}</div><div class="bar" style="margin:.5rem 0"><i style="width:${con / tot * 100}%"></i><i class="f" style="width:${(sch - con) / tot * 100}%"></i></div><p>${tx}</p></div>`;
   }
-  return `<div class="card"><div class="row"><h3 class="grow">💚 ${_('Mi ahorro total', 'Nire aurrezki osoa')}</h3>${S(sv)}</div><p style="font-size:1.7rem;font-weight:800;margin:.2rem 0">${fmt(saved())}</p><p class="mut">${_('Frente a la tarifa estándar de 21 €/h, con bonos y planes conjuntos.', '21 €/orduko tarifa estandarrarekin alderatuta, bonoekin eta plan bateratuekin.')}</p></div>` + b;
+  return `<div class="card"><div class="row"><h3 class="grow">💰 ${_('Mi ahorro total', 'Nire aurrezki osoa')}</h3>${S(sv)}</div><p style="font-size:1.7rem;font-weight:800;margin:.2rem 0">${fmt(saved())}</p><p class="mut">${_('Frente a la tarifa estándar de 21 €/h, con bonos y planes conjuntos.', '21 €/orduko tarifa estandarrarekin alderatuta, bonoekin eta plan bateratuekin.')}</p></div>` + b;
 }
 
 const WK = [
-  ['Aimar Fernandez', '👨🏻', ['Compañía y paseos', 'Konpainia eta ibilaldiak'], ['Soy de Bilbao de toda la vida y me encanta pasear por Doña Casilda charlando sin prisa.', 'Bilbokoa naiz betidanik eta Doña Casildan lasai-lasai berriketan ibiltzea maite dut.']],
-  ['Ander Herrera', '🧑🏻', ['Recados y móvil', 'Egitekoak eta mugikorra'], ['Te ayudo con el móvil, las citas y los recados con mucha paciencia: sin prisa ni tecnicismos.', 'Mugikorrarekin, hitzorduekin eta egitekoekin laguntzen dizut pazientzia handiz: presarik eta teknizismorik gabe.']],
-  ['Eder Fernandez', '🧔🏻', ['Acompañamiento médico', 'Laguntza medikoa'], ['Te acompaño al centro de salud o al hospital y me quedo contigo hasta que vuelves a casa.', 'Osasun-zentrora edo ospitalera laguntzen dizut eta zurekin geratzen naiz etxera itzuli arte.']],
-  ['Eidan Irastorza', '👱🏻', ['Hogar y tareas ligeras', 'Etxea eta lan arinak'], ['Te echo una mano en casa: ordenar, preparar algo sencillo o regar las plantas, a tu ritmo.', 'Etxean laguntzen dizut: ordenatu, janari sinplea prestatu edo landareak ureztatu, zure erritmoan.']]
+  ['Aimar Fernandez', '🚶', ['Compañía y paseos', 'Konpainia eta ibilaldiak'], ['Soy de Bilbao de toda la vida y me encanta pasear por Doña Casilda charlando sin prisa.', 'Bilbokoa naiz betidanik eta Doña Casildan lasai-lasai berriketan ibiltzea maite dut.']],
+  ['Ander Herrera', '📱', ['Recados y móvil', 'Egitekoak eta mugikorra'], ['Te ayudo con el móvil, las citas y los recados con mucha paciencia: sin prisa ni tecnicismos.', 'Mugikorrarekin, hitzorduekin eta egitekoekin laguntzen dizut pazientzia handiz: presarik eta teknizismorik gabe.']],
+  ['Eder Fernandez', '🏥', ['Acompañamiento médico', 'Laguntza medikoa'], ['Te acompaño al centro de salud o al hospital y me quedo contigo hasta que vuelves a casa.', 'Osasun-zentrora edo ospitalera laguntzen dizut eta zurekin geratzen naiz etxera itzuli arte.']],
+  ['Eidan Irastorza', '🏠', ['Hogar y tareas ligeras', 'Etxea eta lan arinak'], ['Te echo una mano en casa: ordenar, preparar algo sencillo o regar las plantas, a tu ritmo.', 'Etxean laguntzen dizut: ordenatu, janari sinplea prestatu edo landareak ureztatu, zure erritmoan.']]
 ];
-
 function team() {
   return back() + head(_('Conoce a nuestro equipo', 'Ezagutu gure taldea')) + WK.map(k => {
     const t = `${k[0]}. ${k[2][L()]}. ${k[3][L()]}`;
@@ -740,7 +760,7 @@ function work() {
   const h = back() + head(_('Portal de trabajadores', 'Langileen ataria'));
   if (!wk) return h + `<div class="card"><label for="wn">${_('Trabajador', 'Langilea')}</label><select id="wn" data-f="wl.n">${W.map(n => `<option ${wl.n == n ? 'selected' : ""}>${n}</option>`).join("")}</select><label for="wp">${_('PIN de acceso (4 dígitos)', 'Sarbide PINa (4 digitu)')}</label><input id="wp" type="password" inputmode="numeric" maxlength="4" data-f="wl.p" value="${esc(wl.p)}"><button class="btn s" style="margin-top:1rem" data-a="wlog">${_('Entrar', 'Sartu')}</button></div>`;
   const m = db.reqs.filter(r => r.w == wk && !ended(r));
-  return h + `<div class="row"><b class="grow">👤 ${esc(wk)}</b><button class="btn g" data-a="wout">${_('Salir', 'Irten')}</button></div>` + (m.length ? m.map(r => {
+  return h + `<div class="row"><b class="grow">👷 ${esc(wk)}</b><button class="btn g" data-a="wout">${_('Salir', 'Irten')}</button></div>` + (m.length ? m.map(r => {
     const t = `${svc(r)}. ${esc(r.cli || "")}. ${r.addr}. ${(r.ses || []).map(sl).join('. ')}. PIN ${(r.pin || "").split("").join(' ')}`;
     return `<article class="card"><div class="row"><h3 class="grow">${svc(r)}</h3>${S(t)}</div><p>👤 ${esc(r.cli || '-')}</p><p>📍 ${esc(r.addr)}</p>${(r.ses || []).map(q => `<p>📅 ${sl(q)}</p>`).join("")}<p style="font-size:1.4rem">🔑 ${_('PIN del cliente', 'Bezeroaren PINa')}: <b style="letter-spacing:.2em">${r.pin || '-'}</b></p><small class="mut">${_('Comprueba este código con el cliente al llegar.', 'Egiaztatu kode hau bezeroarekin iristean.')}</small></article>`;
   }).join("") : `<div class="card"><p>${_('No tienes tareas asignadas ahora.', 'Ez duzu eginkizunik esleituta orain.')}</p></div>`);
@@ -767,14 +787,14 @@ function render() {
     document.body.className = (db.hc ? 'hc ' : "") + (db.easy ? 'easy' : "");
     document.documentElement.style.fontSize = (16 + db.fs * 2 + (db.easy ? 4 : 0)) + 'px';
     if (h === 'story') {
-      $('#hd').innerHTML = ''; $('#app').innerHTML = storyPage(); $('#fab').innerHTML = ""; $('#md').innerHTML = "";
+      $('#hd').innerHTML = ""; $('#app').innerHTML = storyPage(); $('#fab').innerHTML = ""; $('#md').innerHTML = "";
       scheduleStoryAuto(); return;
     }
     clearTimeout(storyTimer);
     $('#hd').innerHTML = hdr();
-    $('#app').innerHTML = pg() + `<footer class="adv" style="margin-top:2rem;text-align:center"><small>Hurbil Bilbao · 644 270 017 · <a href="#admin" data-a="go" data-v="admin" style="opacity:.6">${_('admin', 'admin')}</a> · <a href="#work" data-a="go" data-v="work" style="opacity:.6">${_('trabajadores', 'langileak')}</a></small></footer>`;
+    $('#app').innerHTML = pg() + `<footer class="adv" style="margin-top:2rem;text-align:center"><small class="mut">Hurbil · Bilbao · <a href="#admin" data-a="go" data-v="admin" style="opacity:.6">${_('admin', 'admin')}</a> · <a href="#work" data-a="go" data-v="work" style="opacity:.6">${_('trabajadores', 'langileak')}</a></small></footer>`;
     const uDm = unreadDmCount();
-    $('#fab').innerHTML = `<div class="fab"><button class="cb" data-a="openchat">💬 ${_('Chat', 'Txata')}${uDm ? `<span class="badge">${uDm}</span>` : ""}</button><button class="sos" data-a="md" data-v="sos" aria-label="SOS">🆘 SOS</button></div>`;
+    $('#fab').innerHTML = `<div class="fab"><button class="cb" data-a="openchat">💬 ${_('Chat', 'Txata')}${uDm ? `<span class="badge">${uDm}</span>` : ""}</button><button class="sos" data-a="md" data-v="sos" aria-label="SOS">🚨 SOS</button></div>`;
     $('#md').innerHTML = modal();
     document.querySelectorAll('.msgs,.ig-feed').forEach(e => e.scrollTop = e.scrollHeight);
     if (fo) { const i = document.querySelector('.send input,.ig-bar input'); i && i.focus(); fo = false; }
@@ -891,7 +911,8 @@ function act(el) {
         R0.hTot = totU; R0.base = 21 * totU;
       }
       if (sb && sbUid) sb.from('requests').update({ data: R0 }).eq('id', R0.id).then(() => {});
-      Object.assign(w, W0()); toast(_('Citas guardadas.', 'Hitzorduak gordeta.')); go('reqs'); break;
+      Object.assign(w, W0()); toast(_('Citas guardadas.', 'Hitzorduak gordeta.')); go('reqs');
+      break;
     }
     case 'wlog': if (wl.p === WP[wl.n]) wk = wl.n; else { toast(_('PIN incorrecto.', 'PIN okerra.')); return; } break;
     case 'wout': wk = null; wl.p = ""; break;
@@ -989,8 +1010,8 @@ function act(el) {
         if (p.m.length == 2) {
           p.prop = { st: 'draft', acc: [] };
           p.msgs.push({ n: p.m[0], t: _('¡Genial, ya somos dos! Vamos a por este plan.', 'Bikaina, bi gara! Egin dezagun plan hau.') }, { n: 'Hurbil', t: _('🤝 Propuesta de plan conjunto creada para 2 personas (16,00 €/h por persona). Aceptadla los dos y la enviamos a Hurbil.', '🤝 2 pertsonentzako plan bateratuaren proposamena sortu da (16,00 €/h pertsonako). Biok onartu eta Hurbili bidaliko diogu.') });
-          oc = p.id;
         }
+        oc = p.id;
       }
       if (sb) sb.from('plans').upsert({ id: String(p.id), data: p }).then(() => {}); break;
     }
@@ -1000,7 +1021,7 @@ function act(el) {
         p.prop.acc.push(n);
         if (p.prop.acc.length >= 2) {
           p.prop.st = 'sent';
-          p.msgs.push({ n: 'Hurbil', t: _('📤 Plan conjunto enviado a Hurbil para confirmación.', '📤 Plan bateratua Hurbilera bidalita baieztatzeko.') });
+          p.msgs.push({ n: 'Hurbil', t: _('📩 Plan conjunto enviado a Hurbil para confirmación.', '📩 Plan bateratua Hurbilera bidalita baieztatzeko.') });
           toast(_('¡Los dos habéis aceptado! Plan enviado a Hurbil.', 'Biok onartu duzue! Plana Hurbilera bidalita.'));
         } else {
           toast(_('Has aceptado el plan. Falta la otra persona.', 'Plana onartu duzu. Beste pertsona falta da.'));
@@ -1059,7 +1080,7 @@ function act(el) {
         }); return;
       }
     }
-    case 'out': if (sb) sb.auth.signOut(); sbUid = null; db.u = { name: '', user: '', contact: '', pass: '', addr: '', fam: '', on: 0 }; editProf = false; break;
+    case 'out': if (sb) sb.auth.signOut(); sbUid = null; db.u = { name: "", user: "", contact: "", pass: "", addr: "", fam: "", on: 0 }; editProf = false; break;
     case 'adm': {
       const k = el.dataset.k; r[k] = el.value;
       if (k == 'w' && r.w && r.st == 'pending') r.st = 'assigned';
@@ -1108,6 +1129,20 @@ setInterval(() => { if (sbUid || admOk) syncCloud(true); }, 6000);
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/Hurbil/sw.js').catch(() => {});
 }
+function endSplash() {
+  const sp = document.getElementById('splash');
+  if (!sp || sp.dataset.done) return;
+  sp.dataset.done = '1';
+  sp.style.opacity = '0';
+  setTimeout(() => sp.remove(), 500);
+}
+(() => {
+  const v = document.getElementById('splash-vid');
+  if (!v) return;
+  v.onended = endSplash;
+  v.onerror = endSplash;
+  setTimeout(endSplash, 7000);
+})();
 (() => {
   const im = new Image();
   im.onload = () => {
@@ -1121,7 +1156,7 @@ if ('serviceWorker' in navigator) {
     ctx.drawImage(im, (512 - dw) / 2, (512 - dh) / 2, dw, dh);
     const png = c.toDataURL('image/png');
     const mf = {
-      name: 'Hurbil Siempre cerca de ti',
+      name: 'Hurbil · Siempre cerca de ti',
       short_name: 'Hurbil',
       start_url: location.origin + '/Hurbil/',
       scope: location.origin + '/Hurbil/',
